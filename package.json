@@ -1,0 +1,29 @@
+{
+  "name": "my-electron-app",
+  "version": "1.0.0",
+  "description": "My Electron app",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+"build": {
+  "appId": "com.example.myapp",
+  "productName": "MyElectronApp",
+  "win": {
+    "target": [
+      "nsis",
+      "portable"
+    ],
+    "signAndEditExecutable": false
+  },
+  "files": [
+    "**/*"
+  ]
+},
+  "devDependencies": {
+    "electron": "^25.0.0",
+    "electron-builder": "^24.13.3"
+  }
+}
