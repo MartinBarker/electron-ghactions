@@ -1,7 +1,3 @@
-# Run this workflow to build, test, and release your Electron app
-# A release will be published if the commit to main is formatted as "v1.2.3"
-# For more information, see the readme
-
 name: Build/release
 
 on:
@@ -18,14 +14,12 @@ jobs:
     timeout-minutes: 60
 
     env:
-      # Set is_tag=true if commit is formatted such as "v1.2.3"
       is_tag: ${{ startsWith(github.ref, 'refs/tags/v') }}
       SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_TOKEN }}
 
     strategy:
       matrix:
         os: [macos-latest]
-#        os: [macos-latest, ubuntu-latest, windows-latest]
 
     steps:
       - name: Check out Git repository
@@ -36,18 +30,14 @@ jobs:
         with:
           node-version: 20
 
+      - name: Install dependencies using npm
+        run: npm install
+
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
         with:
-          # GitHub token, automatically provided to the action
-          # (No need to define this secret in the repo settings)
-          github_token: ${{ secrets.github_token }}
-
-          # If the commit is tagged with a version (e.g. "v1.0.0"),
-          # release the app after building
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           release: ${{ env.is_tag == 'true' }}
-
-          max_attempts: 1
-
+          package_manager: npm    # Force npm to be used instead of yarn
           mac_certs: ${{ secrets.mac_certs }}
           mac_certs_password: ${{ secrets.mac_certs_password }}
