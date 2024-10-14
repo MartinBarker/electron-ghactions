@@ -1,9 +1,9 @@
 name: Build/release
 
 on:
-#  push:
-#    tags:
-#      - 'v*'
+  push:
+    tags:
+      - 'v*' # 
 #  schedule:
 #    - cron: '0 10 * * *'
   workflow_dispatch:
@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 60
 
     env:
-      # Push with commit formattaed as "v1.2.3" to trigger release
+      # Set is_tag=true if commit is formatted such as "v1.2.3"
       is_tag: ${{ startsWith(github.ref, 'refs/tags/v') }}
       SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_TOKEN }}
 
