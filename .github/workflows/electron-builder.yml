@@ -20,6 +20,7 @@ jobs:
     timeout-minutes: 60
 
     env:
+      # Push with commit formattaed as "v1.2.3" to trigger release
       is_tag: ${{ startsWith(github.ref, 'refs/tags/v') }}
       SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_TOKEN }}
 
@@ -42,4 +43,13 @@ jobs:
         with:
           # GitHub token, automatically provided to the action
           # (No need to define this secret in the repo settings)
-          github_token: ${{ secrets.github_token  }}
+          github_token: ${{ secrets.github_token }}
+
+          # If the commit is tagged with a version (e.g. "v1.0.0"),
+          # release the app after building
+          release: ${{ env.is_tag == 'true' }}
+
+          max_attempts: 1
+
+          mac_certs: ${{ secrets.mac_certs }}
+          mac_certs_password: ${{ secrets.mac_certs_password }}
