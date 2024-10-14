@@ -8,20 +8,41 @@
     "pack": "electron-builder --dir",
     "dist": "electron-builder"
   },
-"build": {
-  "appId": "com.example.myapp",
-  "productName": "MyElectronApp",
-  "win": {
-    "target": [
-      "nsis",
-      "portable"
+  "build": {
+    "appId": "com.example.myapp",
+    "productName": "MyElectronApp",
+    "directories": {
+      "buildResources": "build"
+    },
+    "files": [
+      "**/*",
+      "!node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme,test}"
     ],
-    "signAndEditExecutable": false
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "category": "public.app-category.utilities",
+      "icon": "build/icon.icns"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Utility",
+      "icon": "build/icons"
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "signAndEditExecutable": false,
+      "icon": "build/icon.ico"
+    }
   },
-  "files": [
-    "**/*"
-  ]
-},
   "devDependencies": {
     "electron": "^25.0.0",
     "electron-builder": "^24.13.3"
