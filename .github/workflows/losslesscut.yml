@@ -1,4 +1,4 @@
-name: FULLBuild/release
+name: FULL-lossless-cut-Build/release
 
 on:
   push:

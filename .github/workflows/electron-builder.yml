@@ -1,3 +1,7 @@
+# Run this workflow to build, test, and release your Electron app
+# A release will be published if the commit to main is formatted as "v1.2.3"
+# For more information, see the readme
+
 name: Build/release
 
 on:
