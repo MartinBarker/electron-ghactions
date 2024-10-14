@@ -2,17 +2,10 @@ name: Build/release
 
 on:
   push:
+    branches:
+      - main
     tags:
       - 'v*'
-#  schedule:
-#    - cron: '0 10 * * *'
-  workflow_dispatch:
-    inputs:
-      tmate_enabled:
-        type: boolean
-        description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
-        required: false
-        default: false
 
 jobs:
   release:
