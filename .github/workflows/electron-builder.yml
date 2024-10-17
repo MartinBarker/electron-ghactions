@@ -13,38 +13,52 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
 
-
     env:
       is_tag: ${{ startsWith(github.ref, 'refs/tags/v') }}
       SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_TOKEN }}
 
     strategy:
       matrix:
-#        os: [macos-latest, ubuntu-latest, windows-latest]
-        os: [macos-latest]
+        os: [macos-latest, ubuntu-latest, windows-latest]
+#        os: [windows-latest]
 
     steps:
-
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.tmate_enabled }}
+        with:
+          detached: true
+  
+        # Windows fix. See https://github.com/actions/checkout/issues/226
       - run: git config --global core.autocrlf false
 
       - name: Check out Git repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Display is_tag
-        run: echo "is_tag=${{ env.is_tag }}"
-
-      - name: Install Node.js and NPM
-        uses: actions/setup-node@v3
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'yarn'
 
-      - name: Delete old package-lock.json
-        run: rm -f package-lock.json
+      # This global ffmpeg is used for screenshots (see below)
+      - uses: FedericoCarboni/setup-ffmpeg@v3
+        with:
+          ffmpeg-version: release
+          # arm not yet supported on macos
+          architecture: ${{ matrix.os == 'macos-latest' && 'x64' || '' }}
+          # Linking type of the binaries. Use "shared" to download shared binaries and 
+          # "static" for statically linked ones. Shared builds are currently only available
+          # for windows releases. Defaults to "static"
+          linking-type: static
+          # As of version 3 of this action, builds are no longer downloaded from GitHub
+          # except on Windows: https://github.com/GyanD/codexffmpeg/releases.
+          github-token: ${{ github.server_url == 'https://github.com' && github.token || '' }}
 
-      - name: Update npm to the latest version
-        run: npm install -g npm@latest
+      - run: ffmpeg -version
 
-      - run: npm install
+       # Because of timeout issue https://github.com/yarnpkg/yarn/issues/4890
+      - run: yarn install --immutable --network-timeout 1000000
 
       - name: (Linux) Install and login to Snapcraft
         uses: samuelmeuli/action-snapcraft@v2
@@ -55,18 +69,18 @@ jobs:
         env:
           PROVISIONING_PROFILE_BASE64: ${{ secrets.PROVISIONING_PROFILE_BASE64 }}
         run: |
-          echo -n "$PROVISIONING_PROFILE_BASE64" | base64 --decode > RenderTune_Mac_App_Store_provisioning_profile.provisionprofile
+          echo -n "$PROVISIONING_PROFILE_BASE64" | base64 --decode > LosslessCut_Mac_App_Store_provisioning_profile.provisionprofile
       - name: (MacOS) Prepare Apple API key
         # Import Apple API key for uploading to Mac App Store and for notarization
         if: startsWith(matrix.os, 'macos')
         run: |
           mkdir -p ~/.appstoreconnect/private_keys/
-          echo '${{ secrets.api_key }}' > ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.api_key_id }}.p8
+          echo '${{ secrets.APPLE_API_KEY }}' > ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.APPLE_API_KEY_ID }}.p8
       - name: (MacOS) Download ffmpeg
         if: startsWith(matrix.os, 'macos')
         run: |
-          npm run download-ffmpeg-darwin-x64
-          npm run download-ffmpeg-darwin-arm64
+          yarn download-ffmpeg-darwin-x64
+          yarn download-ffmpeg-darwin-arm64
       - name: (Windows) Download ffmpeg
         if: startsWith(matrix.os, 'windows')
         run: yarn download-ffmpeg-win32-x64
@@ -90,41 +104,38 @@ jobs:
 
           mac_certs: ${{ secrets.MAC_CERTS }}
           mac_certs_password: ${{ secrets.MAC_CERTS_PASSWORD }}
+
+# Temporary 30 day certificate, not needed for Microsoft Store
+#          windows_certs: ${{ secrets.windows_certs }}
+#          windows_certs_password: ${{ secrets.windows_certs_password }}
         env:
           APPLE_API_KEY: ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.APPLE_API_KEY_ID }}.p8
           APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
           APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
 
+      - run: npx tsx script/e2e.mts 'dist/mac-arm64/LosslessCut.app/Contents/MacOS/LosslessCut' 0:none screenshot.jpeg
+        if: startsWith(matrix.os, 'macos')
+
+      - run: npx tsx script/e2e.mts 'dist\win-unpacked\LosslessCut.exe' desktop screenshot.jpeg
+        if: startsWith(matrix.os, 'windows')
+
+      - run: |
+          export DISPLAY=:0
+          sudo Xvfb -ac :0 -screen 0 1280x1024x24 > /dev/null 2>&1 &
+          sleep 5
+          chmod +x dist/linux-unpacked/losslesscut
+          npx tsx script/e2e.mts 'dist/linux-unpacked/losslesscut' ':0.0+0,0' screenshot.jpeg
+        if: startsWith(matrix.os, 'ubuntu')
       - name: (MacOS) Upload to Mac App Store
         if: startsWith(matrix.os, 'macos') && env.is_tag == 'true'
         run: |
-          npx tsx script/xcrun-wrapper.mts dist/mas-universal/RenderTune-mac-universal.pkg ${{ secrets.APPLE_API_KEY_ID }} ${{ secrets.APPLE_API_ISSUER }} 1505323402 no.mifi.rendertune-mac
-      # List contents of dist/ directory
-      - name: List contents of dist/ directory
-        run: ls -la dist/
-        if: startsWith(matrix.os, 'macos')
-
+          npx tsx script/xcrun-wrapper.mts dist/mas-universal/LosslessCut-mac-universal.pkg ${{ secrets.APPLE_API_KEY_ID }} ${{ secrets.APPLE_API_ISSUER }} 1505323402 no.mifi.losslesscut-mac
       - name: (MacOS) Upload artifacts
         uses: actions/upload-artifact@v3
         if: startsWith(matrix.os, 'macos') && env.is_tag == 'false'
         with:
           name: MacOS
           path: |
-            dist/RenderTune-mac-arm64.dmg
-            dist/RenderTune-mac-x64.dmg
-      - name: (Windows) Upload artifacts
-        uses: actions/upload-artifact@v3
-        if: startsWith(matrix.os, 'windows') && env.is_tag == 'false'
-        with:
-          name: Windows
-          path: |
-            dist/RenderTune-win-x64.7z
-      - name: (Linux) Upload artifacts
-        uses: actions/upload-artifact@v3
-        if: startsWith(matrix.os, 'ubuntu') && env.is_tag == 'false'
-        with:
-          name: Linux
-          path: |
-            dist/RenderTune-linux-arm64.tar.bz2
-            dist/RenderTune-linux-armv7l.tar.bz2
-            dist/RenderTune-linux-x64.tar.bz2
+            dist/LosslessCut-mac-arm64.dmg
+            dist/LosslessCut-mac-x64.dmg
+            screenshot.jpeg

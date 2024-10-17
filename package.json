@@ -19,7 +19,7 @@
   },
   "build": {
     "appId": "LV6WXG529F.AutoSplit",
-    "productName": "MyElectronApp",
+    "productName": "LosslessCut",
     "directories": {
       "buildResources": "build"
     },
