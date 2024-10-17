@@ -40,21 +40,21 @@ jobs:
         with:
           node-version: 20
 
-      # This global ffmpeg is used for screenshots (see below)
-      - uses: FedericoCarboni/setup-ffmpeg@v3
-        with:
-          ffmpeg-version: release
-          # arm not yet supported on macos
-          architecture: ${{ matrix.os == 'macos-latest' && 'x64' || '' }}
-          # Linking type of the binaries. Use "shared" to download shared binaries and 
-          # "static" for statically linked ones. Shared builds are currently only available
-          # for windows releases. Defaults to "static"
-          linking-type: static
-          # As of version 3 of this action, builds are no longer downloaded from GitHub
-          # except on Windows: https://github.com/GyanD/codexffmpeg/releases.
-          github-token: ${{ github.server_url == 'https://github.com' && github.token || '' }}
+      # # This global ffmpeg is used for screenshots (see below)
+      # - uses: FedericoCarboni/setup-ffmpeg@v3
+      #   with:
+      #     ffmpeg-version: release
+      #     # arm not yet supported on macos
+      #     architecture: ${{ matrix.os == 'macos-latest' && 'x64' || '' }}
+      #     # Linking type of the binaries. Use "shared" to download shared binaries and 
+      #     # "static" for statically linked ones. Shared builds are currently only available
+      #     # for windows releases. Defaults to "static"
+      #     linking-type: static
+      #     # As of version 3 of this action, builds are no longer downloaded from GitHub
+      #     # except on Windows: https://github.com/GyanD/codexffmpeg/releases.
+      #     github-token: ${{ github.server_url == 'https://github.com' && github.token || '' }}
 
-      - run: ffmpeg -version
+      # - run: ffmpeg -version
 
       - name: (Linux) Install and login to Snapcraft
         uses: samuelmeuli/action-snapcraft@v2
@@ -72,18 +72,19 @@ jobs:
         run: |
           mkdir -p ~/.appstoreconnect/private_keys/
           echo '${{ secrets.APPLE_API_KEY }}' > ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.APPLE_API_KEY_ID }}.p8
-      - name: (MacOS) Download ffmpeg
-        if: startsWith(matrix.os, 'macos')
-        run: |
-          npm run download-ffmpeg-darwin-x64
-          npm run download-ffmpeg-darwin-arm64
-      - name: (Windows) Download ffmpeg
-        if: startsWith(matrix.os, 'windows')
-        run: npm run download-ffmpeg-win32-x64
+      
+      # - name: (MacOS) Download ffmpeg
+      #   if: startsWith(matrix.os, 'macos')
+      #   run: |
+      #     npm run download-ffmpeg-darwin-x64
+      #     npm run download-ffmpeg-darwin-arm64
+      # - name: (Windows) Download ffmpeg
+      #   if: startsWith(matrix.os, 'windows')
+      #   run: npm run download-ffmpeg-win32-x64
 
-      - name: (Linux) Download ffmpeg
-        if: startsWith(matrix.os, 'ubuntu')
-        run: npm run download-ffmpeg-linux-x64
+      # - name: (Linux) Download ffmpeg
+      #   if: startsWith(matrix.os, 'ubuntu')
+      #   run: npm run download-ffmpeg-linux-x64
 
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
