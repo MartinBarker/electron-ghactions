@@ -33,8 +33,21 @@ jobs:
       - name: Install dependencies using npm
         run: npm install
 
+      - name: Print is_tag value
+        run: echo "is_tag: ${{ is_tag }}"
+
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
         with:
           github_token: ${{ secrets.github_token }}
-          release: ${{ env.is_tag == 'true' }}
+          release: ${{ env.# ... other parts of your workflow
+
+          max_attempts: 1
+
+          mac_certs: ${{ secrets.MAC_CERTS }}
+          mac_certs_password: ${{ secrets.MAC_CERTS_PASSWORD }}
+          
+        env:
+          APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
+          APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+          APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}

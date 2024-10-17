@@ -13,7 +13,7 @@
     "dist": "electron-builder"
   },
   "build": {
-    "appId": "com.example.myapp",
+    "appId": "LV6WXG529F.AutoSplit",
     "productName": "MyElectronApp",
     "directories": {
       "buildResources": "build"
@@ -22,12 +22,130 @@
       "**/*"
     ],
     "mac": {
+      "hardenedRuntime": true,
+      "notarize": true,
+      "appId": "LV6WXG529F.AutoSplit",
+      "category": "public.app-category.productivity",
       "target": [
-        "dmg",
-        "zip"
+        {
+          "target": "mas",
+          "arch": "universal"
+        },
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
       ],
-      "category": "public.app-category.utilities",
-      "icon": "build/icon.icns"
+      "electronLanguages": [
+        "en"
+      ],
+      "icon": "build/icon.icns",
+      "fileAssociations": [
+        {
+          "ext": [
+            "webm",
+            "mkv",
+            "flv",
+            "vob",
+            "ogv",
+            "drc",
+            "gif",
+            "gifv",
+            "mng",
+            "avi",
+            "mts",
+            "m2ts",
+            "ts",
+            "mov",
+            "qt",
+            "wmv",
+            "yuv",
+            "rm",
+            "rmvb",
+            "asf",
+            "amv",
+            "mp4",
+            "m4v",
+            "mpg",
+            "mp2",
+            "mpeg",
+            "mpe",
+            "mpv",
+            "m2v",
+            "svi",
+            "3gp",
+            "3g2",
+            "mxf",
+            "roq",
+            "nsv",
+            "f4v",
+            "f4p",
+            "f4a",
+            "f4b"
+          ],
+          "name": "Video",
+          "description": "Video files",
+          "role": "Viewer"
+        },
+        {
+          "ext": [
+            "aa",
+            "aac",
+            "aax",
+            "act",
+            "aiff",
+            "alac",
+            "amr",
+            "ape",
+            "au",
+            "awb",
+            "dct",
+            "dss",
+            "dvf",
+            "flac",
+            "gsm",
+            "iklax",
+            "ivs",
+            "m4a",
+            "m4b",
+            "m4p",
+            "mmf",
+            "mp3",
+            "mpc",
+            "msv",
+            "nmf",
+            "nsf",
+            "ogg",
+            "oga",
+            "mogg",
+            "opus",
+            "ra",
+            "rf64",
+            "sln",
+            "tta",
+            "voc",
+            "vox",
+            "wav",
+            "wma",
+            "wv",
+            "8svx",
+            "cda"
+          ],
+          "name": "Audio",
+          "description": "Audio files",
+          "role": "Viewer"
+        }
+      ]
+    },
+    "mas": {
+      "hardenedRuntime": false,
+      "notarize": false,
+      "entitlements": "entitlements.mas.plist",
+      "entitlementsInherit": "entitlements.mas.inherit.plist",
+      "provisioningProfile": "splitBySilence_macAppStore.provisionprofile"
     },
     "linux": {
       "target": [
