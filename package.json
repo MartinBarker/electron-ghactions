@@ -1,5 +1,5 @@
 {
-  "name": "my-electron-app",
+  "name": "myCoolElectronApp",
   "version": "1.0.1",
   "description": "My Electron app",
   "main": "main.js",
@@ -14,8 +14,8 @@
     "download-ffmpeg-win32-x64": "mkdirp ffmpeg/win32-x64 && cd ffmpeg/win32-x64 && npx download-cli https://github.com/mifi/ffmpeg-builds/releases/download/6.0/ffmpeg-n6.0-12-ga6dc92968a-win64-gpl-shared-6.0.zip --out . --filename ffmpeg-ffprobe.zip && 7z x ffmpeg-ffprobe.zip && mkdirp lib && cd ffmpeg-n6.0-12-ga6dc92968a-win64-gpl-shared-6.0/bin && npx shx mv ffmpeg.exe ffprobe.exe *.dll ../../lib"
   },
   "build": {
-    "appId": "LV6WXG529F.AutoSplit",
-    "productName": "LosslessCut",
+    "appId": "com.martinbarker.digifyunique",
+    "productName": "myCoolElectronApp",
     "directories": {
       "buildResources": "build"
     },
@@ -25,7 +25,7 @@
     "mac": {
       "hardenedRuntime": true,
       "notarize": true,
-      "appId": "LV6WXG529F.AutoSplit",
+      "appId": "com.martinbarker.digifyunique",
       "category": "public.app-category.productivity",
       "target": [
         {
