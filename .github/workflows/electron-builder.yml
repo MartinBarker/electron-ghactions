@@ -34,7 +34,7 @@ jobs:
         run: npm install
 
       - name: Print is_tag value
-        run: echo "is_tag: ${{ env.is_tag }}"
+        run: echo ${{ env.is_tag }}
 
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
