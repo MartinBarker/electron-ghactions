@@ -1,3 +1,5 @@
+# git add . && git commit -m "Prepare release" && git tag v1.0.0 && git push origin main --tags
+
 name: Build/release
 
 on:
