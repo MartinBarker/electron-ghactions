@@ -167,7 +167,7 @@
   },
   "devDependencies": {
     "electron": "^25.0.0",
-    "electron-builder": "^24.13.3"
+    "electron-builder": "^24.9.1"
   },
   "repository": "git@github.com:MartinBarker/electron-ghactions.git",
   "license": "MIT"
