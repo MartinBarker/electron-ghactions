@@ -33,12 +33,6 @@ jobs:
 
       - run: yarn install --immutable --network-timeout 1000000
 
-      - name: Extract productName from package.json
-        id: extract-name
-        run: |
-          PRODUCT_NAME=$(cat package.json | jq -r '.build.productName')
-          echo "PRODUCT_NAME=$PRODUCT_NAME" >> $GITHUB_ENV
-
       - name: (MacOS) Save provisioning profile
         if: startsWith(matrix.os, 'macos')
         env:
@@ -85,8 +79,8 @@ jobs:
         with:
           name: MacOS
           path: |
-            dist/${{ env.PRODUCT_NAME }}-mac-arm64.dmg
-            dist/${{ env.PRODUCT_NAME }}-mac-x64.dmg
+            dist/myCoolElectronApp-mac-arm64.dmg
+            dist/myCoolElectronApp-mac-x64.dmg
             screenshot.jpeg
 
       - name: (Windows) Upload artifacts
@@ -95,5 +89,5 @@ jobs:
         with:
           name: Windows
           path: |
-            dist/${{ env.PRODUCT_NAME }}-win-x64.7z
+            dist/myCoolElectronApp-win-x64.7z
             screenshot.jpeg
