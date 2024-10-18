@@ -17,7 +17,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [macos-latest]
+        os: [macos-latest, windows-latest]
 
     steps:
       - run: git config --global core.autocrlf false
@@ -33,7 +33,13 @@ jobs:
 
       - run: yarn install --immutable --network-timeout 1000000
 
-      - name: (mas) Save provisioning profile
+      - name: Extract productName from package.json
+        id: extract-name
+        run: |
+          PRODUCT_NAME=$(cat package.json | jq -r '.build.productName')
+          echo "PRODUCT_NAME=$PRODUCT_NAME" >> $GITHUB_ENV
+
+      - name: (MacOS) Save provisioning profile
         if: startsWith(matrix.os, 'macos')
         env:
           PROVISIONING_PROFILE_BASE64: ${{ secrets.PROVISIONING_PROFILE_BASE64 }}
@@ -62,7 +68,7 @@ jobs:
       - name: Print contents of dist directory
         run: ls -R dist/
 
-      - name: Capture .pkg filename
+      - name: (MacOS) Capture .pkg filename
         id: capture-pkg
         run: |
           PKG_FILE=$(ls dist/mas-universal/*.pkg)
@@ -79,6 +85,15 @@ jobs:
         with:
           name: MacOS
           path: |
-            dist/myCoolElectronApp-mac-arm64.dmg
-            dist/myCoolElectronApp-mac-x64.dmg
+            dist/${{ env.PRODUCT_NAME }}-mac-arm64.dmg
+            dist/${{ env.PRODUCT_NAME }}-mac-x64.dmg
+            screenshot.jpeg
+
+      - name: (Windows) Upload artifacts
+        uses: actions/upload-artifact@v3
+        if: startsWith(matrix.os, 'windows') && env.is_tag == 'false'
+        with:
+          name: Windows
+          path: |
+            dist/${{ env.PRODUCT_NAME }}-win-x64.7z
             screenshot.jpeg
