@@ -46,12 +46,6 @@ jobs:
           mkdir -p ~/private_keys/
           echo '${{ secrets.APPLE_API_KEY }}' > ~/private_keys/AuthKey_${{ secrets.APPLE_API_KEY_ID }}.p8
 
-      - name: Capture .pkg filename
-        id: capture-pkg
-        run: |
-          PKG_FILE=$(ls dist/mas-universal/*.pkg)
-          echo "PKG_FILE=$PKG_FILE" >> $GITHUB_ENV
-
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
         with:
@@ -67,6 +61,12 @@ jobs:
 
       - name: Print contents of dist directory
         run: ls -R dist/
+
+      - name: Capture .pkg filename
+        id: capture-pkg
+        run: |
+          PKG_FILE=$(ls dist/mas-universal/*.pkg)
+          echo "PKG_FILE=$PKG_FILE" >> $GITHUB_ENV
 
       - name: (MacOS) Upload to Mac App Store
         if: startsWith(matrix.os, 'macos') && env.is_tag == 'true'
