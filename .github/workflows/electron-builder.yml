@@ -46,9 +46,6 @@ jobs:
           mkdir -p ~/private_keys/
           echo '${{ secrets.APPLE_API_KEY }}' > ~/private_keys/AuthKey_${{ secrets.APPLE_API_KEY_ID }}.p8
 
-      - name: Print contents of dist directory
-        run: ls -R dist/
-
       - name: Capture .pkg filename
         id: capture-pkg
         run: |
@@ -67,6 +64,9 @@ jobs:
         env:
           API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
           API_KEY_ISSUER_ID: ${{ secrets.APPLE_API_ISSUER }}
+
+      - name: Print contents of dist directory
+        run: ls -R dist/
 
       - name: (MacOS) Upload to Mac App Store
         if: startsWith(matrix.os, 'macos') && env.is_tag == 'true'
