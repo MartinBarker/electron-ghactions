@@ -73,7 +73,7 @@ jobs:
       - name: (MacOS) Upload to Mac App Store
         if: startsWith(matrix.os, 'macos') && env.is_tag == 'true'
         run: |
-          npx tsx script/xcrun-wrapper.mts dist/mas-universal/myCoolElectronApp-mac-universal.pkg ${{ secrets.APPLE_API_KEY_ID }} ${{ secrets.APPLE_API_ISSUER }} LV6WXG529F com.martinbarker.myCoolElectronApp-mac
+          npx tsx script/xcrun-wrapper.mts dist/mas-universal/myCoolElectronApp-mac-universal.pkg ${{ secrets.APPLE_API_KEY_ID }} ${{ secrets.APPLE_API_ISSUER }} LV6WXG529F com.martinbarker.digifyunique
 
       - name: (MacOS) Upload artifacts
         uses: actions/upload-artifact@v3
