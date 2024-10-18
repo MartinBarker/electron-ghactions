@@ -165,6 +165,11 @@
       "icon": "build/icon.ico"
     }
   },
+  "dependencies":{
+    "execa": "^8.0.1",
+    "fs-extra": "^8.1.0",
+    "i18next-fs-backend": "^2.3.2"
+  },
   "devDependencies": {
     "electron": "^25.0.0",
     "electron-builder": "^24.9.1",
