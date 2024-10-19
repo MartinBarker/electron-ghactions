@@ -63,6 +63,7 @@ jobs:
         run: ls -R dist/
 
       - name: (MacOS) Capture .pkg filename
+        if: startsWith(matrix.os, 'macos') && env.is_tag == 'true'
         id: capture-pkg
         run: |
           PKG_FILE=$(ls dist/mas-universal/*.pkg)
