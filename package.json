@@ -158,11 +158,18 @@
     },
     "win": {
       "target": [
-        "nsis",
-        "portable"
+        "7z",
+        "appx"
       ],
       "signAndEditExecutable": false,
-      "icon": "build/icon.ico"
+      "icon": "build/icon.icns"
+    },
+    "appx": {
+      "applicationId": "RenderTune",
+      "identityName": "1845martinbarker.digify",
+      "publisher": "CN=E69B865D-5831-4BE5-9AA4-08E27DAAD66C",
+      "publisherDisplayName": "martinbarker",
+      "backgroundColor": "#a0beeb"
     }
   },
   "dependencies": {
