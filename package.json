@@ -166,7 +166,7 @@
     "linux": {
       "executableName": "losslesscut",
       "category": "AudioVideo",
-      "icon": "build/icon.ico",
+      "icon": "build/icon.icns",
       "target": [
         {
           "arch": "x64",
