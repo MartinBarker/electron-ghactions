@@ -33,6 +33,11 @@ jobs:
 
       - run: yarn install --immutable --network-timeout 1000000
 
+      # Only for Linux: Install snapcraft
+      - name: Install snapcraft (Linux only)
+        if: startsWith(matrix.os, 'ubuntu')
+        run: sudo snap install snapcraft --classic
+
       - name: (MacOS) Save provisioning profile
         if: startsWith(matrix.os, 'macos')
         env:
