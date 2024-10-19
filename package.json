@@ -148,14 +148,6 @@
       "entitlementsInherit": "entitlements.mas.inherit.plist",
       "provisioningProfile": "splitBySilence_macAppStore.provisionprofile"
     },
-    "linux": {
-      "target": [
-        "AppImage",
-        "deb"
-      ],
-      "category": "Utility",
-      "icon": "build/icon.png"
-    },
     "win": {
       "target": [
         "7z",
@@ -170,6 +162,39 @@
       "publisher": "CN=E69B865D-5831-4BE5-9AA4-08E27DAAD66C",
       "publisherDisplayName": "martinbarker",
       "backgroundColor": "#a0beeb"
+    },
+    "linux": {
+      "executableName": "losslesscut",
+      "category": "AudioVideo",
+      "icon": "build/icon.ico",
+      "target": [
+        {
+          "arch": "x64",
+          "target": "tar.bz2"
+        },
+        {
+          "arch": "x64",
+          "target": "AppImage"
+        },
+        {
+          "arch": "x64",
+          "target": "snap"
+        },
+        {
+          "arch": "arm64",
+          "target": "tar.bz2"
+        },
+        {
+          "arch": "armv7l",
+          "target": "tar.bz2"
+        }
+      ]
+    },
+    "snap": {
+      "plugs": [
+        "default",
+        "removable-media"
+      ]
     }
   },
   "dependencies": {
