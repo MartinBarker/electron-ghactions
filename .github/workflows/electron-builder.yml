@@ -35,6 +35,7 @@ jobs:
 
       # Clear Electron Builder cache
       - name: Clear electron-builder cache
+        if: startsWith(matrix.os, 'ubuntu')
         run: rm -rf ~/.cache/electron-builder
 
       # Only for Linux: Install snapcraft
