@@ -1,6 +1,6 @@
 {
   "name": "myCoolElectronApp",
-  "version": "1.1.32",
+  "version": "1.1.33",
   "description": "My Electron app",
   "main": "main.js",
   "author": "Your Name <your.email@example.com>",
@@ -164,7 +164,7 @@
       "backgroundColor": "#a0beeb"
     },
     "linux": {
-      "executableName": "losslesscut",
+      "executableName": "rendertune",
       "category": "AudioVideo",
       "icon": "build/icon.icns",
       "target": [
