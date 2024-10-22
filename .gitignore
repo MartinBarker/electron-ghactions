@@ -13,7 +13,7 @@ node_modules
 /dist
 /out
 /icon-build
-/build-resources
+/build
 /doc
 /ffmpeg
 /app.log
