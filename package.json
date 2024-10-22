@@ -165,6 +165,21 @@
         }
       ]
     },
+    "mas": {
+      "hardenedRuntime": false,
+      "notarize": false,
+      "entitlements": "entitlements.mas.plist",
+      "entitlementsInherit": "entitlements.mas.inherit.plist",
+      "provisioningProfile": "splitBySilence_macAppStore.provisionprofile"
+    },
+    "appx": {
+      "applicationId": "RenderTune",
+      "identityName": "1845martinbarker.digify",
+      "publisher": "CN=E69B865D-5831-4BE5-9AA4-08E27DAAD66C",
+      "publisherDisplayName": "martinbarker",
+      "backgroundColor": "#a0beeb",
+      "icon": "buildAssets/icon.icns"
+    },
     "win": {
       "target": [
         "7z",
