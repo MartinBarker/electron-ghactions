@@ -49,6 +49,11 @@ jobs:
 
       - run: yarn install --immutable --network-timeout 1000000
 
+      # Build React app before Electron
+      - name: Build React app
+        run: yarn build-react
+
+
       # Clear Electron Builder cache
       - name: Clear electron-builder cache
         if: startsWith(matrix.os, 'ubuntu')
