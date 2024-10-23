@@ -1,6 +1,6 @@
 {
   "name": "myCoolElectronApp",
-  "version": "1.1.39",
+  "version": "1.1.40",
   "description": "My Electron app",
   "main": "main.js",
   "author": "Your Name <your.email@example.com>",
@@ -20,6 +20,7 @@
   "build": {
     "appId": "com.martinbarker.digifyunique",
     "productName": "myCoolElectronApp",
+    "artifactName": "${productName}-${os}-${arch}.${ext}",
     "directories": {
       "buildResources": "build"
     },
@@ -33,7 +34,6 @@
     "extraMetadata": {
       "main": "main.js"
     },
-    "extends": null,
     "asar": {
       "smartUnpack": false
     },
