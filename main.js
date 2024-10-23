@@ -44,8 +44,8 @@ function createWindow() {
 
   // Open DevTools for development mode (optional)
   if (isDev()) {
-    //process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = true;
-    //mainWindow.webContents.openDevTools();
+    process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = true;
+    mainWindow.webContents.openDevTools();
   }
 
   // Emitted when the window is ready to be shown
