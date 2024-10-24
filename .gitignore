@@ -18,3 +18,4 @@ node_modules
 /ffmpeg
 /app.log
 /ts-dist
+package-lock.json
