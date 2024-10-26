@@ -3,7 +3,8 @@
 `npm start`
 
 ## How to test build locally
-`npm run build-electron`
+`npm i -g electron-builder`
+`electron-builder --windows`
 
 ### How to trigger a release build:
 `git tag v1.0.8 && git push --tags`

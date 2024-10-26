@@ -37,9 +37,11 @@ function createWindow() {
 
   // Load the URL depending on the environment (development vs production)
   if (isDev()) {
-    mainWindow.loadURL('http://localhost:3000/');
+    // Load localhost if in development mode
+    mainWindow.loadURL('http://localhost:3000');
   } else {
-    loadURL(mainWindow);
+    // Load the index.html from the build folder in production mode
+    mainWindow.loadFile(path.join(__dirname, '../build/index.html'));
   }
 
   // Open DevTools for development mode (optional)
@@ -47,6 +49,10 @@ function createWindow() {
     process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = true;
     mainWindow.webContents.openDevTools();
   }
+
+  mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription) => {
+    console.error('Failed to load:', errorDescription);
+  });
 
   // Emitted when the window is ready to be shown
   mainWindow.once('ready-to-show', () => {
