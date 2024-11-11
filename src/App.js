@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import Frame from './Frame/Frame';
-import { runFfmpegProcess } from './Ffmpeg'; // Adjust the import path as necessary
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route
+} from "react-router-dom";
+import Frame2 from './Components/Frame2/Frame2';
+import Add from './Components/Add/Add'
+import { runFfmpegProcess } from './Components/Ffmpeg/Ffmpeg'; // Adjust the import path as necessary
+import './App.css';
 
 /*
 async function runSimpleFfmpegCommand() {
@@ -24,26 +31,32 @@ async function runSimpleFfmpegCommand() {
 }
 */
 
-function testFfmpeg(){
+function testFfmpeg() {
   console.log('testFfmpeg()')
   const process = runFfmpegProcess("ffmpegArgs");
   console.log('testFfmpeg() process = ', process)
 }
 
 function App() {
-
-
-
   return (
     <>
-      <Frame />
-      <div style={{ marginTop: "40px", marginLeft: '55px' }}>
-        <h1>App.js here is the first line</h1><br></br>
+      <Router>
+        <Routes>
+          
+          {/* Home */}
+          <Route path="/" element={
+            <Frame2>
+              <div id='tempPageContent'>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+              </div>
+            </Frame2>
+          } />
 
-        <button onClick={testFfmpeg}>Click to test ffmpeg</button>
+          {/* Create New Project */}
+          <Route path="/add" element={<Frame2> <Add/> </Frame2>} />
 
-        <h1>App.js here is the last line</h1><br></br>
-      </div>
+        </Routes>
+      </Router>
     </>
   );
 }

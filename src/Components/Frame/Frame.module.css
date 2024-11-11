@@ -1,14 +1,15 @@
 /* Sidebar */
-
-
-/* General styles */
-
-html, body {
-    margin: 0;
-    border: 0px;
+.sideNav {
+    background: #254053;
+    height: 100%;
+    width: 52px;
+    position: fixed;
   }
   
-  body {
+  /* General styles */
+  .frameContainer {
+    margin: 0;
+    border: 0;
     font-family: "Segoe UI", sans-serif;
     background: #1A2933;
     color: #FFF;
@@ -19,8 +20,7 @@ html, body {
   }
   
   /* Update notification popup */
-  
-  #updateNotificationPopup {
+  .updateNotificationPopup {
     position: fixed;
     bottom: 20px;
     left: 20px;
@@ -32,8 +32,7 @@ html, body {
   }
   
   /* Title bar */
-  
-  #titlebar {
+  .titlebar {
     z-index: 99;
     top: 0px;
     position: fixed;
@@ -42,15 +41,12 @@ html, body {
     background: #254053;
   }
   
-  #titlebar .dragRegion {
-    display: grid;
-    grid-template-columns: auto 138px;
-  }
-  
   .dragRegion {
     width: 100%;
     height: 100%;
     -webkit-app-region: drag;
+    display: grid;
+    grid-template-columns: auto 138px;
   }
   
   .titlebarLogo {
@@ -69,7 +65,7 @@ html, body {
     font-size: 15px;
   }
   
-  #windowTitle {
+  .windowTitle {
     grid-column: 1;
     display: flex;
     align-items: center;
@@ -79,27 +75,8 @@ html, body {
     font-size: 12px;
   }
   
-  #window-title {
-    grid-column: 1;
-    display: flex;
-    align-items: center;
-    margin-left: 8px;
-    overflow: hidden;
-    font-family: "Segoe UI", sans-serif;
-    font-size: 12px;
-  }
-  
-  #window-title span {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    line-height: 1.5;
-  }
-  
-  
   /* Window controls */
-  
-  #window-controls {
+  .windowControls {
     display: grid;
     grid-template-columns: repeat(3, 46px);
     position: absolute;
@@ -109,7 +86,7 @@ html, body {
     -webkit-app-region: no-drag;
   }
   
-  #window-controls .button {
+  .button {
     fill: white;
     grid-row: 1 / span 1;
     display: flex;
@@ -119,15 +96,15 @@ html, body {
     height: 100%;
   }
   
-  #min-button {
+  .minButton {
     grid-column: 1;
   }
   
-  #max-button, #restore-button {
+  .maxButton, .restoreButton {
     grid-column: 2;
   }
   
-  #closeButton {
+  .closeButton {
     grid-column: 3;
   }
   
@@ -138,43 +115,26 @@ html, body {
     fill: #f1f1f1;
   }
   
-  #window-controls .button:hover {
+  .button:hover {
     background: rgba(255, 255, 255, 0.1);
   }
   
-  #window-controls .button:active {
+  .button:active {
     background: rgba(255, 255, 255, 0.2);
   }
   
-  #closeButton:hover {
+  .closeButton:hover {
     background: #E81123 !important;
   }
   
-  #closeButton:active {
+  .closeButton:active {
     background: #F1707A !important;
   }
   
-  #closeButton:active .icon {
+  .closeButton:active .icon {
     filter: invert(1);
   }
   
-  #restore-button {
+  .restoreButton {
     display: none !important;
-  }
-  
-  #window-title {
-    grid-column: 1;
-    display: flex;
-    align-items: center;
-    margin-left: 8px;
-    overflow: hidden;
-    font-family: "Segoe UI", sans-serif;
-    font-size: 12px;
-  }
-  
-  #window-title span {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    line-height: 1.5;
   }

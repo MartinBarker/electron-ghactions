@@ -1,0 +1,122 @@
+.container {
+    padding: 2rem;
+    color: #ffffff;
+    background-color: #1a1a1a;
+    min-height: 100vh;
+}
+
+h1 {
+    color: #ffffff;
+    margin-bottom: 1rem;
+}
+
+.dropZone {
+    border: 2px dashed #777;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    color: #bbb;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.dropZone p {
+    margin: 0;
+    color: #bbb;
+}
+
+.fileInput {
+    display: none; /* Hide the default file input */
+}
+
+.chooseButton {
+    background-color: #254053;
+    color: #ffffff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: background-color 0.2s;
+}
+
+.chooseButton:hover {
+    background-color: #3a5b7d;
+}
+
+.tableContainer {
+    overflow-x: auto;
+}
+
+.fileTable {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #333333;
+    color: #ffffff;
+    margin-top: 1rem;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.fileTable th, .fileTable td {
+    padding: 0.75rem;
+    border: 1px solid #444444;
+    text-align: left;
+    cursor: pointer;
+}
+
+.fileTable th {
+    background-color: #254053;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.fileTable tbody tr {
+    cursor: grab;
+}
+
+.fileTable tbody tr:active {
+    cursor: grabbing;
+}
+
+.fileTable tbody tr:nth-child(even) {
+    background-color: #2c2c2c;
+}
+
+.paginationControls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    color: #ffffff;
+}
+
+.paginationButton {
+    background-color: #254053;
+    color: #ffffff;
+    border: none;
+    padding: 0.3rem 0.6rem;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0 5px;
+    transition: background-color 0.2s;
+}
+
+.paginationButton:disabled {
+    background-color: #555555;
+    cursor: not-allowed;
+}
+
+.paginationButton:hover:not(:disabled) {
+    background-color: #3a5b7d;
+}
+
+.rowsPerPageSelect {
+    background-color: #555555;
+    color: #ffffff;
+    border: none;
+    padding: 0.3rem;
+    border-radius: 5px;
+    margin-left: 0.5rem;
+    cursor: pointer;
+}
