@@ -34,11 +34,9 @@ const Sidebar = () => {
   return (
     <div className={styles.container}>
       <div className={styles.sidenav}>
-        <div className={styles.sidenavHeader}>
+      <div className={styles.sidenavHeader}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="32"
-            height="32"
             viewBox="381.5823669433594 90.11702728271484 265.5900573730469 539.7635498046875"
             className={styles.appIcon}
           >
@@ -65,7 +63,7 @@ const Sidebar = () => {
             <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
           </svg>
 
-          {/* View projects library icon */}
+          {/* View Projects Library Icon */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -74,7 +72,7 @@ const Sidebar = () => {
             <path d="M4 6h18V4H4c-1.1 0-2 .9-2 2v11H0v3h14v-3H4V6zm19 2h-8c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h8c.55 0 1-.45 1-1V9c0-.55-.45-1-1-1zm-1 9h-6v-7h6v7z" />
           </svg>
 
-          {/* View all projects render status icon */}
+          {/* View All Projects Render Status Icon */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -91,6 +89,7 @@ const Sidebar = () => {
             <div className={styles.windowTitle}>
               <span className={styles.titlebarText}>RenderTune v{appVersion}</span>
             </div>
+
             <div className={styles.windowControls}>
               {/* Minimize button */}
               <button className={styles.button} onClick={windowControls.minimize}>
@@ -103,13 +102,13 @@ const Sidebar = () => {
               {windowStatus === 'init' ? (
                 <button className={styles.button} onClick={windowControls.maximize}>
                   <svg className={styles.windowButtonIcon} viewBox="0 0 10 10">
-                    <path d="M0,0 L10,0 L10,10 L0,10 Z M1,1 L9,1 L9,9 L1,9 Z" />
+                    <rect x="1" y="1" width="8" height="8" fill="none" stroke="white" strokeWidth="1.5" />
                   </svg>
                 </button>
               ) : (
                 <button className={styles.button} onClick={windowControls.unmaximize}>
                   <svg className={styles.windowButtonIcon} viewBox="0 0 10 10">
-                    <path d="M0,3 L3,3 L3,0 L0,0 Z M1,1 L2,1 L2,2 L1,2 Z M7,0 L10,0 L10,3 L7,0 Z M8,1 L9,1 L9,2 L8,2 Z M0,7 L0,10 L3,10 L3,7 Z M1,8 L2,8 L2,9 L1,9 Z M7,10 L10,10 L10,7 L7,10 Z M8,8 L9,8 L9,9 L8,9 Z" />
+                    <rect x="1" y="1" width="8" height="8" fill="none" stroke="white" strokeWidth="1.5" />
                   </svg>
                 </button>
               )}
@@ -117,7 +116,7 @@ const Sidebar = () => {
               {/* Close button */}
               <button className={`${styles.button} ${styles.closeButton}`} onClick={windowControls.close}>
                 <svg className={styles.windowButtonIcon} viewBox="0 0 10 10">
-                  <path d="M0,0 L10,10 M0,10 L10,0" stroke="currentColor" strokeWidth="1.5" />
+                  <path d="M0,0 L10,10 M0,10 L10,0" stroke="white" strokeWidth="1.5" />
                 </svg>
               </button>
             </div>
