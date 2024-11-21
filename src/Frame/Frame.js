@@ -1,163 +1,131 @@
 import React, { useState, useEffect } from 'react';
-import './Frame.css';
-//import RenderTuneLogo from './icons/rendertuneLogo.svg';
+import styles from './Frame.module.css';
 
 const { ipcRenderer } = window.require('electron');
 
-function Frame() {
-  const [appVersion, setAppVersion] = useState();
-  const [appUpdateStatus, setAppUpdateStatus] = useState(null);
+const Sidebar = () => {
+  const [appVersion, setAppVersion] = useState('');
   const [windowStatus, setWindowStatus] = useState('init');
-  const [isHomeHovered, setIsHomeHovered] = useState(false);
-  const [isCustomHovered, setIsCustomHovered] = useState(false);
 
   useEffect(() => {
+    const handleAppVersion = (_, arg) => setAppVersion(arg.version);
+
     ipcRenderer.send('app_version');
     ipcRenderer.on('app_version', handleAppVersion);
+
     return () => {
       ipcRenderer.removeAllListeners('app_version');
     };
   }, []);
 
-  function handleAppVersion(event, arg) {
-    setAppVersion(arg.version);
-  }
+  const windowControls = {
+    minimize: () => ipcRenderer.send('minimize-window'),
+    maximize: () => {
+      ipcRenderer.send('maximize-window');
+      setWindowStatus('maximized');
+    },
+    unmaximize: () => {
+      ipcRenderer.send('unmaximize-window');
+      setWindowStatus('init');
+    },
+    close: () => ipcRenderer.send('close-window'),
+  };
 
-  function minimizeWindow() {
-    ipcRenderer.send('minimize-window');
-  }
+  return (
+    <div className={styles.container}>
+      <div className={styles.sidenav}>
+        <div className={styles.sidenavHeader}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="32"
+            height="32"
+            viewBox="381.5823669433594 90.11702728271484 265.5900573730469 539.7635498046875"
+            className={styles.appIcon}
+          >
+            <path fill="#FFF" d="M639.954 628.917c0-.862.009-1.813-.002-2.76-.238-19.604-3.581-38.553-9.717-56.868-3.243-9.677-7.301-18.912-12.462-27.529-9.234-15.412-21.677-25.949-37.386-31.691-7.462-2.731-15.084-4.724-22.734-6.62-6.575-1.632-13.117-3.398-19.495-5.854-1.312-.505-2.578-1.168-4.16-1.894.718-.674 1.197-1.152 1.699-1.597 7.667-6.739 15.357-13.438 23.002-20.213 13.949-12.362 26.353-26.499 37.797-41.738 7.924-10.55 15.103-21.663 20.857-33.886 6.317-13.43 10.756-27.592 12.662-42.661 2.592-20.535.739-40.51-6.553-59.671-4.466-11.739-11.044-21.85-19.262-30.642-5.346-5.721-11.32-10.507-17.49-15.014-10.14-7.404-20.863-13.587-31.924-19.021-9.471-4.654-19.045-9.048-28.576-13.56-.554-.263-1.092-.573-1.886-.991-.175 1.877-.488 3.636-.48 5.395.058 17.271.164 34.542.27 51.813.112 17.753.24 35.505.362 53.255l.467 68.946c.095 13.968.204 27.935.282 41.902.125 22.571.238 45.141.341 67.709a254.27 254.27 0 0 1-.979 23.701c-1.099 12.356-4.216 24.13-8.282 35.609-4.16 11.745-9.962 22.384-17.578 31.704-8.932 10.938-19.188 19.8-31.695 25.042-7.478 3.133-15.193 5.295-23.034 6.833-17.008 3.331-33.086-.026-48.384-8.801-5.573-3.194-9.283-8.18-11.615-14.576-2.451-6.731-3.141-13.56-1.592-20.776 3.784-17.63 11.203-33.088 21.585-46.829 13.311-17.616 29.331-31.108 48.508-39.644 9.227-4.104 18.883-6.131 28.768-6.994 8.956-.778 17.705.562 26.403 2.73.656.166 1.312.362 1.979.445 1.292.16 1.954-.398 2.18-1.861.115-.739.126-1.508.122-2.262-.093-14.655-.203-29.312-.293-43.969-.062-9.907-.084-19.816-.147-29.723-.143-22.434-.296-44.866-.45-67.297-.11-15.96-.229-31.925-.339-47.889-.141-20.711-.274-41.421-.413-62.133-.114-16.857-.256-33.714-.339-50.572a52598.61 52598.61 0 0 1-.299-74.315c-.023-6.677.003-13.35.04-20.027.007-1.292.169-2.583.259-3.876.125-.044.25-.088.376-.13.275.61.568 1.211.822 1.831 2.747 6.679 5.382 13.42 8.259 20.029a616.31 616.31 0 0 0 9.573 20.904c3.81 7.924 7.699 15.804 11.749 23.578 7.468 14.347 16.146 27.736 25.793 40.344 14.289 18.678 28.48 37.455 42.771 56.133 2.672 3.492 5.572 6.766 8.428 10.076 7.315 8.471 12.531 18.417 16.577 29.239 4.255 11.372 6.799 23.245 8.354 35.403 1.204 9.419 1.651 18.877 1.243 28.406-.873 20.262-6.927 38.241-18.263 54.033-6.279 8.747-13.139 16.854-20.341 24.647-10.511 11.377-21.577 22.018-33.041 32.136-8.572 7.567-17.412 14.729-26.747 21.09-.783.534-1.538 1.124-2.303 1.694-.151.114-.275.264-.583.565.51.288.881.592 1.299.711 4.501 1.297 8.986 2.66 13.52 3.819 8.943 2.286 17.998 4.061 26.725 7.377 16.085 6.113 28.668 17.299 37.99 33.168 8.238 14.022 13.818 29.388 17.955 45.468 2.212 8.6 4.062 17.289 5.309 26.135.985 7.007 1.623 14.054 1.735 21.15.01.537-.039 1.077-.059 1.589-1.638.335-4.897.013-7.158-.725z" />
+          </svg>
+        </div>
 
-  function maximizeWindow() {
-    ipcRenderer.send('maximize-window');
-    setWindowStatus('maximized');
-  }
+        <div className={styles.sidenavContent}>
+          {/* Home Icon */}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            className={`${styles.icon} ${styles.sidebarIcon}`}
+          >
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+          </svg>
 
-  function unmaximizeWindow() {
-    ipcRenderer.send('unmaximize-window');
-    setWindowStatus('init');
-  }
+          {/* Add New Project Icon */}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            className={`${styles.icon} ${styles.sidebarIcon}`}
+          >
+            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+          </svg>
 
-  function maxUnmaxWindow() {
-    ipcRenderer.send('max-unmax-window');
-    setWindowStatus('maximized');
-  }
+          {/* View projects library icon */}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            className={`${styles.icon} ${styles.sidebarIcon}`}
+          >
+            <path d="M4 6h18V4H4c-1.1 0-2 .9-2 2v11H0v3h14v-3H4V6zm19 2h-8c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h8c.55 0 1-.45 1-1V9c0-.55-.45-1-1-1zm-1 9h-6v-7h6v7z" />
+          </svg>
 
-  function closeWindow() {
-    ipcRenderer.send('close-window');
-  }
+          {/* View all projects render status icon */}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            className={`${styles.icon} ${styles.sidebarIcon}`}
+          >
+            <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z" />
+          </svg>
+        </div>
+      </div>
 
-  function dragEventHandler() {
-    console.log('dragEventHandler()');
-  }
-
-  ipcRenderer.on('update_available', () => {
-    setAppUpdateStatus('downloading');
-  });
-
-  ipcRenderer.on('update_downloaded', () => {
-    setAppUpdateStatus('downloaded');
-  });
-
-  function closeNotification() {
-    // notification.classList.add('hidden');
-  }
-
-  function restartApp() {
-    ipcRenderer.send('restart_app');
-  }
-
-  return (<>
-    <div>
-      {/* Frame */}
-      <div onDragStart={dragEventHandler} id='frameWrapper'>
-        {/* Titlebar */}
-        <header draggable="true" id="titlebar" >
-          <div className="dragRegion">
-            {/* rendertune logo square 
-            <div><img className='titlebarLogo' src={RenderTuneLogo} /> </div>
-            */}
-
-            {/* rendertune logo, title, and version */}
-            <div id="windowTitle"> <span className='titlebarText'>RenderTune v{appVersion}</span></div>
-
-            {/* window control buttons */}
-            <div id="window-controls">
-
-              <div className="button" onClick={minimizeWindow}>
-                <svg className="windowButtonIcon" viewBox="0 0 512 512">
-                  <path d="M0 456C0 442.7 10.75 432 24 432H488C501.3 432 512 442.7 512 456C512 469.3 501.3 480 488 480H24C10.75 480 0 469.3 0 456z" />
+      <div id="frameWrapper">
+        <header className={styles.titlebar} draggable>
+          <div className={styles.dragRegion}>
+            <div className={styles.windowTitle}>
+              <span className={styles.titlebarText}>RenderTune v{appVersion}</span>
+            </div>
+            <div className={styles.windowControls}>
+              {/* Minimize button */}
+              <button className={styles.button} onClick={windowControls.minimize}>
+                <svg className={styles.windowButtonIcon} viewBox="0 0 10 1">
+                  <rect width="10" height="1" />
                 </svg>
-              </div>
+              </button>
 
-              {windowStatus === 'init' &&
-                <div className="button" onClick={maximizeWindow}>
-                  <svg className="windowButtonIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                    <path d="M7.724 65.49C13.36 55.11 21.79 46.47 32 40.56C39.63 36.15 48.25 33.26 57.46 32.33C59.61 32.11 61.79 32 64 32H448C483.3 32 512 60.65 512 96V416C512 451.3 483.3 480 448 480H64C28.65 480 0 451.3 0 416V96C0 93.79 .112 91.61 .3306 89.46C1.204 80.85 3.784 72.75 7.724 65.49V65.49zM48 416C48 424.8 55.16 432 64 432H448C456.8 432 464 424.8 464 416V224H48V416z" />
+              {/* Maximize/Unmaximize button */}
+              {windowStatus === 'init' ? (
+                <button className={styles.button} onClick={windowControls.maximize}>
+                  <svg className={styles.windowButtonIcon} viewBox="0 0 10 10">
+                    <path d="M0,0 L10,0 L10,10 L0,10 Z M1,1 L9,1 L9,9 L1,9 Z" />
                   </svg>
-                </div>
-              }
-
-              {windowStatus === 'maximized' &&
-                <div className="button" onClick={unmaximizeWindow}>
-                  <svg className="windowButtonIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                    <path d="M432 48H208C190.3 48 176 62.33 176 80V96H128V80C128 35.82 163.8 0 208 0H432C476.2 0 512 35.82 512 80V304C512 348.2 476.2 384 432 384H416V336H432C449.7 336 464 321.7 464 304V80C464 62.33 449.7 48 432 48zM320 128C355.3 128 384 156.7 384 192V448C384 483.3 355.3 512 320 512H64C28.65 512 0 483.3 0 448V192C0 156.7 28.65 128 64 128H320zM64 464H320C328.8 464 336 456.8 336 448V256H48V448C48 456.8 55.16 464 64 464z" />
+                </button>
+              ) : (
+                <button className={styles.button} onClick={windowControls.unmaximize}>
+                  <svg className={styles.windowButtonIcon} viewBox="0 0 10 10">
+                    <path d="M0,3 L3,3 L3,0 L0,0 Z M1,1 L2,1 L2,2 L1,2 Z M7,0 L10,0 L10,3 L7,0 Z M8,1 L9,1 L9,2 L8,2 Z M0,7 L0,10 L3,10 L3,7 Z M1,8 L2,8 L2,9 L1,9 Z M7,10 L10,10 L10,7 L7,10 Z M8,8 L9,8 L9,9 L8,9 Z" />
                   </svg>
-                </div>
-              }
+                </button>
+              )}
 
-              <div id="closeButton" className="button" onClick={closeWindow}>
-                <svg className="windowButtonIcon" viewBox="0 0 50 50" width="50px" height="50px">
-                  <path d="M 7.71875 6.28125 L 6.28125 7.71875 L 23.5625 25 L 6.28125 42.28125 L 7.71875 43.71875 L 25 26.4375 L 42.28125 43.71875 L 43.71875 42.28125 L 26.4375 25 L 43.71875 7.71875 L 42.28125 6.28125 L 25 23.5625 Z" />
+              {/* Close button */}
+              <button className={`${styles.button} ${styles.closeButton}`} onClick={windowControls.close}>
+                <svg className={styles.windowButtonIcon} viewBox="0 0 10 10">
+                  <path d="M0,0 L10,10 M0,10 L10,0" stroke="currentColor" strokeWidth="1.5" />
                 </svg>
-              </div>
+              </button>
             </div>
           </div>
         </header>
-        {/* Sidebar */}
-        <div className="sidenav">
-          <div style={{ background: '#254053', height: '100%', width: '52px', position: 'fixed' }}>
-            {/* Home icon SVG */}
-            <svg
-              viewBox="0 0 24 24"
-              width="24px"
-              height="24px"
-              fill={isHomeHovered ? "#FFFFFF" : "#000000"}
-              onMouseEnter={() => setIsHomeHovered(true)}
-              onMouseLeave={() => setIsHomeHovered(false)}
-            >
-              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-            </svg>
-            <br />
-            {/* Custom SVG */}
-            <svg
-              className="custom-svg"
-              style={{ height: '30px', padding: '0px', left: '0px', width: '30px' }}
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 168.000000 149.000000"
-              preserveAspectRatio="xMidYMid meet"
-              fill={isCustomHovered ? "#FFFFFF" : "#818181"}
-              onMouseEnter={() => setIsCustomHovered(true)}
-              onMouseLeave={() => setIsCustomHovered(false)}
-            >
-              <g transform="translate(0.000000,149.000000) scale(0.100000,-0.100000)" fill="#818181" stroke="none">
-                <path d="M1045 1433 c-88 -29 -168 -56 -177 -59 -16 -5 -18 2 -18 45 l0 51 -190 0 -190 0 0 -730 0 -730 190 0 190 0 0 677 c0 373 4 673 9 668 4 -6 42 -111 84 -235 91 -273 379 -1114 381 -1117 1 -1 81 23 178 54 l176 56 -135 396 c-74 218 -177 522 -230 676 -52 154 -98 285 -102 291 -4 8 -58 -6 -166 -43z"></path>
-                <path d="M0 740 l0 -730 190 0 190 0 0 730 0 730 -190 0 -190 0 0 -730z"></path>
-              </g>
-            </svg>
-            <br />
-            ITEM3
-            <br />
-            ITEM4
-          </div>
-        </div>
-      </div>
-      {/* Update Popup Notification */}
-      <div id="updateNotificationPopup" className="hidden">
-        <p id="message">Update status: {appUpdateStatus}</p>
-        <button id="close-button" onClick={closeNotification}>Close</button>
-        <button id="restart-button" onClick={restartApp} className={restartApp = 'restart' ? "" : "hidden"}>Restart</button>
       </div>
     </div>
-  </>);
-}
-export default Frame;
+  );
+};
+
+export default Sidebar;

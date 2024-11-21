@@ -1,0 +1,169 @@
+.container {
+  margin: 0;
+  border: 0;
+  font-family: "Segoe UI", sans-serif;
+  background: #1A2933;
+  color: #FFF;
+  display: flex;
+}
+
+/* Title bar */
+.titlebar {
+  z-index: 10;
+  position: fixed;
+  top: 0;
+  left: 52px; /* Adjusted to make space for sidebar */
+  height: 40px;
+  width: calc(100% - 52px); /* Adjusted width */
+  background: #254053;
+}
+
+.dragRegion {
+  display: grid;
+  grid-template-columns: auto 138px;
+  width: 100%;
+  height: 100%;
+  -webkit-app-region: drag;
+}
+
+.titlebarText {
+  margin-left: 10px;
+  font-size: 15px;
+}
+
+.windowTitle {
+  grid-column: 1;
+  display: flex;
+  align-items: center;
+  margin-left: 11px;
+  overflow: hidden;
+  font-family: "Segoe UI", sans-serif;
+  font-size: 12px;
+}
+
+/* Window controls */
+.windowControls {
+  display: grid;
+  grid-template-columns: repeat(3, 46px);
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  -webkit-app-region: no-drag;
+}
+
+.button {
+  background: none;
+  border: none;
+  padding: 0;
+  fill: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.button:active {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.closeButton:hover {
+  background: #E81123 !important;
+}
+
+.closeButton:active {
+  background: #F1707A !important;
+}
+
+.windowButtonIcon {
+  display: block;
+  width: 20px;
+  height: 20px;
+  fill: #f1f1f1;
+}
+
+/* Sidebar */
+.sidenav {
+  z-index: 20;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 52px;
+  background: #254053;
+}
+
+.sidenavHeader {
+  background:red;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  -webkit-app-region: drag;
+}
+
+.sidenavContent {
+  height: calc(100% - 40px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 1rem;
+  gap: 1rem;
+}
+
+.icon {
+  cursor: pointer;
+  transition: fill 0.2s ease;
+}
+
+.sidebarIcon {
+  fill: #818181;
+  cursor: pointer;
+  transition: fill 0.2s ease;
+}
+
+.sidebarIcon:hover {
+  fill: #ffffff;
+}
+
+.customSvg {
+  height: 30px;
+  width: 30px;
+}
+
+/* Update notification */
+.updateNotification {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 200px;
+  padding: 20px;
+  border-radius: 5px;
+  background-color: white;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  color: #000;
+  z-index: 30;
+}
+
+.updateNotification button {
+  margin-right: 8px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  background-color: #254053;
+  color: white;
+  cursor: pointer;
+}
+
+.updateNotification button:hover {
+  background-color: #1A2933;
+}
+
+
+
