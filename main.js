@@ -7,6 +7,7 @@ const { autoUpdater } = require('electron-updater');
 const express = require('express');
 const http = require('http');
 const fs = require('fs');
+const { exec } = require('child_process');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -144,6 +145,59 @@ ipcMain.on('close-window', function () {
     app.quit(); // Ensure the app quits completely
   }
 });
+
+ipcMain.on('render-ffmpeg-video', (event, filePaths) => {
+  const os = require('os');
+  const path = require('path');
+  const platform = os.platform();
+  const isWindows = platform === 'win32';
+
+  // Helper function to get FFmpeg/FFprobe paths
+  function getFfPath(cmd) {
+
+    // Set exe name if on Windows, otherwise use the command name
+    const exeName = isWindows ? `${cmd}.exe` : cmd;
+
+    if (app.isPackaged) {
+      return path.join(process.resourcesPath, exeName);
+    }
+
+    // Local development
+    const components = ['ffmpeg', `${platform}-x64`];
+    if (isWindows || platform === 'linux') components.push('lib');
+    components.push(exeName);
+    return path.join(...components);
+  }
+
+  const getFfprobePath = () => getFfPath('ffprobe');
+  const getFfmpegPath = () => getFfPath('ffmpeg');
+
+  // Get FFmpeg path
+  const ffmpegPath = getFfmpegPath();
+  console.log('ffmpegPath=', ffmpegPath)
+
+  // Output file path (e.g., Desktop/output.mp4)
+  const outputFilePath = path.join(app.getPath('desktop'), 'output.mp4');
+
+  // FFmpeg arguments to concatenate files
+  const ffmpegCmdArgs = ['-h'];
+
+  // Construct FFmpeg command
+  const ffmpegCommand = `${ffmpegPath} ${ffmpegCmdArgs.join(' ')}`;
+
+  // Execute FFmpeg command
+  exec(ffmpegCommand, (error, stdout, stderr) => {
+    if (error) {
+      console.error('Error running FFmpeg command:', error);
+      event.reply('render-ffmpeg-video-error', error.message);
+      return;
+    }
+
+    console.log('FFmpeg command executed successfully:', stdout || stderr);
+    event.reply('render-ffmpeg-video-success', outputFilePath);
+  });
+});
+
 
 // Server start and stop functions
 function startServer(port) {

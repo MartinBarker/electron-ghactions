@@ -3,7 +3,7 @@ import styles from './Frame.module.css';
 
 const { ipcRenderer } = window.require('electron');
 
-const Sidebar = () => {
+const Sidebar = ({ children }) => {
   const [appVersion, setAppVersion] = useState('');
   const [windowStatus, setWindowStatus] = useState('init');
 
@@ -34,7 +34,7 @@ const Sidebar = () => {
   return (
     <div className={styles.container}>
       <div className={styles.sidenav}>
-      <div className={styles.sidenavHeader}>
+        <div className={styles.sidenavHeader}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="381.5823669433594 90.11702728271484 265.5900573730469 539.7635498046875"
@@ -122,6 +122,9 @@ const Sidebar = () => {
             </div>
           </div>
         </header>
+      </div>
+      <div className={styles.contentWrapper}>
+        {children}
       </div>
     </div>
   );

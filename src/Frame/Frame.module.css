@@ -168,6 +168,19 @@
   background-color: #1A2933;
 }
 
+.contentWrapper {
+  flex: 1;
+  margin-left: 55px; /* Matches sidebar width */
+  margin-top: 44px; /* Matches title bar height */
+  padding: 20px;
+  overflow-y: auto;
+  background-color: #1A2933; /* Optional: matches overall app background */
+  color: #FFF;
+}
 
-
-
+.contentWrapper h1 {
+  font-size: 1.5rem;
+  color: #FFF;
+  margin: 0;
+  padding: 10px 0;
+}

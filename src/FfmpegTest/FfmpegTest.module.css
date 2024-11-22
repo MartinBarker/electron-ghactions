@@ -1,0 +1,55 @@
+body{
+    margin:0px;
+}
+
+.container {
+    padding: 20px;
+    color: #fff;
+    background-color: #1a2933;
+    font-family: Arial, sans-serif;
+  }
+  
+  .fileInput {
+    margin-bottom: 15px;
+  }
+  
+  .fileList {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .fileItem {
+    display: flex;
+    justify-content: space-between;
+    background: #254053;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+  }
+  
+  .removeButton {
+    background: #e81123;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .removeButton:hover {
+    background: #f1707a;
+  }
+  
+  .renderButton {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .renderButton:hover {
+    background: #218838;
+  }
+  
