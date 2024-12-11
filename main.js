@@ -15,6 +15,12 @@ let mainWindow;
 let server;
 let apiServerPort = 3001;
 
+function validateSender(frame) {
+  // Value the host of the URL using an actual URL parser and an allowlist
+  if ((new URL(frame.url)).host === 'electronjs.org') return true;
+  return false;
+}
+
 function isDev() {
   return !app.isPackaged;
 }
@@ -27,12 +33,10 @@ function createWindow() {
     frame: false,
     backgroundColor: '#FFF',
     webPreferences: {
-      // Set a Content Security Policy for the renderer process
-      contentSecurityPolicy: "default-src 'self'; script-src 'self'; style-src 'self';",
-      enableRemoteModule: true,
-      nodeIntegration: true,
-      contextIsolation: false,
-    },
+      preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true,
+      enableRemoteModule: false  // Disabling remote module for security
+  },
     show: false,
   });
 
