@@ -5,17 +5,16 @@ import {
   Route
 } from "react-router-dom";
 import Frame from './Frame/Frame';
+import Project from './Project/Project';
 
 function App() {
   return (
-    <> <h1>Test</h1>
-    {/*
+    <> 
     <Router>
       <Routes>
         <Route path="/" element={ <Frame> <Project/> </Frame> } />
       </Routes>
     </Router>
-    */}
     </>
   );
 }

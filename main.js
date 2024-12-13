@@ -35,7 +35,7 @@ function createWindow() {
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
-      enableRemoteModule: false  // Disabling remote module for security
+      enableRemoteModule: false 
   },
     show: false,
   });

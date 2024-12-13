@@ -1,34 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import styles from './Frame.module.css';
 
-const { ipcRenderer } = window.require('electron');
-
 const Sidebar = ({ children }) => {
   const [appVersion, setAppVersion] = useState('');
   const [windowStatus, setWindowStatus] = useState('init');
 
   useEffect(() => {
-    const handleAppVersion = (_, arg) => setAppVersion(arg.version);
+    const handleAppVersion = (version) => {
+        // Ensure you are setting a string, not an object
+        setAppVersion(version.version);  // Assuming the object has a property 'version'
+    };
 
-    ipcRenderer.send('app_version');
-    ipcRenderer.on('app_version', handleAppVersion);
+    window.api.send('app_version');
+    window.api.receive('app_version', handleAppVersion);
 
     return () => {
-      ipcRenderer.removeAllListeners('app_version');
+      window.api.removeAllListeners('app_version');
     };
-  }, []);
+}, []);
+
 
   const windowControls = {
-    minimize: () => ipcRenderer.send('minimize-window'),
+    minimize: () => window.api.send('minimize-window'),
     maximize: () => {
-      ipcRenderer.send('maximize-window');
+      window.api.send('maximize-window');
       setWindowStatus('maximized');
     },
     unmaximize: () => {
-      ipcRenderer.send('unmaximize-window');
+      window.api.send('unmaximize-window');
       setWindowStatus('init');
     },
-    close: () => ipcRenderer.send('close-window'),
+    close: () => window.api.send('close-window'),
   };
 
   return (
