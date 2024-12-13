@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import './Project.module.css'; // Add a CSS file to style the component
+import React, { useState } from 'react';
+import styles from './Project.module.css';
+import FileUploader from '../FileUploader/FileUploader.js';
 
 function ffmpegTest() {
   console.log('Running FFmpeg command');
@@ -16,13 +17,44 @@ function ffmpegTest() {
 }
 
 function Project() {
+  const [audioFiles, setAudioFiles] = useState([]);
+  const [imageFiles, setImageFiles] = useState([]);
+
+  const handleFilesSelect = (audioData, imageData) => {
+    console.log('' + audioData.length + ' audio files and ' + imageData.length + ' image files selected');
+    setAudioFiles((prev) => [...prev, ...audioData]);
+    setImageFiles((prev) => [...prev, ...imageData]);
+  };
+
   return (
-    <div className="project-container">
+    <div className={styles.projectContainer}>
       <h1>Project</h1>
       <button onClick={ffmpegTest}>Run FFmpeg Help</button>
       <div id="output"></div>
       <div id="error" style={{ color: 'red' }}></div>
-      <input type="file" webkitdirectory="true" multiple />
+
+      {/* File Uploader */}
+      <FileUploader onFilesSelect={handleFilesSelect} />
+
+      {/* Audio Files */}
+      <h2>Audio Files</h2>
+      <ul>
+        {audioFiles.map((file, index) => (
+          <li key={index}>
+            {file.fileName} - {file.durationDisplay}
+          </li>
+        ))}
+      </ul>
+
+      {/* Image Files */}
+      <h2>Image Files</h2>
+      <ul>
+        {imageFiles.map((file, index) => (
+          <li key={index}>
+            {file.fileName} - {file.dimensions}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
