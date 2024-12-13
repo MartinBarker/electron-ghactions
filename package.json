@@ -239,6 +239,7 @@
     "react-router-dom": "^7.0.2"
   },
   "devDependencies": {
+    "cross-spawn":"^7.0.5",
     "concurrently": "^9.1.0",
     "electron": "^33.3.0",
     "electron-builder": "^25.1.8",
