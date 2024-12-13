@@ -1,8 +1,5 @@
 import React, { useState } from "react";
-//const { ipcRenderer } = window.require('electron');
-
 import styles from './FileUploader.module.css';
-//import { parseBlob } from 'music-metadata-browser';
 
 const FileUploader = ({ onFilesSelect }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -22,24 +19,6 @@ const FileUploader = ({ onFilesSelect }) => {
     updateFiles(files);
   };
 
-  const formatDuration = (duration) => {
-    const hours = Math.floor(duration / 3600);
-    const minutes = Math.floor((duration % 3600) / 60);
-    const seconds = Math.floor(duration % 60);
-    return [hours, minutes, seconds]
-      .map((unit) => (unit < 10 ? `0${unit}` : unit))
-      .join(":");
-  };
-
-  const getAudioMetadata = async (file) => {
-    /*
-    return parseBlob(file)
-      .then((metadata) => metadata)
-      .catch((error) => console.log("Metadata parsing error:", error));
-  */
- return('apple')
-      };
-
   const updateFiles = async (files) => {
     const newImageTableData = [];
     const newAudioTableData = [];
@@ -49,7 +28,8 @@ const FileUploader = ({ onFilesSelect }) => {
         const fileType = file.type;
 
         if (fileType.includes("audio/")) {
-          let metadata = await getAudioMetadata(file);
+          // Simulated metadata processing
+          const metadata = { format: { duration: 120 } }; // Example
           const durationDisplay = metadata
             ? formatDuration(metadata.format.duration)
             : "00:00:00";
@@ -61,7 +41,7 @@ const FileUploader = ({ onFilesSelect }) => {
             type: "audio",
           });
         } else if (fileType.includes("image/")) {
-          let [width, height] = [200, 400];//await ipcRenderer.invoke("get-image-resolution",file.path);
+          const [width, height] = [200, 400]; // Example dimensions
           newImageTableData.push({
             fileName: file.name,
             filePath: file.path || "N/A",
@@ -81,6 +61,15 @@ const FileUploader = ({ onFilesSelect }) => {
     onFilesSelect(newAudioTableData, newImageTableData);
   };
 
+  const formatDuration = (duration) => {
+    const hours = Math.floor(duration / 3600);
+    const minutes = Math.floor((duration % 3600) / 60);
+    const seconds = Math.floor(duration % 60);
+    return [hours, minutes, seconds]
+      .map((unit) => (unit < 10 ? `0${unit}` : unit))
+      .join(":");
+  };
+
   const handleChooseFiles = () => {
     document.getElementById("fileInput").click();
   };
@@ -96,26 +85,26 @@ const FileUploader = ({ onFilesSelect }) => {
   };
 
   return (
-<div
-  className={`${styles.fileUploader} ${highlight ? styles.dragOver : ""}`}
-  onDragOver={handleDragOver}
-  onDragLeave={handleDragLeave}
-  onDrop={handleDrop}
-  onClick={handleChooseFiles}
->
-  <div className={styles.fileUploaderBox}>
-    <p>
-      Drag or <button style={{ cursor: "pointer" }}>choose</button> files
-    </p>
-  </div>
-  <input
-    type="file"
-    id="fileInput"
-    onChange={handleFileInputChange}
-    multiple
-    style={{ display: "none" }}
-  />
-</div>
+    <div
+      className={`${styles.fileUploader} ${highlight ? styles.dragOver : ""}`}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+      onClick={handleChooseFiles}
+    >
+      <div className={styles.fileUploaderBox}>
+        <p>
+          Drag or <button style={{ cursor: "pointer" }}>choose</button> files
+        </p>
+      </div>
+      <input
+        type="file"
+        id="fileInput"
+        onChange={handleFileInputChange}
+        multiple
+        style={{ display: "none" }}
+      />
+    </div>
   );
 };
 
