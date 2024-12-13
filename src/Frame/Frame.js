@@ -1,34 +1,39 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styles from './Frame.module.css';
-
-const { ipcRenderer } = window.require('electron');
 
 const Sidebar = ({ children }) => {
   const [appVersion, setAppVersion] = useState('');
   const [windowStatus, setWindowStatus] = useState('init');
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    const handleAppVersion = (_, arg) => setAppVersion(arg.version);
+    const handleAppVersion = (version) => {
+        // Ensure you are setting a string, not an object
+        setAppVersion(version.version);  // Assuming the object has a property 'version'
+    };
 
-    ipcRenderer.send('app_version');
-    ipcRenderer.on('app_version', handleAppVersion);
+    window.api.send('app_version');
+    window.api.receive('app_version', handleAppVersion);
 
     return () => {
-      ipcRenderer.removeAllListeners('app_version');
+      window.api.removeAllListeners('app_version');
     };
-  }, []);
+}, []);
+
 
   const windowControls = {
-    minimize: () => ipcRenderer.send('minimize-window'),
+    minimize: () => window.api.send('minimize-window'),
     maximize: () => {
-      ipcRenderer.send('maximize-window');
+      window.api.send('maximize-window');
       setWindowStatus('maximized');
     },
     unmaximize: () => {
-      ipcRenderer.send('unmaximize-window');
+      window.api.send('unmaximize-window');
       setWindowStatus('init');
     },
-    close: () => ipcRenderer.send('close-window'),
+    close: () => window.api.send('close-window'),
   };
 
   return (
@@ -49,7 +54,10 @@ const Sidebar = ({ children }) => {
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
-            className={`${styles.icon} ${styles.sidebarIcon}`}
+            className={`${styles.icon} ${styles.sidebarIcon} ${
+              location.pathname === '/' ? styles.active : ''
+            }`}
+            onClick={() => navigate('/')}
           >
             <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
           </svg>
@@ -58,7 +66,10 @@ const Sidebar = ({ children }) => {
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
-            className={`${styles.icon} ${styles.sidebarIcon}`}
+            className={`${styles.icon} ${styles.sidebarIcon} ${
+              location.pathname === '/settings' ? styles.active : ''
+            }`}
+            onClick={() => navigate('/settings')}
           >
             <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
           </svg>
@@ -67,12 +78,14 @@ const Sidebar = ({ children }) => {
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
-            className={`${styles.icon} ${styles.sidebarIcon}`}
+            className={`${styles.icon} ${styles.sidebarIcon} ${
+              location.pathname === '/library' ? styles.active : ''
+            }`}
           >
             <path d="M4 6h18V4H4c-1.1 0-2 .9-2 2v11H0v3h14v-3H4V6zm19 2h-8c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h8c.55 0 1-.45 1-1V9c0-.55-.45-1-1-1zm-1 9h-6v-7h6v7z" />
           </svg>
 
-          {/* View All Projects Render Status Icon */}
+          {/* Cloud Icon */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -124,7 +137,7 @@ const Sidebar = ({ children }) => {
         </header>
       </div>
       <div className={styles.contentWrapper}>
-        {children}
+        {children} 
       </div>
     </div>
   );

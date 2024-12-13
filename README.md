@@ -1,3 +1,4 @@
+nvm use 20.9.0
 ## How to setup and run locally:
 `yarn install`
 `npm start`

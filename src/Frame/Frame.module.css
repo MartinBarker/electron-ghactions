@@ -1,3 +1,13 @@
+body{
+  margin:0px;
+  background-color: #1A2933; /* Optional: matches overall app background */
+}
+
+.sidebarIcon.active {
+  fill: #ffffff; /* Active color */
+}
+
+
 .container {
   margin: 0;
   border: 0;
@@ -174,7 +184,6 @@
   margin-top: 44px; /* Matches title bar height */
   padding: 20px;
   overflow-y: auto;
-  background-color: #1A2933; /* Optional: matches overall app background */
   color: #FFF;
 }
 
