@@ -32,7 +32,9 @@
       "build/**/*",
       "main.js",
       "package.json",
-      "node_modules/**/*"
+      "node_modules/**/*",
+
+      "ffmpeg/**/*"
     ],
     "extraMetadata": {
       "main": "main.js"
