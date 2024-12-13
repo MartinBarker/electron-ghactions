@@ -4,8 +4,8 @@ import {
   Routes,
   Route
 } from "react-router-dom";
-import Frame from './Frame/Frame';
-import Project from './Project/Project';
+import Frame from './Frame/Frame.js';
+import Project from './Project/Project.js';
 
 function App() {
   return (
