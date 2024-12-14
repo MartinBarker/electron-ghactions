@@ -5,9 +5,11 @@
   "type": "module",
   "main": "main.js",
   "author": "Your Name <your.email@example.com>",
+  "homepage": "./",
   "scripts": {
     "build-react": "react-scripts build",
-    "build-electron": "npm run build-react && electron-builder",
+    "build-electron": "electron-builder",
+    "build": "npm run build-react && electron-builder",
     "help": "node -e \"console.log(Object.keys(require('./package.json').scripts).sort().map(s => 'npm run ' + s).join('\\n'))\"",
     "start": "concurrently \"npm run start-react\" \"npm run start-electron\"",
     "start-react": "cross-env BROWSER=none react-scripts start",
@@ -21,7 +23,7 @@
   },
   "build": {
     "appId": "com.martinbarker.digifyunique",
-    "productName": "myCoolElectronApp",
+    "productName": "RenderTune",
     "artifactName": "${productName}-${os}-${arch}.${ext}",
     "directories": {
       "buildResources": "build"

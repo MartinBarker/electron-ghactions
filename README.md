@@ -1,4 +1,6 @@
+nvm install 20.9.0
 nvm use 20.9.0
+Windows: `del package-lock.json && rmdir /s /q node_modules`
 ## How to setup and run locally:
 `yarn install`
 `npm start`
@@ -26,3 +28,19 @@ SNAPCRAFT_STORE_CREDENTIALS
     - https://github.com/marketplace/actions/electron-builder-action
     - https://samuelmeuli.com/blog/2019-12-28-notarizing-your-electron-app/
     - https://mifi.no/blog/automated-electron-build-with-release-to-mac-app-store-microsoft-store-snapcraft/
+
+
+# Common Errors:
+
+`app-builder.exe process failed ERR_ELECTRON_BUILDER_CANNOT_EXECUTE Exit code: 1`
+- Reproduce: Run electron-builder on win10 command prompt
+- Solution: Run terminal / command prompt as admin.
+
+
+```
+# Windows Debugging
+rmdir /s /q dist
+rmdir /s /q node_modules
+npm cache clean --force
+yarn install
+```
