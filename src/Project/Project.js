@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './Project.module.css';
 import FileUploader from '../FileUploader/FileUploader.js';
+import Table from '../Table/Table.js';
 import { createFFmpegCommand } from '../FFmpeg/FFmpegUtils.js';
 
 function formatDuration(duration) {
@@ -79,6 +80,19 @@ function Project() {
     console.log('Generated FFmpeg Command:', ffmpegCommand);
   }
 
+  const audioColumns = [
+    { accessorKey: 'draggable', header: 'Drag' },
+    { accessorKey: 'fileName', header: 'File Name' },
+    { accessorKey: 'duration', header: 'Duration' },
+  ];
+  
+  const imageColumns = [
+    { accessorKey: 'draggable', header: 'Drag' },
+    { accessorKey: 'fileName', header: 'File Name' },
+    { accessorKey: 'dimensions', header: 'Dimensions' },
+  ];
+  
+
   return (
     <div className={styles.projectContainer}>
       <div className={styles.header}>
@@ -107,6 +121,13 @@ function Project() {
           </li>
         ))}
       </ul>
+
+      <h3>Tables:</h3>
+      <h2>Audio Files</h2>
+      <Table data={audioFiles} setData={setAudioFiles} columns={audioColumns} />
+
+      <h2>Image Files</h2>
+      <Table data={imageFiles} setData={setImageFiles} columns={imageColumns} />
 
       <button onClick={startRender}>Render</button>
     </div>
