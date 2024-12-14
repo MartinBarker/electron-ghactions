@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-//import { platform, arch, isWindows, isMac, isLinux } from './Utils.js';
 
 const os = window.require('os');
 const platform = os.platform();

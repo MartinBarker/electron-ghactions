@@ -58,6 +58,10 @@ function createWindow() {
     mainWindow = null;
   });
 
+  mainWindow.webContents.on('did-fail-load', () => {
+    console.error('Failed to load app://./index.html');
+  });
+
   setupAutoUpdater();
 }
 
