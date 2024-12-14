@@ -3,13 +3,13 @@ import { dirname, join } from 'path';
 import { app, BrowserWindow, ipcMain, protocol } from 'electron';
 import { execa } from 'execa';
 import pkg from 'electron-updater';
+import path from 'path'; 
 
 const { autoUpdater } = pkg;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 let mainWindow;
-
 // Custom protocol registration
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } },
@@ -44,18 +44,40 @@ function createWindow() {
     },
   });
 
+
+  console.log('filepath = ', path.join(__dirname, './build/index.html'))
+
+  // Path to the index.html file
   if (!app.isPackaged) {
+    // Load localhost if in development mode
     mainWindow.loadURL('http://localhost:3000');
   } else {
-    mainWindow.loadURL('app://./index.html');
+    // Load the index.html from the build folder in production mode
+    
+    //color
+    //mainWindow.loadFile(path.join(__dirname, './build/index.html'))
+    mainWindow.loadFile('./build/index.html')
+    
+    //mainWindow.loadURL('app://./index.html');
+
+    //mainWindow.loadFile('./build/index.html');
+
   }
 
-  if (process.env.NODE_ENV !== 'production') {
+
+
+
+  // Open the DevTools if in development mode
+  //if (!app.isPackaged) {
     mainWindow.webContents.openDevTools();
-  }
+  //}
 
   mainWindow.on('closed', () => {
     mainWindow = null;
+  });
+
+  mainWindow.webContents.on('did-fail-load', () => {
+    console.error('Failed to load app://./index.html');
   });
 
   setupAutoUpdater();
@@ -75,11 +97,11 @@ function setupAutoUpdater() {
 ipcMain.on('run-ffmpeg-command', async (event) => {
   try {
     console.log('run-ffmpeg-command()')
-    const ffmpegPath = getFfmpegPath(); 
+    const ffmpegPath = getFfmpegPath();
     const result = await execa(ffmpegPath, ['-h']);
     console.log('result = ', result)
     console.log('result.stdout = ', result.stdout)
-    event.reply('ffmpeg-output', result.stdout); 
+    event.reply('ffmpeg-output', result.stdout);
   } catch (error) {
     console.error('\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n Error running FFmpeg command:', error);
     event.reply('ffmpeg-error', "error.message");
