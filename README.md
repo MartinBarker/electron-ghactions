@@ -1,7 +1,7 @@
-nvm install 20.9.0
-nvm use 20.9.0
-Windows: `del package-lock.json && rmdir /s /q node_modules`
 ## How to setup and run locally:
+`nvm install 20.9.0`
+`nvm use 20.9.0`
+`npm i -g yarn cross-env wait-on concurrently`
 `yarn install`
 `npm start`
 
