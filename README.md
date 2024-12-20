@@ -32,9 +32,10 @@ SNAPCRAFT_STORE_CREDENTIALS
 
 # Common Errors:
 
-`app-builder.exe process failed ERR_ELECTRON_BUILDER_CANNOT_EXECUTE Exit code: 1`
-- Reproduce: Run electron-builder on win10 command prompt
-- Solution: Run terminal / command prompt as admin.
+## [win10 command prompt] `npm run build`:
+- Error: `app-builder.exe process failed ERR_ELECTRON_BUILDER_CANNOT_EXECUTE Exit code: 1` / `downloaded url=https://github.com/electron-userland/electron-builder-binaries/releases/download/winCodeSign-2.6.0/winCodeSign-2.6.0.7z duration=1.695s ⨯ exit status 2`
+- Fix: Run terminal / command prompt as admin.
+
 
 
 ```
