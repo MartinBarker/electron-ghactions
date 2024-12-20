@@ -94,17 +94,34 @@ function setupAutoUpdater() {
 }
 
 // IPC event to run an FFmpeg command
-ipcMain.on('run-ffmpeg-command', async (event) => {
+ipcMain.on('run-ffmpeg-command', async (event, ffmpegArgs, cutDuration) => {
   try {
-    console.log('run-ffmpeg-command()')
     const ffmpegPath = getFfmpegPath();
-    const result = await execa(ffmpegPath, ['-h']);
-    console.log('result = ', result)
-    console.log('result.stdout = ', result.stdout)
-    event.reply('ffmpeg-output', result.stdout);
+    const process = execa(ffmpegPath, ffmpegArgs);
+    const rl = readline.createInterface({ input: process.stderr });
+
+    let progress = 0;
+    const outputBuffer = [];
+
+    rl.on('line', (line) => {
+      outputBuffer.push(line);
+      if (outputBuffer.length > 10) {
+        outputBuffer.shift(); // Keep only the last 10 lines
+      }
+
+      const match = line.match(/time=([\d:.]+)/);
+      if (match) {
+        const elapsed = match[1].split(':').reduce((acc, time) => (60 * acc) + +time, 0);
+        progress = cutDuration ? Math.min((elapsed / cutDuration) * 100, 100) : 0;
+        event.reply('ffmpeg-progress', { pid: process.pid, progress });
+      }
+    });
+
+    const result = await process;
+    event.reply('ffmpeg-output', { stdout: result.stdout, progress: 100 });
   } catch (error) {
-    console.error('\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n Error running FFmpeg command:', error);
-    event.reply('ffmpeg-error', "error.message");
+    const errorOutput = error.stderr ? error.stderr.split('\n').slice(-10).join('\n') : 'No error details';
+    event.reply('ffmpeg-error', { message: error.message, lastOutput: errorOutput });
   }
 });
 

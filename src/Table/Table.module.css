@@ -42,7 +42,7 @@
   .dragHandle {
     background: none;
     border: none;
-    cursor: grab;
+    cursor: pointer;
     font-size: 16px;
     padding: 0;
     color: #555;

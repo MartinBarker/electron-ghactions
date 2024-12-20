@@ -50,13 +50,13 @@ function DragHandle({ row }) {
       className={styles.dragHandle}
       title="Drag to reorder"
     >
-      🟰
+      ☰
     </button>
   );
 }
 
 // Row Component
-function Row({ row }) {
+function Row({ row, toggleRowSelected }) {
   const { setNodeRef, transform, transition } = useSortable({
     id: row.original.id,
   });
@@ -67,7 +67,12 @@ function Row({ row }) {
   };
 
   return (
-    <tr ref={setNodeRef} style={style} className={styles.row}>
+    <tr
+      ref={setNodeRef}
+      style={style}
+      className={styles.row}
+      onClick={() => toggleRowSelected(row.id)} // Add click handler for row selection
+    >
       {row.getVisibleCells().map((cell, index) => (
         <td key={cell.id} className={styles.cell}>
           {index === 1 ? <DragHandle row={row} /> : null}
@@ -108,15 +113,13 @@ function TableEx({ data, setData, columns, rowSelection, setRowSelection }) {
         </div>
       ),
     },
-    { accessorKey: "draggable", header: "Drag" },
-    { accessorKey: "fileName", header: "File Name" },
-    { accessorKey: "duration", header: "Duration" },
+    ...columns,
   ]);
 
   const table = useReactTable({
     data,
     columns: tableColumns,
-    getRowId: (row) => row.id, 
+    getRowId: (row) => row.id,
     state: { rowSelection, globalFilter, sorting },
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
@@ -125,6 +128,13 @@ function TableEx({ data, setData, columns, rowSelection, setRowSelection }) {
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
+  
+  const toggleRowSelected = (rowId) => {
+    setRowSelection((prev) => ({
+      ...prev,
+      [rowId]: !prev[rowId], // Toggle the selection state of the row
+    }));
+  };
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
@@ -180,10 +190,10 @@ function TableEx({ data, setData, columns, rowSelection, setRowSelection }) {
               ))}
             </thead>
             <tbody>
-              {table.getRowModel().rows.map((row) => (
-                <Row key={row.original.id} row={row} />
-              ))}
-            </tbody>
+  {table.getRowModel().rows.map((row) => (
+    <Row key={row.original.id} row={row} toggleRowSelected={toggleRowSelected} />
+  ))}
+</tbody>
           </table>
         </SortableContext>
         <div className={styles.pagination}>

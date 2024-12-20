@@ -68,7 +68,7 @@ const FileUploader = ({ onFilesSelect }) => {
         fileType: file.type,
         duration: 'Loading...' // Default duration text
       };
-  
+
       if (file.type.includes("audio/")) {
         getAudioDuration(file).then((lengthInSeconds) => {
           onFilesSelect([{ ...basicInfo, duration: lengthInSeconds + ' seconds' }], []);
@@ -80,14 +80,14 @@ const FileUploader = ({ onFilesSelect }) => {
       }
     }
   };
-  
-  
+
+
 
   const handleChooseFiles = () => {
     document.getElementById("fileInput").click();
   };
 
- 
+
 
   return (
     <div
@@ -98,7 +98,7 @@ const FileUploader = ({ onFilesSelect }) => {
       onClick={() => document.getElementById("fileInput").click()}
     >
       <div className={styles.fileUploaderBox}>
-        Drag or <button>choose files</button>
+        Drag or <button onClick={handleChooseFiles}>choose files</button>
       </div>
       <input
         type="file"

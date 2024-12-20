@@ -22,10 +22,17 @@ function Project() {
   const [audioFiles, setAudioFiles] = useState(JSON.parse(localStorage.getItem('audioFiles')) || []);
   const [imageFiles, setImageFiles] = useState(JSON.parse(localStorage.getItem('imageFiles')) || []);
 
+  const [audioRowSelection, setAudioRowSelection] = useState({});
+  const [imageRowSelection, setImageRowSelection] = useState({});
+
   useEffect(() => {
     localStorage.setItem('audioFiles', JSON.stringify(audioFiles));
     localStorage.setItem('imageFiles', JSON.stringify(imageFiles));
   }, [audioFiles, imageFiles]);
+
+  const generateUniqueId = () => {
+    return `id-${Date.now()}-${Math.floor(Math.random() * 1000000)}`;
+  };
 
   const handleFilesSelect = (audioData, imageData) => {
     if (audioData.length) {
@@ -38,7 +45,7 @@ function Project() {
           } else {
             updatedFiles.push({
               ...newFile,
-              id: generateUniqueId(), // Use custom unique ID generator
+              id: generateUniqueId(),
               duration: 'Loading...',
             });
           }
@@ -57,7 +64,7 @@ function Project() {
           } else {
             updatedImages.push({
               ...newImage,
-              id: generateUniqueId(), // Use custom unique ID generator
+              id: generateUniqueId(),
             });
           }
         });
@@ -73,20 +80,26 @@ function Project() {
     localStorage.removeItem('imageFiles');
   };
 
-  function startRender() {
-    console.log9('startRender()');
-    const configs = {
-      input: 'input.mp4',
-      output: 'output.mp4',
-      options: {
-        '-vf': 'scale=1280:720',
-        '-crf': '23',
-      },
-    };
-
-    const ffmpegCommand = createFFmpegCommand(configs);
-    console.log('Generated FFmpeg Command:', ffmpegCommand);
-  }
+  const getSelectedAudioRows = () => {
+    const selectedRows = audioFiles.filter((file) => audioRowSelection[file.id]);
+  
+    alert(
+      selectedRows
+        .map((row) => `${row.fileName} (${row.duration})`)
+        .join('\n') || 'No audio rows selected'
+    );
+  };
+  
+  const getSelectedImageRows = () => {
+    const selectedRows = imageFiles.filter((file) => imageRowSelection[file.id]);
+  
+    alert(
+      selectedRows
+        .map((row) => `${row.fileName} (${row.dimensions || 'No dimensions'})`)
+        .join('\n') || 'No image rows selected'
+    );
+  };
+  
 
   const audioColumns = [
     { accessorKey: 'draggable', header: 'Drag' },
@@ -97,52 +110,11 @@ function Project() {
   const imageColumns = [
     { accessorKey: 'draggable', header: 'Drag' },
     { accessorKey: 'fileName', header: 'File Name' },
-    { accessorKey: 'dimensions', header: 'Dimensions' },
-  ];
-
-  // --------------------------------
-  // TableEx data below
-  const [testData, setTestData] = useState([
-    { id: "a1", fileName: "Test Audio 1", duration: "2:30" },
-    { id: "a2", fileName: "Test Audio 2", duration: "3:45" },
-    { id: "a3", fileName: "Test Audio 3", duration: "4:15" },
-    { id: "a4", fileName: "Test Audio 4", duration: "1:20" },
-    { id: "a5", fileName: "Test Audio 5", duration: "2:50" },
-    { id: "a6", fileName: "Test Audio 6", duration: "3:10" },
-    { id: "a7", fileName: "Test Audio 7", duration: "4:00" },
-  ]);
-
-  const testColumns = [
-    { accessorKey: "fileName", header: "File Name" },
-    { accessorKey: "duration", header: "Duration" },
-  ];
-
-  const [rowSelection, setRowSelection] = useState({});
-
-  // Get all selected rows from a table
-  const getSelectedRows = () => {
-    const selectedRows = Object.keys(rowSelection)
-      .map((id) => testData.find((row) => row.id === id))
-      .filter(Boolean); // Filters out undefined entries if any
-
-    alert(
-      selectedRows
-        .map((row) => `${row.fileName} (${row.duration})`)
-        .join("\n") || "No rows selected"
-    );
-  };
-
-  // --------------------------------
-  // Utility Functions below:
-  const generateUniqueId = () => {
-    return `id-${Date.now()}-${Math.floor(Math.random() * 1000000)}`;
-  };
-  // ---------------------------------
+    { accessorKey: 'dimensions', header: 'Dimensions' }, 
+  ];  
 
   return (
     <div className={styles.projectContainer}>
-
-      {/* Header */}
       <div className={styles.header}>
         <h1 className={styles.projectTitle}>New Project</h1>
         <button className={styles.refreshButton} onClick={clearComponent}>
@@ -150,37 +122,30 @@ function Project() {
         </button>
       </div>
 
-      {/* File Uploader */}
       <FileUploader onFilesSelect={handleFilesSelect} />
 
-      {/* Audio Table */}
-      <br/><h2>Audio Files</h2>
-      <TableEx 
+      <br /><h2>Audio Files</h2>
+      <TableEx
         data={audioFiles}
-        rowSelection={rowSelection}
-        setRowSelection={setRowSelection}
+        rowSelection={audioRowSelection}
+        setRowSelection={setAudioRowSelection}
         setData={setAudioFiles}
         columns={audioColumns}
       />
-      <button onClick={getSelectedRows}>Get All Selected Audio Rows</button>
-      
-      {/* Image Table */}
-      <br/><h2>Image Files</h2>
-      <TableEx 
+      <button onClick={getSelectedAudioRows}>Get All Selected Audio Rows</button>
+
+      <br /><h2>Image Files</h2>
+      <TableEx
         data={imageFiles}
-        rowSelection={rowSelection}
-        setRowSelection={setRowSelection}
+        rowSelection={imageRowSelection}
+        setRowSelection={setImageRowSelection}
         setData={setImageFiles}
         columns={imageColumns}
       />
-      <button onClick={getSelectedRows}>Get All Selected Image Rows</button>
-      
-      {/* Render Options */}
+      <button onClick={getSelectedImageRows}>Get All Selected Image Rows</button>
 
-      {/* Start Render Button */}
-      <br/>
-      <button onClick={startRender}>Render</button>
-
+      <br />
+      <button onClick={clearComponent}>Render</button>
     </div>
   );
 }
