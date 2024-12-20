@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import styles from './Project.module.css';
 import FileUploader from '../FileUploader/FileUploader.js';
 import Table from '../Table/Table.js';
-import TableEx from '../Table/TableEx.js'
 import { createFFmpegCommand } from '../FFmpeg/FFmpegUtils.js';
 
 function formatDuration(duration) {
@@ -125,7 +124,7 @@ function Project() {
       <FileUploader onFilesSelect={handleFilesSelect} />
 
       <br /><h2>Audio Files</h2>
-      <TableEx
+      <Table
         data={audioFiles}
         rowSelection={audioRowSelection}
         setRowSelection={setAudioRowSelection}
@@ -135,7 +134,7 @@ function Project() {
       <button onClick={getSelectedAudioRows}>Get All Selected Audio Rows</button>
 
       <br /><h2>Image Files</h2>
-      <TableEx
+      <Table
         data={imageFiles}
         rowSelection={imageRowSelection}
         setRowSelection={setImageRowSelection}
