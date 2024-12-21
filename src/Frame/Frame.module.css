@@ -137,6 +137,7 @@ body{
 }
 
 .sidebarIcon {
+  height:40px;
   fill: #818181;
   cursor: pointer;
 }

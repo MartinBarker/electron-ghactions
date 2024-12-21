@@ -78,12 +78,17 @@ const FileUploader = ({ onFilesSelect }) => {
     document.getElementById("fileInput").click();
   };
 
+  const handleBoxClick = () => {
+    document.getElementById("fileInput").click();
+  };
+
   return (
     <div
       className={`${styles.fileUploader} ${highlight ? styles.dragOver : ''}`}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
+      onClick={handleBoxClick} // Added click handler
     >
       <div className={styles.fileUploaderBox}>
         Drag or <button onClick={handleChooseFiles}>choose files</button>

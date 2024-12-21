@@ -1,54 +1,76 @@
 .table {
-    border-collapse: collapse;
-    width: 100%;
-    border: 1px solid #ccc;
-    background-color: #f9f9f9;
-    color: #333;
-  }
-  
-  .headerRow {
-    background-color: #1a202c;
-    color: white;
-  }
-  
-  .headerCell {
-    padding: 12px 8px;
-    text-align: left;
-    border-bottom: 1px solid #ccc;
-    font-weight: bold;
-    font-size: 14px;
-  }
-  
-  .row {
-    background-color: white;
-    transition: background-color 0.3s ease;
-  }
-  
-  .row:hover {
-    background-color: #e8f4ff;
-  }
-  
-  .cell {
-    padding: 10px 8px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-    font-size: 13px;
-    white-space: nowrap; /* Prevents text wrapping */
-    overflow: hidden; /* Ensures content stays within the cell */
-    text-overflow: ellipsis; /* Adds "..." if text overflows */
-    max-width: 300px; /* Adjust width to prevent layout issues */
-  }
-  
-  .dragHandle {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    padding: 0;
-    color: #555;
-  }
-  
-  .dragHandle:hover {
-    color: #000;
-  }
-  
+  border-collapse: collapse;
+  width: 100%;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+.headerRow {
+  background-color: #1a202c;
+  color: white;
+}
+
+.headerCell {
+  padding: 12px 8px;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+  font-weight: bold;
+  font-size: 14px;
+  user-select: none; /* Prevents text selection */
+  position: relative; /* To align the sorting icon */
+}
+
+.row {
+  background-color: white;
+  transition: background-color 0.3s ease;
+}
+
+.row:hover {
+  background-color: #e8f4ff;
+}
+
+.cell {
+  padding: 10px 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  font-size: 13px;
+  white-space: nowrap; /* Prevents text wrapping */
+  overflow: hidden; /* Ensures content stays within the cell */
+  text-overflow: ellipsis; /* Adds "..." if text overflows */
+  max-width: 300px; /* Adjust width to prevent layout issues */
+  user-select: none; /* Prevents text selection */
+}
+
+.dragHandle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0;
+  color: #555;
+}
+
+.dragHandle:hover {
+  color: #000;
+}
+
+.sortIcon {
+  margin-left: 8px;
+  font-size: 12px;
+  display: inline-block;
+  width: 16px; /* Fixed width to prevent layout shifts */
+  height: 16px; /* Fixed height */
+  text-align: center;
+  line-height: 16px;
+  color: #ccc; /* Neutral color for unsorted state */
+}
+
+.sortIcon.active {
+  color: #000; /* Change color for sorted state */
+}
+
+.sortIcon:hover {
+  cursor: pointer; /* Changes cursor to pointer on hover */
+  color: #555; /* Optional: Change color to indicate hover */
+}
