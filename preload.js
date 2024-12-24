@@ -2,29 +2,29 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('api', {
     send: (channel, data) => {
-        // List of valid channels
-        const validChannels = [
+        const validSendChannels = [
             'app_version', 
             'minimize-window', 
             'maximize-window', 
             'unmaximize-window', 
             'close-window',
             'run-ffmpeg-command',
-            'ffmpeg-output',
-            'ffmpeg-error'            
+            'get-audio-metadata',  // Request audio metadata
+            'open-file-dialog'     // Open file dialog
         ];
-        if (validChannels.includes(channel)) {
+        if (validSendChannels.includes(channel)) {
             ipcRenderer.send(channel, data);
         }
     },
     receive: (channel, func) => {
-        const validChannels = [
+        const validReceiveChannels = [
             'app_version',
             'ffmpeg-output', 
-            'ffmpeg-error'
+            'ffmpeg-error',
+            'audio-metadata-response', // Receive audio metadata
+            'selected-file-paths'      // Receive selected file paths
         ];
-        if (validChannels.includes(channel)) {
-            // Deliberately strip event as it includes `sender` 
+        if (validReceiveChannels.includes(channel)) {
             ipcRenderer.on(channel, (event, ...args) => func(...args));
         }
     },

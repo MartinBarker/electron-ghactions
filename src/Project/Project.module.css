@@ -60,3 +60,40 @@
 .refreshButton:hover {
   background-color: #0056b3;
 }
+
+.renderButton {
+  padding: 1rem 2rem; /* Larger padding for size */
+  font-size: 1.5rem; /* Larger font size */
+  color: white; /* Text color */
+  background-color: #28a745; /* Green background */
+  border: none; /* Remove default border */
+  border-radius: 25px; /* Rounded edges */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s ease; /* Smooth hover transition */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+}
+
+.renderButton:hover {
+  background-color: #218838; /* Darker green on hover */
+}
+
+.renderButton:active {
+  background-color: #1e7e34; /* Even darker green when active */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Reduce shadow on click */
+}
+
+.renderButton:focus {
+  outline: none; /* Remove default focus outline */
+  box-shadow: 0px 0px 0px 3px rgba(40, 167, 69, 0.5); /* Custom focus ring */
+}
+
+.errorContainer {
+  color: red; /* Text color for the error */
+  background-color: #ffeeee; /* Light red background for visibility */
+  border: 1px solid #cc0000; /* Red border */
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 8px; /* Rounded edges */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  word-wrap: break-word; /* Ensure long text wraps properly */
+}

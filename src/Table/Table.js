@@ -166,54 +166,47 @@ function Table({ data, setData, columns, rowSelection, setRowSelection }) {
         >
           <table className={styles.table}>
 
-          <thead>
-  {table.getHeaderGroups().map((headerGroup) => (
-    <tr key={headerGroup.id} className={styles.headerRow}>
-      {headerGroup.headers.map((header) => {
-        const columnHeader = header.column.columnDef.header;
-        // Exclude 'Drag', checkbox column (with id 'select'), or any undefined/empty header
-        const isSortable = columnHeader !== 'Drag' && header.id !== 'select' && columnHeader !== undefined && columnHeader !== '';
-        const isSorted = header.column.getIsSorted();
+            <thead>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <tr key={headerGroup.id} className={styles.headerRow}>
+                  {headerGroup.headers.map((header) => {
+                    const columnHeader = header.column.columnDef.header;
+                    // Exclude 'Drag', checkbox column (with id 'select'), or any undefined/empty header
+                    const isSortable = columnHeader !== 'Drag' && header.id !== 'select' && columnHeader !== undefined && columnHeader !== '';
+                    const isSorted = header.column.getIsSorted();
 
-        return (
-          <th
-            key={header.id}
-            className={styles.headerCell}
-            onClick={
-              isSortable && header.column.getCanSort()
-                ? () => header.column.toggleSorting()
-                : undefined
-            }
-          >
-            {flexRender(
-              header.column.columnDef.header,
-              header.getContext()
-            )}
-            {isSortable && (
-              <span
-                className={`${styles.sortIcon} ${
-                  isSorted ? styles.active : ''
-                }`}
-              >
-                {isSorted === 'asc'
-                  ? '🔼'
-                  : isSorted === 'desc'
-                  ? '🔽'
-                  : '↕'} {/* Neutral icon */}
-              </span>
-            )}
-          </th>
-        );
-      })}
-    </tr>
-  ))}
-</thead>
-
-
-
-
-
-
+                    return (
+                      <th
+                        key={header.id}
+                        className={styles.headerCell}
+                        onClick={
+                          isSortable && header.column.getCanSort()
+                            ? () => header.column.toggleSorting()
+                            : undefined
+                        }
+                      >
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                        {isSortable && (
+                          <span
+                            className={`${styles.sortIcon} ${isSorted ? styles.active : ''
+                              }`}
+                          >
+                            {isSorted === 'asc'
+                              ? '🔼'
+                              : isSorted === 'desc'
+                                ? '🔽'
+                                : '↕'} {/* Neutral icon */}
+                          </span>
+                        )}
+                      </th>
+                    );
+                  })}
+                </tr>
+              ))}
+            </thead>
             <tbody>
               {table.getRowModel().rows.map((row) => (
                 <Row key={row.original.id} row={row} toggleRowSelected={toggleRowSelected} />

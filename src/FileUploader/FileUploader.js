@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from './FileUploader.module.css';
 
-const FileUploader = ({ onFilesSelect }) => {
+const FileUploader = ({ onFilesMetadata }) => {
   const [highlight, setHighlight] = useState(false);
 
   const handleDragOver = (event) => {
@@ -21,66 +21,35 @@ const FileUploader = ({ onFilesSelect }) => {
     processFiles(files);
   };
 
-  const handleFileInputChange = async (event) => {
-    const files = event.target.files;
-    processFiles(files);
+  const openNativeFileDialog = () => {
+    window.api.send('open-file-dialog');
   };
 
-  const getAudioDuration = async (file) => {
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const fileArrayBuffer = await file.arrayBuffer();
-    const audioBuffer = await audioContext.decodeAudioData(fileArrayBuffer);
-    return audioBuffer.duration.toFixed(2); // Rounded to two decimal places
-  };
-
-  const getImageDimensions = (file) => {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      const url = URL.createObjectURL(file);
-
-      img.onload = () => {
-        resolve({ width: img.width, height: img.height });
-        URL.revokeObjectURL(url);
-      };
-
-      img.onerror = (error) => {
-        reject(error);
-        URL.revokeObjectURL(url);
-      };
-
-      img.src = url;
+  useEffect(() => {
+    window.api.receive('selected-file-paths', (filesInfo) => {
+      const enrichedFilesInfo = filesInfo.map(file => {
+        if (file.filetype === 'audio') {
+          window.api.send('get-audio-metadata', file.filepath);
+        }
+        return file;
+      });
+      onFilesMetadata(enrichedFilesInfo);
     });
-  };
 
-  const processFiles = async (files) => {
-    for (const file of files) {
-      const basicInfo = {
-        fileName: file.name,
-        filePath: file.path || "N/A",
-        fileType: file.type,
-        duration: 'Loading...', // Default duration text
-      };
+    window.api.receive('audio-metadata-response', (metadata) => {
+      onFilesMetadata([{
+        filetype: 'audio',
+        filepath: metadata.filepath,
+        filename: metadata.filename,
+        duration: metadata.duration,
+      }]);
+    });
 
-      if (file.type.includes("audio/")) {
-        getAudioDuration(file).then((lengthInSeconds) => {
-          onFilesSelect([{ ...basicInfo, duration: `${lengthInSeconds} seconds` }], []);
-        });
-        onFilesSelect([basicInfo], []); // Immediately update the state with loading status
-      } else if (file.type.includes("image/")) {
-        const { width, height } = await getImageDimensions(file);
-        onFilesSelect([], [{ ...basicInfo, dimensions: `${width}x${height}` }]);
-      }
-    }
-  };
-
-  const handleChooseFiles = (event) => {
-    event.preventDefault(); // Prevent default behavior
-    document.getElementById("fileInput").click();
-  };
-
-  const handleBoxClick = () => {
-    document.getElementById("fileInput").click();
-  };
+    return () => {
+      window.api.removeAllListeners('selected-file-paths');
+      window.api.removeAllListeners('audio-metadata-response');
+    };
+  }, []);
 
   return (
     <div
@@ -88,18 +57,11 @@ const FileUploader = ({ onFilesSelect }) => {
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      onClick={handleBoxClick} // Added click handler
+      onClick={openNativeFileDialog}
     >
       <div className={styles.fileUploaderBox}>
-        Drag or <button onClick={handleChooseFiles}>choose files</button>
+        Drag files here or click to select files
       </div>
-      <input
-        type="file"
-        id="fileInput"
-        style={{ display: "none" }}
-        onChange={handleFileInputChange}
-        multiple
-      />
     </div>
   );
 };

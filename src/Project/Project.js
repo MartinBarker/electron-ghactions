@@ -24,6 +24,8 @@ function Project() {
   const [audioRowSelection, setAudioRowSelection] = useState({});
   const [imageRowSelection, setImageRowSelection] = useState({});
 
+  const [ffmpegError, setFfmpegError] = useState(null);
+
   useEffect(() => {
     localStorage.setItem('audioFiles', JSON.stringify(audioFiles));
     localStorage.setItem('imageFiles', JSON.stringify(imageFiles));
@@ -34,11 +36,12 @@ function Project() {
   };
 
   const handleFilesSelect = (audioData, imageData) => {
+
     if (audioData.length) {
       setAudioFiles(prev => {
         const updatedFiles = prev.map(file => ({ ...file }));
         audioData.forEach(newFile => {
-          const index = updatedFiles.findIndex(f => f.fileName === newFile.fileName);
+          const index = updatedFiles.findIndex(f => f.filename === newFile.filename);
           if (index >= 0) {
             updatedFiles[index] = { ...updatedFiles[index], ...newFile };
           } else {
@@ -57,7 +60,7 @@ function Project() {
       setImageFiles(prev => {
         const updatedImages = prev.map(img => ({ ...img }));
         imageData.forEach(newImage => {
-          const index = updatedImages.findIndex(img => img.fileName === newImage.fileName);
+          const index = updatedImages.findIndex(img => img.filename === newImage.filename);
           if (index >= 0) {
             updatedImages[index] = { ...updatedImages[index], ...newImage };
           } else {
@@ -81,36 +84,153 @@ function Project() {
 
   const getSelectedAudioRows = () => {
     const selectedRows = audioFiles.filter((file) => audioRowSelection[file.id]);
-  
+
     alert(
       selectedRows
-        .map((row) => `${row.fileName} (${row.duration})`)
+        .map((row) => `${row.filename} (${row.duration})`)
         .join('\n') || 'No audio rows selected'
     );
   };
-  
+
   const getSelectedImageRows = () => {
     const selectedRows = imageFiles.filter((file) => imageRowSelection[file.id]);
-  
+
     alert(
       selectedRows
-        .map((row) => `${row.fileName} (${row.dimensions || 'No dimensions'})`)
+        .map((row) => `${row.filename} (${row.dimensions || 'No dimensions'})`)
         .join('\n') || 'No image rows selected'
     );
   };
-  
+
 
   const audioColumns = [
     { accessorKey: 'draggable', header: 'Drag' },
-    { accessorKey: 'fileName', header: 'File Name' },
+    { accessorKey: 'filename', header: 'File Name' }, // Use `filename`
     { accessorKey: 'duration', header: 'Duration' },
   ];
 
   const imageColumns = [
     { accessorKey: 'draggable', header: 'Drag' },
-    { accessorKey: 'fileName', header: 'File Name' },
-    { accessorKey: 'dimensions', header: 'Dimensions' }, 
-  ];  
+    { accessorKey: 'filename', header: 'File Name' }, // Use `filename`
+    { accessorKey: 'dimensions', header: 'Dimensions' },
+  ];
+
+  const handleRender = () => {
+    const selectedAudio = audioFiles.filter((file) => audioRowSelection[file.id]);
+    const selectedImages = imageFiles.filter((file) => imageRowSelection[file.id]);
+
+    if (selectedAudio.length === 0 || selectedImages.length === 0) {
+      alert('Please select at least one audio and one image file.');
+      return;
+    }
+
+    console.log('Calling generateFFmpegCommand...');
+
+    // Create FFmpeg command
+    const ffmpegCommand = createFFmpegCommand({
+      audioInputs: selectedAudio,
+      imageInputs: selectedImages,
+      outputFilepath: "E:\\martinradio\\upload\\Casselberry-DuPreé – City Down\\video.mp4",
+      width: 1920,
+      height: 1080,
+      paddingCheckbox: false,
+      backgroundColor: null,
+      stretchImageToFit: false,
+      repeatLoop: false,
+    });
+
+    console.log('FFmpeg Command:', ffmpegCommand.cmdArgs.join(" "));
+
+    // Send the ffmpeg command to backend
+    window.api.send('run-ffmpeg-command', {
+      cmdArgs: ffmpegCommand.cmdArgs,
+      outputDuration: ffmpegCommand.outputDuration,
+    });
+
+    // Handle progress
+    window.api.receive('ffmpeg-output', (data) => {
+      console.log('FFmpeg Output:', data);
+    });
+
+    // Handle errors
+    window.api.receive('ffmpeg-error', (data) => {
+      console.log('FFmpeg Error:', data);
+      setFfmpegError(data); // Set the error message
+    });
+  };
+
+
+  const handleFilesMetadata = (filesMetadata) => {
+
+    if (!Array.isArray(filesMetadata)) {
+      console.error('filesMetadata is not an array:', filesMetadata);
+      return;
+    }
+
+    filesMetadata.forEach(file => {
+
+      if (file.filetype === 'audio') {
+        setAudioFiles(prev => {
+          const index = prev.findIndex(f => f.filepath === file.filepath);
+          if (index >= 0) {
+            const updatedFiles = [...prev];
+            updatedFiles[index] = { ...updatedFiles[index], ...file };
+            return updatedFiles;
+          } else {
+            return [...prev, {
+              id: generateUniqueId(),
+              filename: file.filename, // Use `filename`
+              filepath: file.filepath,
+              duration: file.duration || 'Loading...',
+            }];
+          }
+        });
+      } else if (file.filetype === 'image') {
+        setImageFiles(prev => {
+          const index = prev.findIndex(f => f.filepath === file.filepath);
+          if (index >= 0) {
+            const updatedImages = [...prev];
+            updatedImages[index] = { ...updatedImages[index], ...file };
+            return updatedImages;
+          } else {
+            return [...prev, {
+              id: generateUniqueId(),
+              filename: file.filename, // Use `filename`
+              filepath: file.filepath,
+              dimensions: file.dimensions || 'Unknown',
+            }];
+          }
+        });
+      }
+    });
+  };
+
+
+  const updateAudioFiles = (newFile) => {
+    setAudioFiles(prev => {
+      const index = prev.findIndex(f => f.filepath === newFile.filepath);
+      if (index >= 0) {
+        const updatedFiles = [...prev];
+        updatedFiles[index] = { ...updatedFiles[index], ...newFile };
+        return updatedFiles;
+      } else {
+        return [...prev, { ...newFile, id: generateUniqueId() }];
+      }
+    });
+  };
+
+  const updateImageFiles = (newFile) => {
+    setImageFiles(prev => {
+      const index = prev.findIndex(f => f.filepath === newFile.filepath);
+      if (index >= 0) {
+        const updatedImages = [...prev];
+        updatedImages[index] = { ...updatedImages[index], ...newFile };
+        return updatedImages;
+      } else {
+        return [...prev, { ...newFile, id: generateUniqueId() }];
+      }
+    });
+  };
 
   return (
     <div className={styles.projectContainer}>
@@ -121,7 +241,7 @@ function Project() {
         </button>
       </div>
 
-      <FileUploader onFilesSelect={handleFilesSelect} />
+      <FileUploader onFilesMetadata={handleFilesMetadata} />
 
       <br /><h2>Audio Files</h2>
       <Table
@@ -144,7 +264,18 @@ function Project() {
       <button onClick={getSelectedImageRows}>Get All Selected Image Rows</button>
 
       <br />
-      <button onClick={clearComponent}>Render</button>
+      <button className={styles.renderButton} onClick={handleRender}>
+        Render
+      </button>
+
+      {ffmpegError && (
+        <div className={styles.errorContainer}>
+          <h3>FFmpeg Error:</h3>
+          <p>{ffmpegError.message}</p>
+          <pre>{ffmpegError.lastOutput}</pre>
+        </div>
+      )}
+
     </div>
   );
 }
