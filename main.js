@@ -4,7 +4,7 @@ import { app, BrowserWindow, ipcMain, protocol, session, dialog } from 'electron
 import { execa } from 'execa';
 import pkg from 'electron-updater';
 import path from 'path';
-import fs from 'fs'; 
+import fs from 'fs';
 import readline from 'readline';
 import sharp from 'sharp';
 import musicMetadata from 'music-metadata';
@@ -18,7 +18,7 @@ let mainWindow;
 
 // Define audio and image file extensions
 const audioExtensions = ['mp3', 'wav', 'flac', 'ogg', 'm4a', 'aac', 'aiff', 'wma', 'amr', 'opus', 'alac', 'pcm', 'mid', 'midi', 'aif', 'caf'];
-const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'webp', 'heif', 'heic', 'ico', 'svg', 'raw', 'cr2', 'nef', 'orf', 'arw', 'raf',  'dng', 'pef', 'sr2'];
+const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'webp', 'heif', 'heic', 'ico', 'svg', 'raw', 'cr2', 'nef', 'orf', 'arw', 'raf', 'dng', 'pef', 'sr2'];
 // Custom protocol registration
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } },
@@ -144,6 +144,13 @@ function getFfmpegPath() {
 
 ipcMain.on('get-audio-metadata', async (event, filePath) => {
   try {
+    console.log('Getting metadata for file:', filePath);
+
+    console.log('Raw filePath:', filePath);
+    console.log('Encoded filePath:', encodeURI(filePath));
+    console.log('Decoded filePath:', decodeURI(encodeURI(filePath)));
+
+
     const metadata = await musicMetadata.parseFile(filePath);
     event.sender.send('audio-metadata-response', {
       filepath: filePath,
@@ -151,6 +158,7 @@ ipcMain.on('get-audio-metadata', async (event, filePath) => {
       duration: metadata.format.duration,
     });
   } catch (error) {
+    console.log('Failed to get metadata for file:', filePath);
     event.sender.send('audio-metadata-response', {
       filepath: filePath,
       filename: path.basename(filePath), // Use `filename`
@@ -158,6 +166,8 @@ ipcMain.on('get-audio-metadata', async (event, filePath) => {
     });
   }
 });
+
+
 
 ipcMain.on('open-file-dialog', async (event) => {
   try {
@@ -168,15 +178,14 @@ ipcMain.on('open-file-dialog', async (event) => {
     if (!result.canceled && result.filePaths.length > 0) {
       const fileInfoArray = await Promise.all(
         result.filePaths.map(async (filePath) => {
-          // Normalize and decode file path to handle special characters
-          const normalizedPath = path.resolve(filePath);
-          console.log('normalizedPath = ', normalizedPath);
+          // Force path to UTF-8 encoding
+          const normalizedPath = path.normalize(filePath);
+          const utf8Path = Buffer.from(normalizedPath, 'utf8').toString('utf8');
 
-          // Decode using iconv-lite to handle special characters
-          const decodedPath = iconv.decode(Buffer.from(normalizedPath, 'binary'), 'utf-8');
-          console.log('decodedPath = ', decodedPath);
+          console.log('Normalized Path = ', normalizedPath);
+          console.log('UTF-8 Path = ', utf8Path);
 
-          const ext = path.extname(decodedPath).toLowerCase().substring(1); // Extract extension without the dot
+          const ext = path.extname(utf8Path).toLowerCase().substring(1); // Extract extension without the dot
           let fileType = 'other'; // Default file type
           let dimensions = null;
 
@@ -185,17 +194,17 @@ ipcMain.on('open-file-dialog', async (event) => {
           } else if (imageExtensions.includes(ext)) {
             fileType = 'image';
             try {
-              const metadata = await sharp(decodedPath).metadata();
+              const metadata = await sharp(utf8Path).metadata();
               dimensions = `${metadata.width}x${metadata.height}`;
             } catch (error) {
               console.error('Error reading image dimensions:', error);
             }
           }
 
-          console.log('setting filePath = ', decodedPath); // Log decoded path
+          console.log('Setting filePath = ', utf8Path); // Log the final sanitized path
           return {
-            filename: path.basename(decodedPath), // Use `filename`
-            filepath: decodedPath,
+            filename: path.basename(utf8Path), // Use UTF-8 filename
+            filepath: utf8Path, // Use UTF-8 file path
             filetype: fileType,
             dimensions, // Include dimensions if available
           };
@@ -208,6 +217,8 @@ ipcMain.on('open-file-dialog', async (event) => {
     console.error('Error opening file dialog:', error);
   }
 });
+
+
 
 // Existing IPC events
 ipcMain.on('app_version', (event) => {

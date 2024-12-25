@@ -168,7 +168,7 @@ function Project() {
     }
 
     filesMetadata.forEach(file => {
-
+      console.log('Project.js handleFilesMetadata:', file.filepath);
       if (file.filetype === 'audio') {
         setAudioFiles(prev => {
           const index = prev.findIndex(f => f.filepath === file.filepath);

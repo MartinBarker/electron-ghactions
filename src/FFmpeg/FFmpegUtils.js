@@ -4,96 +4,76 @@ export function createFFmpegCommand(configs) {
             audioInputs = [],
             imageInputs = [],
             outputFilepath,
-            width,
-            height,
-            paddingCheckbox,
-            forceOriginalAspectRatio,
+            width = 2000,
+            height = 2000,
+            paddingCheckbox = false,
+            forceOriginalAspectRatio = true,
             backgroundColor = 'black',
             stretchImageToFit = false,
-            repeatLoop = false
+            repeatLoop = true
         } = configs;
 
         console.log('ffmpegUtils Configs:', configs);
 
         let cmdArgs = [];
+        cmdArgs.push('-y'); // Overwrite output file if exists
 
-        // Calculate total output duration from audio inputs
-        console.log('ffmpegUtils audioInputs = ', audioInputs)
         let outputDuration = 0;
+        audioInputs.forEach(audio => {
+            outputDuration += audio.duration;
+        });
+        const imgDuration = outputDuration / imageInputs.length;
 
-        // Determine image duration if not syncing with audio
-        let imgDuration = outputDuration / imageInputs.length;
-        console.log('Image duration:', imgDuration);
-
-        // Filter complex variables
         let fc_audioFiles = '';
         let fc_imgOrder = '';
         let fc_finalPart = '';
 
-        // Process each input
         [...audioInputs, ...imageInputs].forEach((file, index) => {
-            cmdArgs.push('-i', file.filepath);
-            console.log(`Processing file ${index}:`, file);
+            cmdArgs.push('-r', '2', '-i', `"${file.filepath.replace(/\\/g, '/')}"`);
 
             if (file.filetype === 'audio') {
-                outputDuration += file.duration;
                 fc_audioFiles += `[${index}:a]`;
-
             } else if (file.filetype === 'image') {
-                let padding = '';
-
-                if (paddingCheckbox) {
-                    padding = `,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2:color=${backgroundColor}`;
-                }
-
-                let scaling = forceOriginalAspectRatio ? `scale=w=${width}:h=-1` : `scale=w=${width}:h=${height}`;
-
+                let scaling = `scale=w=${width}:h=${height}`;
+                let padding = paddingCheckbox
+                    ? `,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2:color=${backgroundColor}`
+                    : '';
                 if (stretchImageToFit) {
-                    scaling = `scale=w=${width}:h=${height}`;
                     padding = '';
                 }
-
-                let loopOption = repeatLoop ? `loop=1:size=${Math.floor(imgDuration * 30)}` : '';
-
-                fc_imgOrder += `
-                    [${index}:v]${scaling}${padding},setsar=1,${loopOption}[v${index}];
-                `;
+                fc_imgOrder += `[${index}:v]${scaling}${padding},setsar=1,loop=${Math.ceil(imgDuration * 2)}:${Math.ceil(imgDuration * 2)}[v${index}];`;
                 fc_finalPart += `[v${index}]`;
             }
         });
 
-        // Construct audio concat filter
+        // Concatenate audio files if more than one
         if (audioInputs.length > 1) {
             fc_audioFiles += `concat=n=${audioInputs.length}:v=0:a=1[a];`;
-        } else {
-            fc_audioFiles += `[a];`;
         }
 
-        // Construct image concat filter
-        fc_finalPart += `concat=n=${imageInputs.length}:v=1:a=0,format=yuv420p[v];`;
+        // Build final video concat
+        fc_finalPart += `concat=n=${imageInputs.length}:v=1:a=0,pad=ceil(iw/2)*2:ceil(ih/2)*2[v]`;
 
-        // Build filter_complex
+        // Final filter_complex
         let filterComplex = `${fc_audioFiles}${fc_imgOrder}${fc_finalPart}`;
-        console.log('Filter complex:', filterComplex);
 
-        // Add filter_complex and mapping to cmdArgs
-        cmdArgs.push('-filter_complex', filterComplex);
+        cmdArgs.push('-filter_complex', `"${filterComplex}"`);
         cmdArgs.push('-map', '[v]', '-map', '[a]');
-
-        // Add encoding options
         cmdArgs.push(
             '-c:v', 'libx264',
-            '-c:a', 'aac',
+            '-c:a', 'pcm_s32le',
+            '-bufsize', '3M',
             '-crf', '18',
             '-pix_fmt', 'yuv420p',
-            '-shortest',
+            '-tune', 'stillimage',
             '-t', outputDuration.toFixed(2),
-            outputFilepath
+            `"${outputFilepath.replace(/\\/g, '/')}"` // Normalize output path
         );
 
-        console.log('Command arguments:', cmdArgs);
+        const commandString = cmdArgs.join(' ');
+        console.log('Generated FFmpeg Command:', commandString);
 
-        return { cmdArgs, outputDuration };
+        return { cmdArgs, outputDuration, commandString };
     } catch (error) {
         console.error('Error creating FFmpeg command:', error);
         return { error: error.message };
