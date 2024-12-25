@@ -18,23 +18,43 @@ function formatDuration(duration) {
 }
 
 function Project() {
+  const [pathSeparator, setPathSeparator] = useState(localStorage.getItem('pathSeparator') || '');
+  useEffect(() => {
+    if (!pathSeparator) {
+      // Fetch the path separator from the main process
+      window.api.send('get-path-separator');
+      window.api.receive('path-separator-response', (separator) => {
+        setPathSeparator(separator);
+        localStorage.setItem('pathSeparator', separator); // Cache the separator
+      });
+    }
+
+    // Cleanup the listener when the component unmounts
+    return () => {
+      window.api.removeAllListeners('path-separator-response');
+    };
+  }, [pathSeparator]);
+
   const [audioFiles, setAudioFiles] = useState(JSON.parse(localStorage.getItem('audioFiles')) || []);
   const [imageFiles, setImageFiles] = useState(JSON.parse(localStorage.getItem('imageFiles')) || []);
-
+  const [outputFolder, setOutputFolder] = useState(localStorage.getItem('outputFolder') || '');
   const [audioRowSelection, setAudioRowSelection] = useState({});
   const [imageRowSelection, setImageRowSelection] = useState({});
-
   const [ffmpegError, setFfmpegError] = useState(null);
 
   useEffect(() => {
     localStorage.setItem('audioFiles', JSON.stringify(audioFiles));
     localStorage.setItem('imageFiles', JSON.stringify(imageFiles));
-  }, [audioFiles, imageFiles]);
+    localStorage.setItem('outputFolder', outputFolder);
+  }, [audioFiles, imageFiles, outputFolder]);
 
   const generateUniqueId = () => {
     return `id-${Date.now()}-${Math.floor(Math.random() * 1000000)}`;
   };
 
+  const handleOutputFolderChange = (event) => {
+    setOutputFolder(event.target.value);
+  };
   const handleFilesSelect = (audioData, imageData) => {
 
     if (audioData.length) {
@@ -78,9 +98,12 @@ function Project() {
   const clearComponent = () => {
     setAudioFiles([]);
     setImageFiles([]);
+    setOutputFolder('');
     localStorage.removeItem('audioFiles');
     localStorage.removeItem('imageFiles');
+    localStorage.removeItem('outputFolder');
   };
+
 
   const getSelectedAudioRows = () => {
     const selectedRows = audioFiles.filter((file) => audioRowSelection[file.id]);
@@ -120,44 +143,58 @@ function Project() {
     const selectedImages = imageFiles.filter((file) => imageRowSelection[file.id]);
 
     if (selectedAudio.length === 0 || selectedImages.length === 0) {
-      alert('Please select at least one audio and one image file.');
-      return;
+        alert('Please select at least one audio and one image file.');
+        return;
     }
 
-    console.log('Calling generateFFmpegCommand...');
+    // If outputFolder is not set, use the first audio file's folder
+    if (!outputFolder && selectedAudio.length > 0) {
+        const audioFilePath = selectedAudio[0].filepath;
+        const folderPath = audioFilePath.split(pathSeparator).slice(0, -1).join(pathSeparator);
+        setOutputFolder(folderPath);
+        localStorage.setItem('outputFolder', folderPath);
+    }
+
+    const defaultOutputFolder = outputFolder || selectedAudio[0].filepath.split(pathSeparator).slice(0, -1).join(pathSeparator);
+    const outputFilePath = `${defaultOutputFolder}${pathSeparator}output-video.mp4`;
+
+    console.log('outputFolder:', outputFolder);
+    console.log('pathSeparator:', pathSeparator);
+    console.log('outputFilePath:', outputFilePath);
 
     // Create FFmpeg command
     const ffmpegCommand = createFFmpegCommand({
-      audioInputs: selectedAudio,
-      imageInputs: selectedImages,
-      outputFilepath: "E:\\martinradio\\upload\\Casselberry-DuPreé – City Down\\video.mp4",
-      width: 1920,
-      height: 1080,
-      paddingCheckbox: false,
-      backgroundColor: null,
-      stretchImageToFit: false,
-      repeatLoop: false,
+        audioInputs: selectedAudio,
+        imageInputs: selectedImages,
+        outputFilepath: outputFilePath,
+        width: 1920,
+        height: 1080,
+        paddingCheckbox: false,
+        backgroundColor: null,
+        stretchImageToFit: false,
+        repeatLoop: false,
     });
 
     console.log('FFmpeg Command:', ffmpegCommand.cmdArgs.join(" "));
 
     // Send the ffmpeg command to backend
     window.api.send('run-ffmpeg-command', {
-      cmdArgs: ffmpegCommand.cmdArgs,
-      outputDuration: ffmpegCommand.outputDuration,
+        cmdArgs: ffmpegCommand.cmdArgs,
+        outputDuration: ffmpegCommand.outputDuration,
     });
 
     // Handle progress
     window.api.receive('ffmpeg-output', (data) => {
-      console.log('FFmpeg Output:', data);
+        console.log('FFmpeg Output:', data);
     });
 
     // Handle errors
     window.api.receive('ffmpeg-error', (data) => {
-      console.log('FFmpeg Error:', data);
-      setFfmpegError(data); // Set the error message
+        console.log('FFmpeg Error:', data);
+        setFfmpegError(data); // Set the error message
     });
-  };
+};
+
 
 
   const handleFilesMetadata = (filesMetadata) => {
@@ -168,7 +205,7 @@ function Project() {
     }
 
     filesMetadata.forEach(file => {
-      console.log('Project.js handleFilesMetadata:', file.filepath);
+      //console.log('Project.js handleFilesMetadata:', file.filepath);
       if (file.filetype === 'audio') {
         setAudioFiles(prev => {
           const index = prev.findIndex(f => f.filepath === file.filepath);
@@ -241,9 +278,21 @@ function Project() {
         </button>
       </div>
 
+      <div>
+        <label htmlFor="outputFolder">Output Folder:</label>
+        <input
+          type="text"
+          id="outputFolder"
+          value={outputFolder}
+          onChange={handleOutputFolderChange}
+          placeholder="Default: First audio file's folder"
+          className={styles.outputFolderInput}
+        />
+      </div>
+
       <FileUploader onFilesMetadata={handleFilesMetadata} />
 
-      <br /><h2>Audio Files</h2>
+      <h2>Audio Files</h2>
       <Table
         data={audioFiles}
         rowSelection={audioRowSelection}
@@ -251,9 +300,8 @@ function Project() {
         setData={setAudioFiles}
         columns={audioColumns}
       />
-      <button onClick={getSelectedAudioRows}>Get All Selected Audio Rows</button>
 
-      <br /><h2>Image Files</h2>
+      <h2>Image Files</h2>
       <Table
         data={imageFiles}
         rowSelection={imageRowSelection}
@@ -261,9 +309,7 @@ function Project() {
         setData={setImageFiles}
         columns={imageColumns}
       />
-      <button onClick={getSelectedImageRows}>Get All Selected Image Rows</button>
 
-      <br />
       <button className={styles.renderButton} onClick={handleRender}>
         Render
       </button>
@@ -275,7 +321,6 @@ function Project() {
           <pre>{ffmpegError.lastOutput}</pre>
         </div>
       )}
-
     </div>
   );
 }

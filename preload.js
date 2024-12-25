@@ -9,8 +9,9 @@ contextBridge.exposeInMainWorld('api', {
             'unmaximize-window', 
             'close-window',
             'run-ffmpeg-command',
-            'get-audio-metadata',  // Request audio metadata
-            'open-file-dialog'     // Open file dialog
+            'get-audio-metadata',  
+            'open-file-dialog',
+            'get-path-separator'
         ];
         if (validSendChannels.includes(channel)) {
             ipcRenderer.send(channel, data);
@@ -21,8 +22,9 @@ contextBridge.exposeInMainWorld('api', {
             'app_version',
             'ffmpeg-output', 
             'ffmpeg-error',
-            'audio-metadata-response', // Receive audio metadata
-            'selected-file-paths'      // Receive selected file paths
+            'audio-metadata-response', 
+            'selected-file-paths',
+            'path-separator-response'    
         ];
         if (validReceiveChannels.includes(channel)) {
             ipcRenderer.on(channel, (event, ...args) => func(...args));

@@ -37,7 +37,7 @@ const FileUploader = ({ onFilesMetadata }) => {
     });
 
     window.api.receive('audio-metadata-response', (metadata) => {
-      console.log('FileUploader.js filepath:', metadata.filepath); 
+      //console.log('FileUploader.js filepath:', metadata.filepath); 
       onFilesMetadata([{
         filetype: 'audio',
         filepath: metadata.filepath,

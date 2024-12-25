@@ -1,0 +1,125 @@
+FFmpeg command: C:\Users\marti\Documents\projects\electron-ghactions\ffmpeg\win32-x64\lib\ffmpeg.exe -y -i E:/martinradio/upload/2 Sporty Shorty - Chunky But Funky/A1. 2 Sporty Shorty - Chunky But Funky (Radio Version).wav -i E:/martinradio/upload/2 Sporty Shorty - Chunky But Funky/2 Sporty Shorty - Chunky But Funky2.jpg -filter_complex [0:a]apad,aresample=async=1[audio];[1:v]scale=ceil(iw/2)*2:ceil(ih/2)*2[vid0];[vid0]concat=n=1:v=1:a=0[v] -map [v] -map [audio] -c:v libx264 -c:a pcm_s32le -bufsize 3M -crf 18 -pix_fmt yuv420p -tune stillimage -t 238.54 E:\martinradio\upload\2 Sporty Shorty - Chunky But Funky\output-video.mp4
+FFmpeg output: ffmpeg version n6.0-12-ga6dc92968a-20230404 Copyright (c) 2000-2023 the FFmpeg developers
+FFmpeg output:   built with gcc 12.2.0 (crosstool-NG 1.25.0.152_89671bf)
+FFmpeg output:   configuration: --prefix=/ffbuild/prefix --pkg-config-flags=--static --pkg-config=pkg-config --cross-prefix=x86_64-w64-mingw32- --arch=x86_64 --target-os=mingw32 --enable-gpl --enable-version3 --disable-debug --enable-shared --disable-static --disable-w32threads --enable-pthreads --enable-iconv --enable-libxml2 --enable-zlib --enable-libfreetype --enable-libfribidi --enable-gmp --enable-lzma --enable-fontconfig --enable-libvorbis --enable-opencl --disable-libpulse --enable-libvmaf --disable-libxcb --disable-xlib --enable-amf --enable-libaom --enable-libaribb24 --enable-avisynth --enable-chromaprint --enable-libdav1d --enable-libdavs2 --disable-libfdk-aac --enable-ffnvcodec --enable-cuda-llvm --enable-frei0r --enable-libgme --enable-libkvazaar --enable-libass --enable-libbluray --enable-libjxl --enable-libmp3lame --enable-libopus --enable-librist --enable-libssh --enable-libtheora --enable-libvpx --enable-libwebp --enable-lv2 --disable-libmfx --enable-libvpl --enable-openal --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenh264 --enable-libopenjpeg --enable-libopenmpt --enable-librav1e --enable-librubberband --enable-schannel --enable-sdl2 --enable-libsoxr --enable-libsrt --enable-libsvtav1 --enable-libtwolame --enable-libuavs3d --disable-libdrm --disable-vaapi --enable-libvidstab --enable-vulkan --enable-libshaderc --enable-libplacebo --enable-libx264 --enable-libx265 --enable-libxavs2 --enable-libxvid --enable-libzimg --enable-libzvbi --extra-cflags=-DLIBTWOLAME_STATIC --extra-cxxflags= --extra-ldflags=-pthread --extra-ldexeflags= --extra-libs=-lgomp --extra-version=20230404
+FFmpeg output:   libavutil      58.  2.100 / 58.  2.100
+FFmpeg output:   libavcodec     60.  3.100 / 60.  3.100
+FFmpeg output:   libavformat    60.  3.100 / 60.  3.100
+FFmpeg output:   libavdevice    60.  1.100 / 60.  1.100
+FFmpeg output:   libavfilter     9.  3.100 /  9.  3.100
+FFmpeg output:   libswscale      7.  1.100 /  7.  1.100
+FFmpeg output:   libswresample   4. 10.100 /  4. 10.100
+FFmpeg output:   libpostproc    57.  1.100 / 57.  1.100
+FFmpeg output: Guessed Channel Layout for Input Stream #0.0 : stereo
+FFmpeg output: Input #0, wav, from 'E:/martinradio/upload/2 Sporty Shorty - Chunky But Funky/A1. 2 Sporty Shorty - Chunky But Funky (Radio Version).wav':
+FFmpeg output:   Metadata:
+FFmpeg output:     artist          : 2 Sporty Shorty
+FFmpeg output:     IENG            : Funk-Boy-DJ dj
+FFmpeg output:     encoder         : Sound Forge Pro 10.0
+FFmpeg output:     album_artist    : 2 Sporty Shorty
+FFmpeg output:     encoded_by      : Rip By drony_dj
+FFmpeg output:     comment         : http://drony-dj-electrobass.blogspot.com/
+FFmpeg output:     title           : Chunky But Funky (Radio Version)
+FFmpeg output:     lyrics-xxx      : http://drony-dj-electrobass.blogspot.com/
+FFmpeg output:     TEXT            : http://drony-dj-electrobass.blogspot.com/
+FFmpeg output:     album           : Chunky But Funky
+FFmpeg output:     track           : A1/05
+FFmpeg output:     genre           : Bass Music
+FFmpeg output:     grouping        : Hip Hop
+FFmpeg output:     COUNTRY         : US
+FFmpeg output:     publisher       : Dookie Dog Records
+FFmpeg output:     TMED            : Vinyl
+FFmpeg output:     CATALOGNUMBER   : none
+FFmpeg output:     copyright       : 24bit-48khz) (Wav
+FFmpeg output:     date            : 1996
+FFmpeg output:   Duration: 00:03:58.54, bitrate: 4611 kb/s
+FFmpeg output:   Chapters:
+FFmpeg output:     Chapter #0:0: start 0.000000, end 238.536000
+FFmpeg output:   Stream #0:0: Audio: pcm_s24le ([1][0][0][0] / 0x0001), 96000 Hz, 2 channels, s32 (24 bit), 4608 kb/s
+FFmpeg output:   Stream #0:1: Video: mjpeg (Baseline), yuvj444p(pc, bt470bg/unknown/unknown), 600x600, 90k tbr, 90k tbn (attached pic)
+FFmpeg output:     Metadata:
+FFmpeg output:       comment         : Cover (front)
+FFmpeg output: Input #1, image2, from 'E:/martinradio/upload/2 Sporty Shorty - Chunky But Funky/2 Sporty Shorty - Chunky But Funky2.jpg':
+FFmpeg output:   Duration: 00:00:00.04, start: 0.000000, bitrate: 19213 kb/s
+FFmpeg output:   Stream #1:0: Video: mjpeg (Baseline), yuvj444p(pc, bt470bg/unknown/unknown), 600x600, 25 fps, 25 tbr, 25 tbn
+FFmpeg output: Stream mapping:
+FFmpeg output:   Stream #0:0 (pcm_s24le) -> apad:default
+FFmpeg output:   Stream #1:0 (mjpeg) -> scale:default
+FFmpeg output:   concat:out:v0 -> Stream #0:0 (libx264)
+FFmpeg output:   aresample:default -> Stream #0:1 (pcm_s32le)
+FFmpeg output: Press [q] to stop, [?] for help
+FFmpeg output: [swscaler @ 00000232b62417c0] deprecated pixel format used, make sure you did set range correctly
+FFmpeg output:     Last message repeated 1 times
+FFmpeg output: [swscaler @ 00000232b632ce80] deprecated pixel format used, make sure you did set range correctly
+FFmpeg output: [swscaler @ 00000232b64eecc0] deprecated pixel format used, make sure you did set range correctly
+FFmpeg output: [libx264 @ 00000232b5e7be40] VBV bufsize set but maxrate unspecified, ignored
+FFmpeg output: [libx264 @ 00000232b5e7be40] using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX FMA3 BMI2 AVX2
+FFmpeg output: [libx264 @ 00000232b5e7be40] profile High, level 3.0, 4:2:0, 8-bit
+FFmpeg output: [libx264 @ 00000232b5e7be40] 264 - core 164 - H.264/MPEG-4 AVC codec - Copyleft 2003-2023 - http://www.videolan.org/x264.html - options: cabac=1 ref=3 deblock=1:-3:-3 analyse=0x3:0x113 me=hex subme=7 psy=1 psy_rd=2.00:0.70 mixed_ref=1 me_range=16 chroma_me=1 trellis=1 8x8dct=1 cqm=0 deadzone=21,11 fast_pskip=1 chroma_qp_offset=-4 threads=19 lookahead_threads=3 sliced_threads=0 nr=0 decimate=1 interlaced=0 bluray_compat=0 constrained_intra=0 bframes=3 b_pyramid=2 b_adapt=1 b_bias=0 direct=1 weightb=1 open_gop=0 weightp=2 keyint=250 keyint_min=25 scenecut=40 intra_refresh=0 rc_lookahead=40 rc=crf mbtree=1 crf=18.0 qcomp=0.60 qpmin=0 qpmax=69 qpstep=4 ip_ratio=1.40 aq=1:1.20
+FFmpeg output: [mp4 @ 00000232b5e82a40] Could not find tag for codec pcm_s32le in stream #1, codec not currently supported in container
+FFmpeg output: [out#0/mp4 @ 00000232b5e56280] Could not write header (incorrect codec parameters ?): Invalid argument
+FFmpeg output: [aost#0:1/pcm_s32le @ 00000232b5e7d280] Error initializing output stream: 
+FFmpeg output: Conversion failed!
+error.message: Command failed with exit code 1: "C:\Users\marti\Documents\projects\electron-ghactions\ffmpeg\win32-x64\lib\ffmpeg.exe" -y -i "E:/martinradio/upload/2 Sporty Shorty - Chunky But Funky/A1. 2 Sporty Shorty - Chunky But Funky (Radio Version).wav" -i "E:/martinradio/upload/2 Sporty Shorty - Chunky But Funky/2 Sporty Shorty - Chunky But Funky2.jpg" -filter_complex "[0:a]apad,aresample=async=1[audio];[1:v]scale=ceil(iw/2)*2:ceil(ih/2)*2[vid0];[vid0]concat=n=1:v=1:a=0[v]" -map "[v]" -map "[audio]" "-c:v" libx264 "-c:a" pcm_s32le -bufsize 3M -crf 18 -pix_fmt yuv420p -tune stillimage -t 238.54 "E:\martinradio\upload\2 Sporty Shorty - Chunky But Funky\output-video.mp4"
+
+ffmpeg version n6.0-12-ga6dc92968a-20230404 Copyright (c) 2000-2023 the FFmpeg developers\r
+  built with gcc 12.2.0 (crosstool-NG 1.25.0.152_89671bf)\r
+  configuration: --prefix=/ffbuild/prefix --pkg-config-flags=--static --pkg-config=pkg-config --cross-prefix=x86_64-w64-mingw32- --arch=x86_64 --target-os=mingw32 --enable-gpl --enable-version3 --disable-debug --enable-shared --disable-static --disable-w32threads --enable-pthreads --enable-iconv --enable-libxml2 --enable-zlib --enable-libfreetype --enable-libfribidi --enable-gmp --enable-lzma --enable-fontconfig --enable-libvorbis --enable-opencl --disable-libpulse --enable-libvmaf --disable-libxcb --disable-xlib --enable-amf --enable-libaom --enable-libaribb24 --enable-avisynth --enable-chromaprint --enable-libdav1d --enable-libdavs2 --disable-libfdk-aac --enable-ffnvcodec --enable-cuda-llvm --enable-frei0r --enable-libgme --enable-libkvazaar --enable-libass --enable-libbluray --enable-libjxl --enable-libmp3lame --enable-libopus --enable-librist --enable-libssh --enable-libtheora --enable-libvpx --enable-libwebp --enable-lv2 --disable-libmfx --enable-libvpl --enable-openal --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenh264 --enable-libopenjpeg --enable-libopenmpt --enable-librav1e --enable-librubberband --enable-schannel --enable-sdl2 --enable-libsoxr --enable-libsrt --enable-libsvtav1 --enable-libtwolame --enable-libuavs3d --disable-libdrm --disable-vaapi --enable-libvidstab --enable-vulkan --enable-libshaderc --enable-libplacebo --enable-libx264 --enable-libx265 --enable-libxavs2 --enable-libxvid --enable-libzimg --enable-libzvbi --extra-cflags=-DLIBTWOLAME_STATIC --extra-cxxflags= --extra-ldflags=-pthread --extra-ldexeflags= --extra-libs=-lgomp --extra-version=20230404\r
+  libavutil      58.  2.100 / 58.  2.100\r
+  libavcodec     60.  3.100 / 60.  3.100\r
+  libavformat    60.  3.100 / 60.  3.100\r
+  libavdevice    60.  1.100 / 60.  1.100\r
+  libavfilter     9.  3.100 /  9.  3.100\r
+  libswscale      7.  1.100 /  7.  1.100\r
+  libswresample   4. 10.100 /  4. 10.100\r
+  libpostproc    57.  1.100 / 57.  1.100\r
+Guessed Channel Layout for Input Stream #0.0 : stereo\r
+Input #0, wav, from 'E:/martinradio/upload/2 Sporty Shorty - Chunky But Funky/A1. 2 Sporty Shorty - Chunky But Funky (Radio Version).wav':\r
+  Metadata:\r
+    artist          : 2 Sporty Shorty\r
+    IENG            : Funk-Boy-DJ dj\r
+    encoder         : Sound Forge Pro 10.0\r
+    album_artist    : 2 Sporty Shorty\r
+    encoded_by      : Rip By drony_dj\r
+    comment         : http://drony-dj-electrobass.blogspot.com/\r
+    title           : Chunky But Funky (Radio Version)\r
+    lyrics-xxx      : http://drony-dj-electrobass.blogspot.com/\r
+    TEXT            : http://drony-dj-electrobass.blogspot.com/\r
+    album           : Chunky But Funky\r
+    track           : A1/05\r
+    genre           : Bass Music\r
+    grouping        : Hip Hop\r
+    COUNTRY         : US\r
+    publisher       : Dookie Dog Records\r
+    TMED            : Vinyl\r
+    CATALOGNUMBER   : none\r
+    copyright       : 24bit-48khz) (Wav\r
+    date            : 1996\r
+  Duration: 00:03:58.54, bitrate: 4611 kb/s\r
+  Chapters:\r
+    Chapter #0:0: start 0.000000, end 238.536000\r
+  Stream #0:0: Audio: pcm_s24le ([1][0][0][0] / 0x0001), 96000 Hz, 2 channels, s32 (24 bit), 4608 kb/s\r
+  Stream #0:1: Video: mjpeg (Baseline), yuvj444p(pc, bt470bg/unknown/unknown), 600x600, 90k tbr, 90k tbn (attached pic)\r
+    Metadata:\r
+      comment         : Cover (front)\r
+Input #1, image2, from 'E:/martinradio/upload/2 Sporty Shorty - Chunky But Funky/2 Sporty Shorty - Chunky But Funky2.jpg':\r
+  Duration: 00:00:00.04, start: 0.000000, bitrate: 19213 kb/s\r
+  Stream #1:0: Video: mjpeg (Baseline), yuvj444p(pc, bt470bg/unknown/unknown), 600x600, 25 fps, 25 tbr, 25 tbn\r
+Stream mapping:\r
+  Stream #0:0 (pcm_s24le) -> apad:default\r
+  Stream #1:0 (mjpeg) -> scale:default\r
+  concat:out:v0 -> Stream #0:0 (libx264)\r
+  aresample:default -> Stream #0:1 (pcm_s32le)\r
+Press [q] to stop, [?] for help\r
+[swscaler @ 00000232b62417c0] deprecated pixel format used, make sure you did set range correctly\r
+    Last message repeated 1 times\r
+[swscaler @ 00000232b632ce80] deprecated pixel format used, make sure you did set range correctly\r
+[swscaler @ 00000232b64eecc0] deprecated pixel format used, make sure you did set range correctly\r
+[libx264 @ 00000232b5e7be40] VBV bufsize set but maxrate unspecified, ignored\r
+[libx264 @ 00000232b5e7be40] using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX FMA3 BMI2 AVX2\r
+[libx264 @ 00000232b5e7be40] profile High, level 3.0, 4:2:0, 8-bit\r
+[libx264 @ 00000232b5e7be40] 264 - core 164 - H.264/MPEG-4 AVC codec - Copyleft 2003-2023 - http://www.videolan.org/x264.html - options: cabac=1 ref=3 deblock=1:-3:-3 analyse=0x3:0x113 me=hex subme=7 psy=1 psy_rd=2.00:0.70 mixed_ref=1 me_range=16 chroma_me=1 trellis=1 8x8dct=1 cqm=0 deadzone=21,11 fast_pskip=1 chroma_qp_offset=-4 threads=19 lookahead_threads=3 sliced_threads=0 nr=0 decimate=1 interlaced=0 bluray_compat=0 constrained_intra=0 bframes=3 b_pyramid=2 b_adapt=1 b_bias=0 direct=1 weightb=1 open_gop=0 weightp=2 keyint=250 keyint_min=25 scenecut=40 intra_refresh=0 rc_lookahead=40 rc=crf mbtree=1 crf=18.0 qcomp=0.60 qpmin=0 qpmax=69 qpstep=4 ip_ratio=1.40 aq=1:1.20\r
+[mp4 @ 00000232b5e82a40] Could not find tag for codec pcm_s32le in stream #1, codec not currently supported in container\r
+[out#0/mp4 @ 00000232b5e56280] Could not write header (incorrect codec parameters ?): Invalid argument\r
+[aost#0:1/pcm_s32le @ 00000232b5e7d280] Error initializing output stream: \r
+Conversion failed!

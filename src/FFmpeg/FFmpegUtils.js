@@ -7,58 +7,81 @@ export function createFFmpegCommand(configs) {
             width = 2000,
             height = 2000,
             paddingCheckbox = false,
-            forceOriginalAspectRatio = true,
             backgroundColor = 'black',
             stretchImageToFit = false,
-            repeatLoop = true
+            repeatLoop = true,
+            debugBypass = false // Debug flag
         } = configs;
 
-        console.log('ffmpegUtils Configs:', configs);
+        console.log('FFmpeg Configurations:', configs);
 
-        let cmdArgs = [];
-        cmdArgs.push('-y'); // Overwrite output file if exists
+        // Determine the file path separator
+        const sampleInput = audioInputs.length > 0 ? audioInputs[0].filepath : imageInputs[0].filepath;
+        const osSeparator = sampleInput.includes('\\') ? '\\' : '/';
 
+        // Debug mode: Simple MP3 conversion
+        if (debugBypass && audioInputs.length > 0) {
+            const inputAudio = audioInputs[0].filepath;
+            const uniqueTimestamp = Date.now();
+            const outputAudio = inputAudio.replace(/\.[^/.]+$/, `-converted-${uniqueTimestamp}.mp3`);
+
+            const cmdArgs = [
+                '-y',
+                '-i', `${inputAudio}`,
+                '-codec:a', 'libmp3lame',
+                '-qscale:a', '9',
+                `${outputAudio}`
+            ];
+
+            console.log('Generated Debug Command:', cmdArgs.join(' '));
+            return { cmdArgs, outputDuration: 0, commandString: cmdArgs.join(' ') };
+        }
+
+        // Initialize command arguments
+        const cmdArgs = ['-y']; // Overwrite output files
         let outputDuration = 0;
         audioInputs.forEach(audio => {
             outputDuration += audio.duration;
         });
+
         const imgDuration = outputDuration / imageInputs.length;
 
-        let fc_audioFiles = '';
-        let fc_imgOrder = '';
-        let fc_finalPart = '';
-
-        [...audioInputs, ...imageInputs].forEach((file, index) => {
-            cmdArgs.push('-r', '2', '-i', `"${file.filepath.replace(/\\/g, '/')}"`);
-
-            if (file.filetype === 'audio') {
-                fc_audioFiles += `[${index}:a]`;
-            } else if (file.filetype === 'image') {
-                let scaling = `scale=w=${width}:h=${height}`;
-                let padding = paddingCheckbox
-                    ? `,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2:color=${backgroundColor}`
-                    : '';
-                if (stretchImageToFit) {
-                    padding = '';
-                }
-                fc_imgOrder += `[${index}:v]${scaling}${padding},setsar=1,loop=${Math.ceil(imgDuration * 2)}:${Math.ceil(imgDuration * 2)}[v${index}];`;
-                fc_finalPart += `[v${index}]`;
-            }
+        // Input configuration
+        audioInputs.forEach((audio, index) => {
+            cmdArgs.push('-i', `${audio.filepath.replace(/\\/g, '/')}`);
         });
 
-        // Concatenate audio files if more than one
-        if (audioInputs.length > 1) {
-            fc_audioFiles += `concat=n=${audioInputs.length}:v=0:a=1[a];`;
+        imageInputs.forEach((image, index) => {
+            cmdArgs.push('-i', `${image.filepath.replace(/\\/g, '/')}`);
+        });
+
+        // Filter complex for audio and video
+        let filterComplex = '';
+        if (audioInputs.length > 0) {
+            filterComplex += `[0:a]apad,aresample=async=1[audio];`;
         }
 
-        // Build final video concat
-        fc_finalPart += `concat=n=${imageInputs.length}:v=1:a=0,pad=ceil(iw/2)*2:ceil(ih/2)*2[v]`;
+        imageInputs.forEach((image, index) => {
+            let scaleFilter = `scale=ceil(iw/2)*2:ceil(ih/2)*2`;
+            let padFilter = paddingCheckbox
+                ? `,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2:color=${backgroundColor}`
+                : '';
+            filterComplex += `[${index + audioInputs.length}:v]${scaleFilter}${padFilter}[vid${index}];`;
+        });
 
-        // Final filter_complex
-        let filterComplex = `${fc_audioFiles}${fc_imgOrder}${fc_finalPart}`;
+        // Concatenate video inputs
+        const videoConcat = imageInputs.map((_, index) => `[vid${index}]`).join('');
+        filterComplex += `${videoConcat}concat=n=${imageInputs.length}:v=1:a=0[v]`;
 
-        cmdArgs.push('-filter_complex', `"${filterComplex}"`);
-        cmdArgs.push('-map', '[v]', '-map', '[a]');
+        cmdArgs.push('-filter_complex', filterComplex);
+
+        // Map streams
+        cmdArgs.push('-map', '[v]');
+        if (audioInputs.length > 0) {
+            cmdArgs.push('-map', '[audio]');
+        }
+
+        // Codec and output options
         cmdArgs.push(
             '-c:v', 'libx264',
             '-c:a', 'pcm_s32le',
@@ -67,7 +90,7 @@ export function createFFmpegCommand(configs) {
             '-pix_fmt', 'yuv420p',
             '-tune', 'stillimage',
             '-t', outputDuration.toFixed(2),
-            `"${outputFilepath.replace(/\\/g, '/')}"` // Normalize output path
+            `${outputFilepath.replace(/\\/g, osSeparator)}`
         );
 
         const commandString = cmdArgs.join(' ');
