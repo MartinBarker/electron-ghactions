@@ -247,6 +247,19 @@
   padding: 1rem;
   word-break: break-word;
   overflow-wrap: break-word;
+  padding-top: 0.5rem; /* Decrease padding above text */
+  position: relative; /* For positioning the close button */
+}
+
+/* Style for the close button */
+.closeButton {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
 }
 
 /* Add media queries for smaller screens */

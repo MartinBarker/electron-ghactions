@@ -68,10 +68,10 @@ function Project() {
     };
   }, [pathSeparator]);
 
-  const [audioFiles, setAudioFiles] = useState(JSON.parse(localStorage.getItem('audioFiles')) || []);
-  const [imageFiles, setImageFiles] = useState(JSON.parse(localStorage.getItem('imageFiles')) || []);
-  const [audioRowSelection, setAudioRowSelection] = useState({});
-  const [imageRowSelection, setImageRowSelection] = useState({});
+  const [audioFiles, setAudioFiles] = useState(getInitialState('audioFiles', []));
+  const [imageFiles, setImageFiles] = useState(getInitialState('imageFiles', []));
+  const [audioRowSelection, setAudioRowSelection] = useState(getInitialState('audioRowSelection', {}));
+  const [imageRowSelection, setImageRowSelection] = useState(getInitialState('imageRowSelection', {}));
   const [ffmpegError, setFfmpegError] = useState(null);
 
   const [outputFolder, setOutputFolder] = useState(localStorage.getItem('outputFolder') || '');
@@ -280,6 +280,7 @@ function Project() {
     window.api.receive('ffmpeg-error', (data) => {
       console.log('FFmpeg Error:', data);
       setFfmpegError(data);
+      updateRender(renderId, { progress: 'error' }); // Set progress to "error"
     });
 
     addRender({
@@ -407,6 +408,10 @@ function Project() {
   const handleBackgroundColorChange = (e) => {
     const sanitizedColor = validateHexColor(e.target.value);
     setBackgroundColor(sanitizedColor);
+  };
+
+  const handleCloseError = () => {
+    setFfmpegError(null);
   };
 
   return (
@@ -561,6 +566,7 @@ function Project() {
 
       {ffmpegError && (
         <div className={styles.errorContainer}>
+          <button className={styles.closeButton} onClick={handleCloseError}>x</button>
           <h3>FFmpeg Error:</h3>
           <p>{ffmpegError.message}</p>
           <pre>{ffmpegError.lastOutput}</pre>
