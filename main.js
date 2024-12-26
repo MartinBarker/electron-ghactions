@@ -144,10 +144,14 @@ function setupAutoUpdater() {
 }
 
 // IPC event to run an FFmpeg command
-ipcMain.on('run-ffmpeg-command', async (event, ffmpegArgs, cutDuration) => {
+ipcMain.on('run-ffmpeg-command', async (event, ffmpegArgs) => {
   try {
     var cmdArgsList = ffmpegArgs.cmdArgs;
+    var duration = parseInt(ffmpegArgs.outputDuration, 10);
+    var renderId = ffmpegArgs.renderId;
     console.log('Received FFmpeg command:', cmdArgsList);
+    console.log('duration:', duration);
+
     const ffmpegPath = getFfmpegPath();
     console.log('Using FFmpeg path:', ffmpegPath);
     logStream.write(`FFmpeg command: ${ffmpegPath} ${cmdArgsList.join(' ')}\n`);
@@ -169,9 +173,10 @@ ipcMain.on('run-ffmpeg-command', async (event, ffmpegArgs, cutDuration) => {
       const match = line.match(/time=([\d:.]+)/);
       if (match) {
         const elapsed = match[1].split(':').reduce((acc, time) => (60 * acc) + +time, 0);
-        progress = cutDuration ? Math.min((elapsed / cutDuration) * 100, 100) : 0;
-        console.log('FFmpeg progress:', progress);
+        progress = duration ? Math.min((elapsed / duration) * 100, 100) : 0;
+        progress = Math.round(progress); 
         event.reply('ffmpeg-progress', { 
+          renderId: renderId,
           pid: process.pid, 
           progress 
         });
@@ -188,7 +193,6 @@ ipcMain.on('run-ffmpeg-command', async (event, ffmpegArgs, cutDuration) => {
     event.reply('ffmpeg-error', { message: error.message, lastOutput: errorOutput });
   }
 });
-
 
 // Function to determine FFmpeg path
 function getFfmpegPath() {
@@ -228,6 +232,15 @@ ipcMain.on('get-audio-metadata', async (event, filePath) => {
   }
 });
 
+ipcMain.on('open-folder-dialog', async (event) => {
+  const result = await dialog.showOpenDialog({
+    properties: ['openDirectory']
+  });
+  
+  if (!result.canceled) {
+    event.reply('selected-folder', result.filePaths[0]);
+  }
+});
 
 ipcMain.on('open-file-dialog', async (event) => {
   try {
@@ -277,7 +290,6 @@ ipcMain.on('open-file-dialog', async (event) => {
     console.error('Error opening file dialog:', error);
   }
 });
-
 
 // Existing IPC events
 ipcMain.on('app_version', (event) => {

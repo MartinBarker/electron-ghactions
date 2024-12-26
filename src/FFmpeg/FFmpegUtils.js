@@ -10,10 +10,13 @@ export function createFFmpegCommand(configs) {
             backgroundColor = 'black',
             stretchImageToFit = false,
             repeatLoop = true,
-            debugBypass = false // Debug flag
+            debugBypass = false
         } = configs;
 
         console.log('FFmpeg Configurations:', configs);
+
+        // Determine output format
+        const isMP4 = outputFilepath.toLowerCase().endsWith('.mp4');
 
         // Determine the file path separator
         const sampleInput = audioInputs.length > 0 ? audioInputs[0].filepath : imageInputs[0].filepath;
@@ -58,7 +61,7 @@ export function createFFmpegCommand(configs) {
         // Filter complex for audio and video
         let filterComplex = '';
         if (audioInputs.length > 0) {
-            filterComplex += `[0:a]apad,aresample=async=1[audio];`;
+            filterComplex += `[0:a]apad,aresample=async=1:out_sample_rate=${isMP4 ? '44100' : '48000'}[audio];`;
         }
 
         imageInputs.forEach((image, index) => {
@@ -84,11 +87,27 @@ export function createFFmpegCommand(configs) {
         // Codec and output options
         cmdArgs.push(
             '-c:v', 'libx264',
-            '-c:a', 'pcm_s32le',
             '-bufsize', '3M',
+            '-maxrate', '3M',  // Add maxrate to match bufsize
             '-crf', '18',
             '-pix_fmt', 'yuv420p',
-            '-tune', 'stillimage',
+            '-tune', 'stillimage'
+        );
+
+        // Audio codec selection based on output format
+        if (isMP4) {
+            cmdArgs.push(
+                '-c:a', 'aac',
+                '-b:a', '320k'
+            );
+        } else {
+            // For MKV, we can use PCM
+            cmdArgs.push(
+                '-c:a', 'pcm_s16le'  // Using 16-bit PCM instead of 32-bit for better compatibility
+            );
+        }
+
+        cmdArgs.push(
             '-t', outputDuration.toFixed(2),
             `${outputFilepath.replace(/\\/g, osSeparator)}`
         );

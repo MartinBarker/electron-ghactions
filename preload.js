@@ -11,6 +11,7 @@ contextBridge.exposeInMainWorld('api', {
             'run-ffmpeg-command',
             'get-audio-metadata',  
             'open-file-dialog',
+            'open-folder-dialog',
             'get-path-separator'
         ];
         if (validSendChannels.includes(channel)) {
@@ -24,7 +25,9 @@ contextBridge.exposeInMainWorld('api', {
             'ffmpeg-error',
             'audio-metadata-response', 
             'selected-file-paths',
-            'path-separator-response'    
+            'selected-folder',
+            'path-separator-response',
+            'ffmpeg-progress'    
         ];
         if (validReceiveChannels.includes(channel)) {
             ipcRenderer.on(channel, (event, ...args) => func(...args));
