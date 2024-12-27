@@ -14,6 +14,122 @@ export function createFFmpegCommand(configs) {
         } = configs;
 
         console.log('FFmpeg Configurations:', configs);
+        const cmdArgs = ['-y']; // Overwrite output files
+
+        // get output duration
+        let outputDuration = 0;
+        audioInputs.forEach(audio => {
+            outputDuration += audio.duration;
+        });
+
+        // determine duration for each image, split evenly across the output duration
+        var imgDuration = Math.round(((outputDuration / imageInputs.length) * 2) * 100) / 100;
+        console.log('there are ' + imageInputs.length + ' images, each will be displayed for ' + imgDuration + ' seconds');
+
+        // add audio inputs
+        audioInputs.forEach((audio) => {
+            cmdArgs.push('-i', `${audio.filepath.replace(/\\/g, '/')}`);
+        });
+
+        // add image inputs
+        imageInputs.forEach((image) => {
+            cmdArgs.push('-i', `${image.filepath.replace(/\\/g, '/')}`);
+        });
+
+        // generate filter complex
+        var filterComplexStr = '';
+
+        // 1. Add boxes for each audio input
+        filterComplexStr += audioInputs.map((_, index) => `[${index}:a]`).join('');
+
+        // 2. Concat all audio inputs
+        filterComplexStr += `concat=n=${audioInputs.length}:v=0:a=1[a];`;
+
+        // 3/4. Process each image input
+        imageInputs.forEach((image, index) => {
+            const imgIndex = audioInputs.length + index;
+            filterComplexStr += `[${imgIndex}:v]scale=w=${width}:h=${height},setsar=1,loop=${imgDuration}:${imgDuration}[v${imgIndex}];`;
+        });
+
+        // 5. Concat all scaled images and pad them
+        const imageRefs = imageInputs.map((_, index) => `[v${audioInputs.length + index}]`).join('');
+        filterComplexStr += `${imageRefs}concat=n=${imageInputs.length}:v=1:a=0,pad=ceil(iw/2)*2:ceil(ih/2)*2[v]`;
+
+        console.log('Generated filter complex:', filterComplexStr);
+
+        // add filter complex
+        cmdArgs.push('-filter_complex', filterComplexStr);
+
+        // add map commands
+        cmdArgs.push('-map', '[v]');
+        cmdArgs.push('-map', '[a]');
+
+        // Codec selection based on output format
+        const isMP4 = outputFilepath.toLowerCase().endsWith('.mp4');
+        if (isMP4) {
+            cmdArgs.push(
+                '-c:a', 'aac',
+                '-b:a', '320k',
+                '-c:v', 'h264',
+                '-movflags', '+faststart',
+                '-profile:v', 'high',
+                '-level:v', '4.2'
+            );
+        } else {
+            cmdArgs.push(
+                '-c:a', 'pcm_s32le',
+                '-c:v', 'libx264'
+            );
+        }
+
+        // add bufsize
+        cmdArgs.push('-bufsize', '3M');
+
+        // add crf
+        cmdArgs.push('-crf', '18');
+
+        // add pix fmt
+        cmdArgs.push('-pix_fmt', 'yuv420p');
+
+        // add tune
+        cmdArgs.push('-tune', 'stillimage');
+
+        // add output duration
+        cmdArgs.push('-t', `${outputDuration}`);
+
+        // add output file path
+        cmdArgs.push(`${outputFilepath}`);
+
+        // generate command string
+        const commandString = cmdArgs.join(' ');
+        console.log('\n\n returning cmdArgs = ', cmdArgs, '\n\n')
+
+        // return command string
+        return { cmdArgs, outputDuration, commandString };
+    } catch (error) {
+        console.error('Error creating FFmpeg command:', error);
+        return { error: error.message };
+    }
+}
+
+
+
+export function createFFmpegCommand2(configs) {
+    try {
+        const {
+            audioInputs = [],
+            imageInputs = [],
+            outputFilepath,
+            width = 2000,
+            height = 2000,
+            paddingCheckbox = false,
+            backgroundColor = 'black',
+            stretchImageToFit = false,
+            repeatLoop = true,
+            debugBypass = false
+        } = configs;
+
+        console.log('FFmpeg Configurations:', configs);
 
         // Determine output format
         const isMP4 = outputFilepath.toLowerCase().endsWith('.mp4');
@@ -21,24 +137,6 @@ export function createFFmpegCommand(configs) {
         // Determine the file path separator
         const sampleInput = audioInputs.length > 0 ? audioInputs[0].filepath : imageInputs[0].filepath;
         const osSeparator = sampleInput.includes('\\') ? '\\' : '/';
-
-        // Debug mode: Simple MP3 conversion
-        if (debugBypass && audioInputs.length > 0) {
-            const inputAudio = audioInputs[0].filepath;
-            const uniqueTimestamp = Date.now();
-            const outputAudio = inputAudio.replace(/\.[^/.]+$/, `-converted-${uniqueTimestamp}.mp3`);
-
-            const cmdArgs = [
-                '-y',
-                '-i', `${inputAudio}`,
-                '-codec:a', 'libmp3lame',
-                '-qscale:a', '9',
-                `${outputAudio}`
-            ];
-
-            console.log('Generated Debug Command:', cmdArgs.join(' '));
-            return { cmdArgs, outputDuration: 0, commandString: cmdArgs.join(' ') };
-        }
 
         // Initialize command arguments
         const cmdArgs = ['-y']; // Overwrite output files

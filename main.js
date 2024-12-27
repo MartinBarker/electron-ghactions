@@ -175,6 +175,7 @@ ipcMain.on('run-ffmpeg-command', async (event, ffmpegArgs) => {
         const elapsed = match[1].split(':').reduce((acc, time) => (60 * acc) + +time, 0);
         progress = duration ? Math.min((elapsed / duration) * 100, 100) : 0;
         progress = Math.round(progress); 
+        console.log('progress=',progress)
         event.reply('ffmpeg-progress', { 
           renderId: renderId,
           pid: process.pid, 
