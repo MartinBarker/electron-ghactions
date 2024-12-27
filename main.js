@@ -14,8 +14,11 @@ const { autoUpdater } = pkg;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const logStream = fs.createWriteStream(join(__dirname, 'output.log'), { flags: 'a' });
-logStream.write('Application started on ' + new Date().toISOString() + '\n');  // Initializing log entry
+let logStream;
+if (!app.isPackaged) {
+  logStream = fs.createWriteStream(join(__dirname, 'output.log'), { flags: 'a' });
+  logStream.write('Application started on ' + new Date().toISOString() + '\n');  // Initializing log entry
+}
 
 let mainWindow;
 
@@ -154,7 +157,9 @@ ipcMain.on('run-ffmpeg-command', async (event, ffmpegArgs) => {
 
     const ffmpegPath = getFfmpegPath();
     console.log('Using FFmpeg path:', ffmpegPath);
-    logStream.write(`FFmpeg command: ${ffmpegPath} ${cmdArgsList.join(' ')}\n`);
+    if (!app.isPackaged) {
+      logStream.write(`FFmpeg command: ${ffmpegPath} ${cmdArgsList.join(' ')}\n`);
+    }
     
     const process = execa(ffmpegPath, cmdArgsList);
     const rl = readline.createInterface({ input: process.stderr });
@@ -163,7 +168,9 @@ ipcMain.on('run-ffmpeg-command', async (event, ffmpegArgs) => {
     const outputBuffer = [];
 
     rl.on('line', (line) => {
-      logStream.write('FFmpeg output: ' + line + '\n'); 
+      if (!app.isPackaged) {
+        logStream.write('FFmpeg output: ' + line + '\n'); 
+      }
       
       outputBuffer.push(line);
       if (outputBuffer.length > 10) {
@@ -189,7 +196,9 @@ ipcMain.on('run-ffmpeg-command', async (event, ffmpegArgs) => {
     event.reply('ffmpeg-output', { stdout: result.stdout, progress: 100 });
   } catch (error) {
     console.error('FFmpeg command failed:', error.message);
-    logStream.write('error.message: ' + error.message + '\n'); 
+    if (!app.isPackaged) {
+      logStream.write('error.message: ' + error.message + '\n'); 
+    }
     const errorOutput = error.stderr ? error.stderr.split('\n').slice(-10).join('\n') : 'No error details';
     event.reply('ffmpeg-error', { message: error.message, lastOutput: errorOutput });
   }
