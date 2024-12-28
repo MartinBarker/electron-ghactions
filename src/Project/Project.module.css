@@ -39,6 +39,10 @@
   margin: 10px auto;
 }
 
+.blackText{
+  color:black;
+}
+
 .header {
   display: flex;
   align-items: center;

@@ -1,6 +1,7 @@
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { app, BrowserWindow, ipcMain, protocol, session, dialog, Menu } from 'electron';
+import { nativeImage } from 'electron';
 import { execa } from 'execa';
 import pkg from 'electron-updater';
 import path from 'path';
@@ -8,7 +9,6 @@ import fs from 'fs';
 import readline from 'readline';
 import sharp from 'sharp';
 import musicMetadata from 'music-metadata';
-import iconv from 'iconv-lite';
 
 const { autoUpdater } = pkg;
 const __filename = fileURLToPath(import.meta.url);
@@ -29,9 +29,56 @@ const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'webp', 'he
 // Custom protocol registration
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } },
+  { scheme: 'localfile', privileges: { secure: true, standard: true } },
 ]);
 
 app.whenReady().then(() => {
+
+  // Register custom protocol to handle local files
+  protocol.registerFileProtocol('localfile', (request, callback) => {
+    const filePath = path.normalize(decodeURIComponent(request.url.replace('localfile://', '')));
+    callback({ path: filePath });
+  });
+
+
+  protocol.registerBufferProtocol('thum', async (request, callback) => {
+    const url = decodeURIComponent(request.url.replace('thum:///', ''));
+    console.log('Thumbnail request for:', url);
+
+    try {
+
+      const fallbackImage = nativeImage.createFromPath(url).resize({ width: 200 });
+      callback({
+        mimeType: 'image/png',
+        data: fallbackImage.toPNG(),
+      });
+
+
+      /* //https://github.com/electron/electron/issues/45102
+      if (!fs.existsSync(url)) {
+        throw new Error(`File not found: ${url}`);
+      }
+  
+      const thumbnailSize = { width: 200, height: 200 }; // Only width matters on Windows
+      const thumbnail = await nativeImage.createThumbnailFromPath(url, { width: thumbnailSize.width });
+  
+      callback({
+        mimeType: 'image/png',
+        data: thumbnail.toPNG(),
+      });
+      */
+    } catch (error) {
+      console.error('Error generating thumbnail:', error);
+      // Provide an empty buffer and a valid MIME type to avoid breaking the app
+      callback({
+        mimeType: 'image/png',
+        data: Buffer.alloc(0), // Empty image buffer
+      });
+
+
+    }
+  });
+
   createWindow();
 
   // Content security policy
@@ -39,11 +86,9 @@ app.whenReady().then(() => {
     callback({
       responseHeaders: {
         ...details.responseHeaders,
-        'Content-Security-Policy': [
-          "default-src 'self'; script-src 'self' 'unsafe-inline' http://localhost:3000; style-src 'self' 'unsafe-inline' http://localhost:3000; connect-src 'self' http://localhost:3000; img-src 'self' data: blob:; font-src 'self';"
-        ]
+        'Content-Security-Policy': ["default-src 'self'; script-src 'self' 'unsafe-inline' http://localhost:3000; style-src 'self' 'unsafe-inline' http://localhost:3000; connect-src 'self' http://localhost:3000; img-src 'self' data: blob: localfile: thum:; font-src 'self';"]
       }
-    })
+    });
   })
 
   app.on('activate', () => {
@@ -119,7 +164,7 @@ function createWindow() {
   const menu = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menu); // Sets the application-wide menu
 
-  
+
   // window item -------
 
   mainWindow.loadURL(app.isPackaged ? './build/index.html' : 'http://localhost:3000');
@@ -160,7 +205,7 @@ ipcMain.on('run-ffmpeg-command', async (event, ffmpegArgs) => {
     if (!app.isPackaged) {
       logStream.write(`FFmpeg command: ${ffmpegPath} ${cmdArgsList.join(' ')}\n`);
     }
-    
+
     const process = execa(ffmpegPath, cmdArgsList);
     const rl = readline.createInterface({ input: process.stderr });
 
@@ -169,9 +214,9 @@ ipcMain.on('run-ffmpeg-command', async (event, ffmpegArgs) => {
 
     rl.on('line', (line) => {
       if (!app.isPackaged) {
-        logStream.write('FFmpeg output: ' + line + '\n'); 
+        logStream.write('FFmpeg output: ' + line + '\n');
       }
-      
+
       outputBuffer.push(line);
       if (outputBuffer.length > 10) {
         outputBuffer.shift(); // Keep only the last 10 lines
@@ -181,12 +226,12 @@ ipcMain.on('run-ffmpeg-command', async (event, ffmpegArgs) => {
       if (match) {
         const elapsed = match[1].split(':').reduce((acc, time) => (60 * acc) + +time, 0);
         progress = duration ? Math.min((elapsed / duration) * 100, 100) : 0;
-        progress = Math.round(progress); 
-        console.log('progress=',progress)
-        event.reply('ffmpeg-progress', { 
+        progress = Math.round(progress);
+        console.log('progress=', progress)
+        event.reply('ffmpeg-progress', {
           renderId: renderId,
-          pid: process.pid, 
-          progress 
+          pid: process.pid,
+          progress
         });
       }
     });
@@ -197,7 +242,7 @@ ipcMain.on('run-ffmpeg-command', async (event, ffmpegArgs) => {
   } catch (error) {
     console.error('FFmpeg command failed:', error.message);
     if (!app.isPackaged) {
-      logStream.write('error.message: ' + error.message + '\n'); 
+      logStream.write('error.message: ' + error.message + '\n');
     }
     const errorOutput = error.stderr ? error.stderr.split('\n').slice(-10).join('\n') : 'No error details';
     event.reply('ffmpeg-error', { message: error.message, lastOutput: errorOutput });
@@ -246,7 +291,7 @@ ipcMain.on('open-folder-dialog', async (event) => {
   const result = await dialog.showOpenDialog({
     properties: ['openDirectory']
   });
-  
+
   if (!result.canceled) {
     event.reply('selected-folder', result.filePaths[0]);
   }

@@ -237,26 +237,31 @@ function Project() {
     }
   };
 
-  const Thumbnail = ({ src }) => (
+const Thumbnail = ({ src }) => {
+  // Use `thum://` protocol for thumbnail generation
+  const thumbnailSrc = `thum:///${src}`;
+  return (
     <img
-      src={src}
+      src={thumbnailSrc}
       alt="thumbnail"
       className={styles.thumbnail}
       style={{ width: '100px', height: 'auto' }}
     />
   );
+};
+
 
   const SortableImage = ({ file }) => {
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: file.id });
-
+  
     const style = {
       transform: CSS.Transform.toString(transform),
       transition,
     };
-
+  
     return (
       <div ref={setNodeRef} style={style} className={styles.imageItem} {...attributes} {...listeners}>
-        <Thumbnail src={`path/to/thumbnails/${file.filename}`} />
+        <Thumbnail src={file.filepath} />
         <div className={styles.imageOptions}>
           <label>
             <input
@@ -610,7 +615,7 @@ function Project() {
           </div>
 
           <div className={styles.renderOptionGroup}>
-            <h3>Image Timeline</h3>
+            <h3 className={styles.blackText}>Image Timeline</h3>
             <DndContext collisionDetection={closestCenter} onDragEnd={handleImageReorder}>
               <SortableContext items={imageFiles.map((file) => file.id)} strategy={verticalListSortingStrategy}>
                 <div className={styles.imageTimeline}>
