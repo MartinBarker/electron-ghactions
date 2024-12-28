@@ -41,7 +41,7 @@ function Project() {
   };
 
   const updateRender = (id, update) => {
-    setRenders(renders => renders.map(render => render.id === id ? { ...render, ...update } : render));
+    setRenders((renders) => renders.map((render) => (render.id === id ? { ...render, ...update } : render)));
   };
 
   const removeRender = (id) => {
@@ -414,6 +414,53 @@ function Project() {
     setFfmpegError(null);
   };
 
+  // renders list table
+  const renderColumns = [
+    { accessorKey: 'id', header: 'Render ID' },
+    { accessorKey: 'pid', header: 'PID' },
+    { accessorKey: 'progress', header: 'Progress', cell: ({ row }) => `${row.original.progress}%` },
+    {
+      accessorKey: 'error',
+      header: 'Error',
+      cell: ({ row }) =>
+        row.original.error ? (
+          <span style={{ color: 'red' }}>{row.original.error}</span>
+        ) : (
+          <span>No Errors</span>
+        ),
+    },
+    {
+      accessorKey: 'actions',
+      header: 'Actions',
+      cell: ({ row }) => (
+        <div>
+          {row.original.progress === 100 && (
+            <>
+              <button onClick={() => openFolder(row.original.outputFolder)}>Open Folder</button>
+              <button onClick={() => openFile(row.original.outputFile)}>Open File</button>
+            </>
+          )}
+        </div>
+      ),
+    },
+  ];
+
+  const openFolder = (folderPath) => {
+    if (folderPath) {
+      window.api.send('open-folder', folderPath);
+    } else {
+      alert('Folder path not available.');
+    }
+  };
+
+  const openFile = (filePath) => {
+    if (filePath) {
+      window.api.send('open-file', filePath);
+    } else {
+      alert('File path not available.');
+    }
+  };
+
   return (
     <div className={styles.projectContainer}>
       <div className={styles.header}>
@@ -575,6 +622,12 @@ function Project() {
 
       <div className={styles.rendersSection}>
         <h2>Renders List</h2>
+        <Table
+          data={renders}
+          setData={setRenders}
+          columns={renderColumns}
+        />
+        {/*}
         {renders.map(render => (
           <div key={render.id} className={styles.renderItem}>
             <div>Render ID: {render.id}</div>
@@ -590,6 +643,7 @@ function Project() {
             </div>
           </div>
         ))}
+          */}
       </div>
     </div>
   );
