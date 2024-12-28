@@ -3,6 +3,9 @@ import styles from './Project.module.css';
 import FileUploader from '../FileUploader/FileUploader.js';
 import Table from '../Table/Table.js';
 import { createFFmpegCommand } from '../FFmpeg/FFmpegUtils.js';
+import { DndContext, closestCenter } from '@dnd-kit/core';
+import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 function formatDuration(duration) {
   if (!duration || duration === 'Loading...') return 'Loading...';
@@ -222,6 +225,56 @@ function Project() {
         setOutputFolder(folderPath);
       }
     });
+  };
+
+  const handleImageReorder = ({ active, over }) => {
+    if (active.id !== over.id) {
+      setImageFiles((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over.id);
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  };
+
+  const Thumbnail = ({ src }) => (
+    <img
+      src={src}
+      alt="thumbnail"
+      className={styles.thumbnail}
+      style={{ width: '100px', height: 'auto' }}
+    />
+  );
+
+  const SortableImage = ({ file }) => {
+    const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: file.id });
+
+    const style = {
+      transform: CSS.Transform.toString(transform),
+      transition,
+    };
+
+    return (
+      <div ref={setNodeRef} style={style} className={styles.imageItem} {...attributes} {...listeners}>
+        <Thumbnail src={`path/to/thumbnails/${file.filename}`} />
+        <div className={styles.imageOptions}>
+          <label>
+            <input
+              type="checkbox"
+              checked={file.padding || false}
+              onChange={(e) =>
+                setImageFiles((prev) =>
+                  prev.map((img) =>
+                    img.id === file.id ? { ...img, padding: e.target.checked } : img
+                  )
+                )
+              }
+            />
+            Padding
+          </label>
+        </div>
+      </div>
+    );
   };
 
   const handleAction = (action, renderId) => {
@@ -446,6 +499,7 @@ function Project() {
       <div className={styles.renderOptionsSection}>
         <h2 className={styles.renderOptionsTitle}>Render Options</h2>
         <div className={styles.renderOptionsGrid}>
+
           <div className={styles.renderOptionGroup}>
             <label htmlFor="outputFolder" className={styles.renderOptionLabel}>
               Output Folder
@@ -554,6 +608,20 @@ function Project() {
               Use Background Padding
             </label>
           </div>
+
+          <div className={styles.renderOptionGroup}>
+            <h3>Image Timeline</h3>
+            <DndContext collisionDetection={closestCenter} onDragEnd={handleImageReorder}>
+              <SortableContext items={imageFiles.map((file) => file.id)} strategy={verticalListSortingStrategy}>
+                <div className={styles.imageTimeline}>
+                  {imageFiles.map((file) => (
+                    <SortableImage key={file.id} file={file} />
+                  ))}
+                </div>
+              </SortableContext>
+            </DndContext>
+          </div>
+
         </div>
         <button
           className={styles.renderButton}

@@ -368,3 +368,50 @@
   margin-top: 0; /* Decrease padding above text */
 }
 
+
+
+.imageTimeline {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.imageItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s;
+}
+
+.imageItem:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.thumbnail {
+  display: block;
+  width: 100px;
+  height: auto;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.imageOptions {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.imageOptions label {
+  font-size: 0.9rem;
+  color: #333;
+}
