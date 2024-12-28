@@ -227,6 +227,14 @@ function Project() {
     });
   };
 
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const handleImageReorder = ({ active, over }) => {
     if (active.id !== over.id) {
       setImageFiles((items) => {
@@ -237,28 +245,28 @@ function Project() {
     }
   };
 
-const Thumbnail = ({ src }) => {
-  // Use `thum://` protocol for thumbnail generation
-  const thumbnailSrc = `thum:///${src}`;
-  return (
-    <img
-      src={thumbnailSrc}
-      alt="thumbnail"
-      className={styles.thumbnail}
-      style={{ width: '100px', height: 'auto' }}
-    />
-  );
-};
+  const Thumbnail = ({ src }) => {
+    // Use `thum://` protocol for thumbnail generation
+    const thumbnailSrc = `thum:///${src}`;
+    return (
+      <img
+        src={thumbnailSrc}
+        alt="thumbnail"
+        className={styles.thumbnail}
+        style={{ width: '100px', height: 'auto' }}
+      />
+    );
+  };
 
 
-  const SortableImage = ({ file }) => {
+  const SortableImage = ({ file, setImageFiles }) => {
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: file.id });
-  
+
     const style = {
       transform: CSS.Transform.toString(transform),
       transition,
     };
-  
+
     return (
       <div ref={setNodeRef} style={style} className={styles.imageItem} {...attributes} {...listeners}>
         <Thumbnail src={file.filepath} />
@@ -472,6 +480,10 @@ const Thumbnail = ({ src }) => {
     setFfmpegError(null);
   };
 
+  const selectedImages = imageFiles.filter((file) => imageRowSelection[file.id]);
+  const isHorizontal = windowWidth > 600; // Adjust this breakpoint as needed.
+
+
   return (
     <div className={styles.projectContainer}>
       <div className={styles.header}>
@@ -614,18 +626,23 @@ const Thumbnail = ({ src }) => {
             </label>
           </div>
 
-          <div className={styles.renderOptionGroup}>
-            <h3 className={styles.blackText}>Image Timeline</h3>
-            <DndContext collisionDetection={closestCenter} onDragEnd={handleImageReorder}>
-              <SortableContext items={imageFiles.map((file) => file.id)} strategy={verticalListSortingStrategy}>
-                <div className={styles.imageTimeline}>
-                  {imageFiles.map((file) => (
-                    <SortableImage key={file.id} file={file} />
-                  ))}
-                </div>
-              </SortableContext>
-            </DndContext>
-          </div>
+{/* Image Timeline */}
+<div className={styles.renderOptionGroup}>
+
+<div id="imageTimelineBox">
+  <h3 className={styles.blackText}>Image Timeline</h3>
+  <DndContext id="imageTimelineContent" collisionDetection={closestCenter} onDragEnd={handleImageReorder}>
+    <SortableContext items={selectedImages.map((file) => file.id)} strategy={verticalListSortingStrategy}>
+      <div className={`${styles.imageTimeline}`}>
+        {selectedImages.map((file) => (
+          <SortableImage key={file.id} file={file} setImageFiles={setImageFiles} />
+        ))}
+      </div>
+    </SortableContext>
+  </DndContext>
+</div>
+</div>
+
 
         </div>
         <button
