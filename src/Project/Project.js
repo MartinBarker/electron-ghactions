@@ -625,26 +625,26 @@ function Project() {
               Use Background Padding
             </label>
           </div>
-
-{/* Image Timeline */}
-<div className={styles.renderOptionGroup}>
-
-<div id="imageTimelineBox">
-  <h3 className={styles.blackText}>Image Timeline</h3>
-  <DndContext id="imageTimelineContent" collisionDetection={closestCenter} onDragEnd={handleImageReorder}>
-    <SortableContext items={selectedImages.map((file) => file.id)} strategy={verticalListSortingStrategy}>
-      <div className={`${styles.imageTimeline}`}>
-        {selectedImages.map((file) => (
-          <SortableImage key={file.id} file={file} setImageFiles={setImageFiles} />
-        ))}
-      </div>
-    </SortableContext>
-  </DndContext>
-</div>
-</div>
-
-
         </div>
+
+
+          {/* Image Timeline */}
+          <div className={styles.renderOptionGroup}>
+
+            <div id="imageTimelineBox">
+              <h3 className={styles.blackText}>Image Timeline</h3>
+              <DndContext id="imageTimelineContent" collisionDetection={closestCenter} onDragEnd={handleImageReorder}>
+                <SortableContext items={selectedImages.map((file) => file.id)} strategy={verticalListSortingStrategy}>
+                  <div className={`${styles.imageTimeline}`}>
+                    {selectedImages.map((file) => (
+                      <SortableImage key={file.id} file={file} setImageFiles={setImageFiles} />
+                    ))}
+                  </div>
+                </SortableContext>
+              </DndContext>
+            </div>
+          </div>
+
         <button
           className={styles.renderButton}
           onClick={handleRender}
