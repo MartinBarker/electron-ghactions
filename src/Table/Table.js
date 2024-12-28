@@ -73,12 +73,19 @@ function Row({ row, toggleRowSelected }) {
       className={styles.row}
       onClick={() => toggleRowSelected(row.id)} // Add click handler for row selection
     >
-      {row.getVisibleCells().map((cell, index) => (
-        <td key={cell.id} className={styles.cell}>
-          {index === 1 ? <DragHandle row={row} /> : null}
-          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-        </td>
-      ))}
+      {row.getVisibleCells().map((cell, index) => {
+        const columnHeader = cell.column.columnDef.header;
+        return (
+          <td
+            key={cell.id}
+            className={styles.cell}
+            data-tooltip={cell.getValue()} // Add data attribute for tooltip content
+          >
+            {columnHeader === 'Drag' ? <DragHandle row={row} /> : null}
+            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+          </td>
+        );
+      })}
     </tr>
   );
 }
@@ -198,7 +205,7 @@ function Table({ data, setData, columns, rowSelection, setRowSelection }) {
                               ? '🔼'
                               : isSorted === 'desc'
                                 ? '🔽'
-                                : '↕'} {/* Neutral icon */}
+                                : '↕️'} {/* Neutral icon */}
                           </span>
                         )}
                       </th>

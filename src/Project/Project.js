@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import styles from './Project.module.css';
 import FileUploader from '../FileUploader/FileUploader.js';
 import Table from '../Table/Table.js';
 import { createFFmpegCommand } from '../FFmpeg/FFmpegUtils.js';
 import { DndContext, closestCenter } from '@dnd-kit/core';
-import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { arrayMove, horizontalListSortingStrategy, SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
 function formatDuration(duration) {
@@ -22,6 +22,31 @@ function formatDuration(duration) {
 
 function Project() {
   const [renders, setRenders] = useState(() => JSON.parse(localStorage.getItem('renders') || '[]'));
+
+
+
+  const renderColumns = [
+    { accessorKey: 'progress', header: 'Progress', cell: ({ row }) => `${row.original.progress}%` },
+    { accessorKey: 'id', header: 'Render ID' },
+    { accessorKey: 'outputFilename', header: 'Output Filename' },
+    {
+      accessorKey: 'actions',
+      header: 'Actions',
+      cell: ({ row }) => (
+        <div>
+          <button onClick={() => removeRender(row.original.id)} title="Delete render">
+            ❌
+          </button>
+          <button onClick={() => alert('Placeholder for opening folder')} title="Open folder">
+            📂
+          </button>
+          <button onClick={() => alert('Placeholder for opening file')} title="Open file">
+            📄
+          </button>
+        </div>
+      )
+    },
+  ];
 
   const getInitialState = (key, defaultValue) => {
     try {
@@ -48,7 +73,10 @@ function Project() {
   };
 
   const removeRender = (id) => {
-    setRenders(renders => renders.filter(render => render.id !== id));
+    if (window.confirm("Are you sure you want to delete this render?")) {
+      const updatedRenders = renders.filter(render => render.id !== id);
+      setRenders(updatedRenders);
+    }
   };
 
   useEffect(() => {
@@ -213,10 +241,22 @@ function Project() {
   ];
 
   const imageColumns = [
-    { accessorKey: 'draggable', header: 'Drag' },
+    {
+      accessorKey: 'draggable',
+      header: 'Drag',
+      cell: ({ row }) => (
+        <div className={styles.dragHandle}></div>
+      ),
+    },
+    {
+      accessorKey: 'thumbnail',
+      header: 'Thumbnail',
+      cell: ({ row }) => <Thumbnail src={row.original.filepath} />,
+    },
     { accessorKey: 'filename', header: 'File Name' }, // Use `filename`
     { accessorKey: 'dimensions', header: 'Dimensions' },
   ];
+  
 
   const handleChooseFolder = async () => {
     window.api.send('open-folder-dialog');
@@ -245,18 +285,23 @@ function Project() {
     }
   };
 
-  const Thumbnail = ({ src }) => {
-    // Use `thum://` protocol for thumbnail generation
-    const thumbnailSrc = `thum:///${src}`;
+  const Thumbnail = React.memo(({ src }) => {
+    const [isLoaded, setIsLoaded] = useState(false);
+  
     return (
-      <img
-        src={thumbnailSrc}
-        alt="thumbnail"
-        className={styles.thumbnail}
-        style={{ width: '100px', height: 'auto' }}
-      />
+      <div className={styles.thumbnailWrapper}>
+        {!isLoaded && <div className={styles.placeholder}></div>}
+        <img
+          src={`thum:///${src}`}
+          alt="Thumbnail"
+          className={styles.thumbnail}
+          onLoad={() => setIsLoaded(true)}
+          style={{ display: isLoaded ? 'block' : 'none' }}
+        />
+      </div>
     );
-  };
+  }, (prevProps, nextProps) => prevProps.src === nextProps.src);
+  
 
 
   const SortableImage = ({ file, setImageFiles }) => {
@@ -306,6 +351,19 @@ function Project() {
         console.error('Unknown action:', action);
     }
   };
+
+  const handleSelectRow = (id) => {
+    setImageRowSelection(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
+  };
+  
+  // Ensure the image data is stable if not changed
+  const stableImageFiles = useMemo(() => imageFiles.map(file => ({
+    ...file,
+    isSelected: !!imageRowSelection[file.id]
+  })), [imageFiles, imageRowSelection]);
 
   const handleRender = () => {
     const renderId = generateUniqueId();
@@ -634,7 +692,7 @@ function Project() {
             <div id="imageTimelineBox">
               <h3 className={styles.blackText}>Image Timeline</h3>
               <DndContext id="imageTimelineContent" collisionDetection={closestCenter} onDragEnd={handleImageReorder}>
-                <SortableContext items={selectedImages.map((file) => file.id)} strategy={verticalListSortingStrategy}>
+                <SortableContext items={selectedImages.map((file) => file.id)} strategy={horizontalListSortingStrategy}>
                   <div className={`${styles.imageTimeline}`}>
                     {selectedImages.map((file) => (
                       <SortableImage key={file.id} file={file} setImageFiles={setImageFiles} />
@@ -665,6 +723,18 @@ function Project() {
 
       <div className={styles.rendersSection}>
         <h2>Renders List</h2>
+        <Table
+          data={renders.map(render => ({
+            progress: render.progress,
+            id: render.id,
+            outputFilename: `${render.outputFolder}/${render.outputFilename || 'Unknown'}`,
+          }))}
+          columns={renderColumns}
+          rowSelection={{}} // No row selection needed for this table
+          setRowSelection={() => {}} // Dummy function
+          setData={() => {}} // This table does not modify renders
+        />
+        {/*
         {renders.map(render => (
           <div key={render.id} className={styles.renderItem}>
             <div>Render ID: {render.id}</div>
@@ -680,6 +750,7 @@ function Project() {
             </div>
           </div>
         ))}
+        */}
       </div>
     </div>
   );
