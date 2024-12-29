@@ -7,7 +7,6 @@ import pkg from 'electron-updater';
 import path from 'path';
 import fs from 'fs';
 import readline from 'readline';
-import sharp from 'sharp';
 import musicMetadata from 'music-metadata';
 
 const { autoUpdater } = pkg;
@@ -298,23 +297,19 @@ ipcMain.on('open-folder-dialog', async (event) => {
 });
 
 ipcMain.on('open-file-dialog', async (event) => {
+  const sizeOf = require('image-size');
+
   try {
     const result = await dialog.showOpenDialog({
-      properties: ['openFile', 'multiSelections']
+      properties: ['openFile', 'multiSelections'],
     });
 
     if (!result.canceled && result.filePaths.length > 0) {
       const fileInfoArray = await Promise.all(
         result.filePaths.map(async (filePath) => {
-          // Force path to UTF-8 encoding
           const normalizedPath = path.normalize(filePath);
-          const utf8Path = Buffer.from(normalizedPath, 'utf8').toString('utf8');
-
-          //console.log('Normalized Path = ', normalizedPath);
-          //console.log('UTF-8 Path = ', utf8Path);
-
-          const ext = path.extname(utf8Path).toLowerCase().substring(1); // Extract extension without the dot
-          let fileType = 'other'; // Default file type
+          const ext = path.extname(normalizedPath).toLowerCase().substring(1);
+          let fileType = 'other';
           let dimensions = null;
 
           if (audioExtensions.includes(ext)) {
@@ -322,19 +317,18 @@ ipcMain.on('open-file-dialog', async (event) => {
           } else if (imageExtensions.includes(ext)) {
             fileType = 'image';
             try {
-              const metadata = await sharp(utf8Path).metadata();
+              const metadata = sizeOf(normalizedPath);
               dimensions = `${metadata.width}x${metadata.height}`;
             } catch (error) {
               console.error('Error reading image dimensions:', error);
             }
           }
 
-          //console.log('Setting filePath = ', utf8Path); // Log the final sanitized path
           return {
-            filename: path.basename(utf8Path), // Use UTF-8 filename
-            filepath: utf8Path, // Use UTF-8 file path
+            filename: path.basename(normalizedPath),
+            filepath: normalizedPath,
             filetype: fileType,
-            dimensions, // Include dimensions if available
+            dimensions,
           };
         })
       );

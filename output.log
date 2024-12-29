@@ -1866,3 +1866,477 @@ FFmpeg output: frame=  830 fps=132 q=23.0 size=    7168kB time=00:03:12.74 bitra
 FFmpeg output: frame=  830 fps=122 q=23.0 size=    7936kB time=00:03:27.60 bitrate= 313.1kbits/s speed=30.6x    
 FFmpeg output: frame=  830 fps=114 q=23.0 size=    8192kB time=00:03:33.67 bitrate= 314.1kbits/s speed=29.3x    
 FFmpeg output: frame=  830 fps=106 q=23.0 size=    8448kB time=00:03:47.88 bitrate= 303.7kbits/s speed=29.2x    
+Application started on 2024-12-29T20:13:00.673Z
+FFmpeg command: C:\Users\marti\Documents\projects\electron-ghactions\ffmpeg\win32-x64\lib\ffmpeg.exe -y -i E:/martinradio/upload/Fire and Ice/B1 - Ski Dance.flac -i E:/martinradio/upload/2 Sporty Shorty - Chunky But Funky/2 Sporty Shorty - Chunky But Funky2.jpg -filter_complex [0:a]concat=n=1:v=0:a=1[a];[1:v]scale=w=1920:h=1920,setsar=1,loop=516.57:516.57[v1];[v1]concat=n=1:v=1:a=0,pad=ceil(iw/2)*2:ceil(ih/2)*2[v] -map [v] -map [a] -c:a aac -b:a 320k -c:v h264 -movflags +faststart -profile:v high -level:v 4.2 -bufsize 3M -crf 18 -pix_fmt yuv420p -tune stillimage -t 258.28709750566895 E:\martinradio\upload\Fire and Ice\output-video.mp4
+FFmpeg output: ffmpeg version n6.0-12-ga6dc92968a-20230404 Copyright (c) 2000-2023 the FFmpeg developers
+FFmpeg output:   built with gcc 12.2.0 (crosstool-NG 1.25.0.152_89671bf)
+FFmpeg output:   configuration: --prefix=/ffbuild/prefix --pkg-config-flags=--static --pkg-config=pkg-config --cross-prefix=x86_64-w64-mingw32- --arch=x86_64 --target-os=mingw32 --enable-gpl --enable-version3 --disable-debug --enable-shared --disable-static --disable-w32threads --enable-pthreads --enable-iconv --enable-libxml2 --enable-zlib --enable-libfreetype --enable-libfribidi --enable-gmp --enable-lzma --enable-fontconfig --enable-libvorbis --enable-opencl --disable-libpulse --enable-libvmaf --disable-libxcb --disable-xlib --enable-amf --enable-libaom --enable-libaribb24 --enable-avisynth --enable-chromaprint --enable-libdav1d --enable-libdavs2 --disable-libfdk-aac --enable-ffnvcodec --enable-cuda-llvm --enable-frei0r --enable-libgme --enable-libkvazaar --enable-libass --enable-libbluray --enable-libjxl --enable-libmp3lame --enable-libopus --enable-librist --enable-libssh --enable-libtheora --enable-libvpx --enable-libwebp --enable-lv2 --disable-libmfx --enable-libvpl --enable-openal --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenh264 --enable-libopenjpeg --enable-libopenmpt --enable-librav1e --enable-librubberband --enable-schannel --enable-sdl2 --enable-libsoxr --enable-libsrt --enable-libsvtav1 --enable-libtwolame --enable-libuavs3d --disable-libdrm --disable-vaapi --enable-libvidstab --enable-vulkan --enable-libshaderc --enable-libplacebo --enable-libx264 --enable-libx265 --enable-libxavs2 --enable-libxvid --enable-libzimg --enable-libzvbi --extra-cflags=-DLIBTWOLAME_STATIC --extra-cxxflags= --extra-ldflags=-pthread --extra-ldexeflags= --extra-libs=-lgomp --extra-version=20230404
+FFmpeg output:   libavutil      58.  2.100 / 58.  2.100
+FFmpeg output:   libavcodec     60.  3.100 / 60.  3.100
+FFmpeg output:   libavformat    60.  3.100 / 60.  3.100
+FFmpeg output:   libavdevice    60.  1.100 / 60.  1.100
+FFmpeg output:   libavfilter     9.  3.100 /  9.  3.100
+FFmpeg output:   libswscale      7.  1.100 /  7.  1.100
+FFmpeg output:   libswresample   4. 10.100 /  4. 10.100
+FFmpeg output:   libpostproc    57.  1.100 / 57.  1.100
+FFmpeg output: Input #0, flac, from 'E:/martinradio/upload/Fire and Ice/B1 - Ski Dance.flac':
+FFmpeg output:   Metadata:
+FFmpeg output:     DISCOGS_RELEASE_ID: 476609
+FFmpeg output:     CATALOGNUMBER   : CBSA 12.6827, A 12.6827, CBS A 12.6827
+FFmpeg output:     MEDIATYPE       : Vinyl (12", 45 RPM)
+FFmpeg output:     STYLE           : Synth-pop
+FFmpeg output:     COUNTRY         : Germany
+FFmpeg output:     WWW             : https://www.discogs.com/release/476609-Marietta-Fire-And-Ice-12-Special-Ski-Dance-Mix
+FFmpeg output:     ALBUMARTISTSORT : Marietta Waters
+FFmpeg output:     Title           : Ski Dance
+FFmpeg output:     ARTIST          : Marietta
+FFmpeg output:     ALBUM           : Fire And Ice (12" Special Ski Dance Mix)
+FFmpeg output:     GENRE           : Electronic
+FFmpeg output:     DATE            : 1986
+FFmpeg output:     ORGANIZATION    : CBS, CBS, CBS
+FFmpeg output:     track           : B1
+FFmpeg output:   Duration: 00:04:18.29, start: 0.000000, bitrate: 1560 kb/s
+FFmpeg output:   Stream #0:0: Audio: flac, 44100 Hz, stereo, s32 (24 bit)
+FFmpeg output:   Stream #0:1: Video: mjpeg (Progressive), yuvj444p(pc, bt470bg/unknown/unknown), 600x600, 90k tbr, 90k tbn (attached pic)
+FFmpeg output:     Metadata:
+FFmpeg output:       comment         : Cover (front)
+FFmpeg output: Input #1, image2, from 'E:/martinradio/upload/2 Sporty Shorty - Chunky But Funky/2 Sporty Shorty - Chunky But Funky2.jpg':
+FFmpeg output:   Duration: 00:00:00.04, start: 0.000000, bitrate: 19213 kb/s
+FFmpeg output:   Stream #1:0: Video: mjpeg (Baseline), yuvj444p(pc, bt470bg/unknown/unknown), 600x600, 25 fps, 25 tbr, 25 tbn
+FFmpeg output: Stream mapping:
+FFmpeg output:   Stream #0:0 (flac) -> concat:in0:a0
+FFmpeg output:   Stream #1:0 (mjpeg) -> scale:default
+FFmpeg output:   pad:default -> Stream #0:0 (libx264)
+FFmpeg output:   concat:out:a0 -> Stream #0:1 (aac)
+FFmpeg output: Press [q] to stop, [?] for help
+FFmpeg output: [swscaler @ 00000212e4fb9400] deprecated pixel format used, make sure you did set range correctly
+FFmpeg output:     Last message repeated 1 times
+FFmpeg output: [swscaler @ 00000212e546d040] deprecated pixel format used, make sure you did set range correctly
+FFmpeg output: [swscaler @ 00000212e4fb9400] deprecated pixel format used, make sure you did set range correctly
+FFmpeg output: [libx264 @ 00000212e4994c00] VBV bufsize set but maxrate unspecified, ignored
+FFmpeg output: [libx264 @ 00000212e4994c00] using SAR=1/1
+FFmpeg output: [libx264 @ 00000212e4994c00] frame MB size (120x120) > level limit (8704)
+FFmpeg output: [libx264 @ 00000212e4994c00] DPB size (4 frames, 57600 mbs) > level limit (2 frames, 34816 mbs)
+FFmpeg output: [libx264 @ 00000212e4994c00] using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX FMA3 BMI2 AVX2
+FFmpeg output: [libx264 @ 00000212e4994c00] profile High, level 4.2, 4:2:0, 8-bit
+FFmpeg output: [libx264 @ 00000212e4994c00] 264 - core 164 - H.264/MPEG-4 AVC codec - Copyleft 2003-2023 - http://www.videolan.org/x264.html - options: cabac=1 ref=2 deblock=1:-3:-3 analyse=0x3:0x113 me=hex subme=7 psy=1 psy_rd=2.00:0.70 mixed_ref=1 me_range=16 chroma_me=1 trellis=1 8x8dct=1 cqm=0 deadzone=21,11 fast_pskip=1 chroma_qp_offset=-4 threads=36 lookahead_threads=6 sliced_threads=0 nr=0 decimate=1 interlaced=0 bluray_compat=0 constrained_intra=0 bframes=3 b_pyramid=2 b_adapt=1 b_bias=0 direct=1 weightb=1 open_gop=0 weightp=2 keyint=250 keyint_min=25 scenecut=40 intra_refresh=0 rc_lookahead=40 rc=crf mbtree=1 crf=18.0 qcomp=0.60 qpmin=0 qpmax=69 qpstep=4 ip_ratio=1.40 aq=1:1.20
+FFmpeg output: Output #0, mp4, to 'E:\martinradio\upload\Fire and Ice\output-video.mp4':
+FFmpeg output:   Metadata:
+FFmpeg output:     DISCOGS_RELEASE_ID: 476609
+FFmpeg output:     CATALOGNUMBER   : CBSA 12.6827, A 12.6827, CBS A 12.6827
+FFmpeg output:     MEDIATYPE       : Vinyl (12", 45 RPM)
+FFmpeg output:     STYLE           : Synth-pop
+FFmpeg output:     COUNTRY         : Germany
+FFmpeg output:     WWW             : https://www.discogs.com/release/476609-Marietta-Fire-And-Ice-12-Special-Ski-Dance-Mix
+FFmpeg output:     ALBUMARTISTSORT : Marietta Waters
+FFmpeg output:     Title           : Ski Dance
+FFmpeg output:     ARTIST          : Marietta
+FFmpeg output:     ALBUM           : Fire And Ice (12" Special Ski Dance Mix)
+FFmpeg output:     GENRE           : Electronic
+FFmpeg output:     DATE            : 1986
+FFmpeg output:     ORGANIZATION    : CBS, CBS, CBS
+FFmpeg output:     track           : B1
+FFmpeg output:     encoder         : Lavf60.3.100
+FFmpeg output:   Stream #0:0: Video: h264 (avc1 / 0x31637661), yuv420p(tv, bt470bg/unknown/unknown, progressive), 1920x1920 [SAR 1:1 DAR 1:1], q=2-31, 25 fps, 12800 tbn
+FFmpeg output:     Metadata:
+FFmpeg output:       encoder         : Lavc60.3.100 libx264
+FFmpeg output:     Side data:
+FFmpeg output:       cpb: bitrate max/min/avg: 0/0/0 buffer size: 3000000 vbv_delay: N/A
+FFmpeg output:   Stream #0:1: Audio: aac (LC) (mp4a / 0x6134706D), 44100 Hz, stereo, fltp, 320 kb/s
+FFmpeg output:     Metadata:
+FFmpeg output:       encoder         : Lavc60.3.100 aac
+FFmpeg output: frame=    0 fps=0.0 q=0.0 size=       0kB time=00:00:00.02 bitrate=  16.5kbits/s speed=23.3x    
+FFmpeg output: frame=    0 fps=0.0 q=0.0 size=       0kB time=00:00:02.34 bitrate=   0.2kbits/s speed=4.65x    
+FFmpeg output: frame=   44 fps= 44 q=23.0 size=     768kB time=00:00:04.94 bitrate=1272.1kbits/s speed=4.91x    
+FFmpeg output: frame=  110 fps= 73 q=23.0 size=    1280kB time=00:00:07.54 bitrate=1389.5kbits/s speed=   5x    
+FFmpeg output: frame=  181 fps= 90 q=23.0 size=    1792kB time=00:00:10.42 bitrate=1408.1kbits/s speed=5.19x    
+FFmpeg output: frame=  251 fps=100 q=23.0 size=    2816kB time=00:00:13.21 bitrate=1746.0kbits/s speed=5.26x    
+FFmpeg output: frame=  325 fps=108 q=23.0 size=    3328kB time=00:00:16.18 bitrate=1684.6kbits/s speed=5.37x    
+FFmpeg output: frame=  399 fps=113 q=23.0 size=    3584kB time=00:00:19.06 bitrate=1540.1kbits/s speed=5.42x    
+FFmpeg output: frame=  438 fps=109 q=23.0 size=    3840kB time=00:00:29.09 bitrate=1081.2kbits/s speed=7.24x    
+FFmpeg output: frame=  438 fps= 97 q=23.0 size=    4352kB time=00:00:41.16 bitrate= 866.0kbits/s speed=9.09x    
+FFmpeg output: frame=  438 fps= 87 q=23.0 size=    4864kB time=00:00:53.80 bitrate= 740.6kbits/s speed=10.7x    
+FFmpeg output: frame=  438 fps= 79 q=23.0 size=    5632kB time=00:01:08.01 bitrate= 678.4kbits/s speed=12.3x    
+FFmpeg output: frame=  438 fps= 72 q=23.0 size=    6144kB time=00:01:21.10 bitrate= 620.6kbits/s speed=13.4x    
+FFmpeg output: frame=  438 fps= 67 q=23.0 size=    6912kB time=00:01:40.79 bitrate= 561.8kbits/s speed=15.4x    
+FFmpeg output: frame=  438 fps= 62 q=23.0 size=    7680kB time=00:02:02.81 bitrate= 512.3kbits/s speed=17.4x    
+FFmpeg output: frame=  438 fps= 58 q=23.0 size=    8192kB time=00:02:11.91 bitrate= 508.7kbits/s speed=17.5x    
+FFmpeg output: frame=  438 fps= 54 q=23.0 size=    8448kB time=00:02:23.52 bitrate= 482.2kbits/s speed=17.8x    
+FFmpeg output: frame=  438 fps= 51 q=23.0 size=    8960kB time=00:02:34.01 bitrate= 476.6kbits/s speed=  18x    
+FFmpeg output: frame=  438 fps= 48 q=23.0 size=    9472kB time=00:02:46.27 bitrate= 466.7kbits/s speed=18.4x    
+Application started on 2024-12-29T20:28:47.565Z
+FFmpeg command: C:\Users\marti\Documents\projects\electron-ghactions\ffmpeg\win32-x64\lib\ffmpeg.exe -y -i E:/martinradio/upload/Fire and Ice/B1 - Ski Dance.flac -i E:/martinradio/upload/2 Sporty Shorty - Chunky But Funky/2 Sporty Shorty - Chunky But Funky2.jpg -filter_complex [0:a]concat=n=1:v=0:a=1[a];[1:v]scale=w=1920:h=1920,setsar=1,loop=516.57:516.57[v1];[v1]concat=n=1:v=1:a=0,pad=ceil(iw/2)*2:ceil(ih/2)*2[v] -map [v] -map [a] -c:a aac -b:a 320k -c:v h264 -movflags +faststart -profile:v high -level:v 4.2 -bufsize 3M -crf 18 -pix_fmt yuv420p -tune stillimage -t 258.28709750566895 E:\martinradio\upload\Fire and Ice\output-video.mp4
+FFmpeg output: ffmpeg version n6.0-12-ga6dc92968a-20230404 Copyright (c) 2000-2023 the FFmpeg developers
+FFmpeg output:   built with gcc 12.2.0 (crosstool-NG 1.25.0.152_89671bf)
+FFmpeg output:   configuration: --prefix=/ffbuild/prefix --pkg-config-flags=--static --pkg-config=pkg-config --cross-prefix=x86_64-w64-mingw32- --arch=x86_64 --target-os=mingw32 --enable-gpl --enable-version3 --disable-debug --enable-shared --disable-static --disable-w32threads --enable-pthreads --enable-iconv --enable-libxml2 --enable-zlib --enable-libfreetype --enable-libfribidi --enable-gmp --enable-lzma --enable-fontconfig --enable-libvorbis --enable-opencl --disable-libpulse --enable-libvmaf --disable-libxcb --disable-xlib --enable-amf --enable-libaom --enable-libaribb24 --enable-avisynth --enable-chromaprint --enable-libdav1d --enable-libdavs2 --disable-libfdk-aac --enable-ffnvcodec --enable-cuda-llvm --enable-frei0r --enable-libgme --enable-libkvazaar --enable-libass --enable-libbluray --enable-libjxl --enable-libmp3lame --enable-libopus --enable-librist --enable-libssh --enable-libtheora --enable-libvpx --enable-libwebp --enable-lv2 --disable-libmfx --enable-libvpl --enable-openal --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenh264 --enable-libopenjpeg --enable-libopenmpt --enable-librav1e --enable-librubberband --enable-schannel --enable-sdl2 --enable-libsoxr --enable-libsrt --enable-libsvtav1 --enable-libtwolame --enable-libuavs3d --disable-libdrm --disable-vaapi --enable-libvidstab --enable-vulkan --enable-libshaderc --enable-libplacebo --enable-libx264 --enable-libx265 --enable-libxavs2 --enable-libxvid --enable-libzimg --enable-libzvbi --extra-cflags=-DLIBTWOLAME_STATIC --extra-cxxflags= --extra-ldflags=-pthread --extra-ldexeflags= --extra-libs=-lgomp --extra-version=20230404
+FFmpeg output:   libavutil      58.  2.100 / 58.  2.100
+FFmpeg output:   libavcodec     60.  3.100 / 60.  3.100
+FFmpeg output:   libavformat    60.  3.100 / 60.  3.100
+FFmpeg output:   libavdevice    60.  1.100 / 60.  1.100
+FFmpeg output:   libavfilter     9.  3.100 /  9.  3.100
+FFmpeg output:   libswscale      7.  1.100 /  7.  1.100
+FFmpeg output:   libswresample   4. 10.100 /  4. 10.100
+FFmpeg output:   libpostproc    57.  1.100 / 57.  1.100
+FFmpeg output: Input #0, flac, from 'E:/martinradio/upload/Fire and Ice/B1 - Ski Dance.flac':
+FFmpeg output:   Metadata:
+FFmpeg output:     DISCOGS_RELEASE_ID: 476609
+FFmpeg output:     CATALOGNUMBER   : CBSA 12.6827, A 12.6827, CBS A 12.6827
+FFmpeg output:     MEDIATYPE       : Vinyl (12", 45 RPM)
+FFmpeg output:     STYLE           : Synth-pop
+FFmpeg output:     COUNTRY         : Germany
+FFmpeg output:     WWW             : https://www.discogs.com/release/476609-Marietta-Fire-And-Ice-12-Special-Ski-Dance-Mix
+FFmpeg output:     ALBUMARTISTSORT : Marietta Waters
+FFmpeg output:     Title           : Ski Dance
+FFmpeg output:     ARTIST          : Marietta
+FFmpeg output:     ALBUM           : Fire And Ice (12" Special Ski Dance Mix)
+FFmpeg output:     GENRE           : Electronic
+FFmpeg output:     DATE            : 1986
+FFmpeg output:     ORGANIZATION    : CBS, CBS, CBS
+FFmpeg output:     track           : B1
+FFmpeg output:   Duration: 00:04:18.29, start: 0.000000, bitrate: 1560 kb/s
+FFmpeg output:   Stream #0:0: Audio: flac, 44100 Hz, stereo, s32 (24 bit)
+FFmpeg output:   Stream #0:1: Video: mjpeg (Progressive), yuvj444p(pc, bt470bg/unknown/unknown), 600x600, 90k tbr, 90k tbn (attached pic)
+FFmpeg output:     Metadata:
+FFmpeg output:       comment         : Cover (front)
+FFmpeg output: Input #1, image2, from 'E:/martinradio/upload/2 Sporty Shorty - Chunky But Funky/2 Sporty Shorty - Chunky But Funky2.jpg':
+FFmpeg output:   Duration: 00:00:00.04, start: 0.000000, bitrate: 19213 kb/s
+FFmpeg output:   Stream #1:0: Video: mjpeg (Baseline), yuvj444p(pc, bt470bg/unknown/unknown), 600x600, 25 fps, 25 tbr, 25 tbn
+FFmpeg output: Stream mapping:
+FFmpeg output:   Stream #0:0 (flac) -> concat:in0:a0
+FFmpeg output:   Stream #1:0 (mjpeg) -> scale:default
+FFmpeg output:   pad:default -> Stream #0:0 (libx264)
+FFmpeg output:   concat:out:a0 -> Stream #0:1 (aac)
+FFmpeg output: Press [q] to stop, [?] for help
+FFmpeg output: [swscaler @ 00000238a35ab640] deprecated pixel format used, make sure you did set range correctly
+FFmpeg output:     Last message repeated 3 times
+FFmpeg output: [libx264 @ 00000238a30b4c00] VBV bufsize set but maxrate unspecified, ignored
+FFmpeg output: [libx264 @ 00000238a30b4c00] using SAR=1/1
+FFmpeg output: [libx264 @ 00000238a30b4c00] frame MB size (120x120) > level limit (8704)
+FFmpeg output: [libx264 @ 00000238a30b4c00] DPB size (4 frames, 57600 mbs) > level limit (2 frames, 34816 mbs)
+FFmpeg output: [libx264 @ 00000238a30b4c00] using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX FMA3 BMI2 AVX2
+FFmpeg output: [libx264 @ 00000238a30b4c00] profile High, level 4.2, 4:2:0, 8-bit
+FFmpeg output: [libx264 @ 00000238a30b4c00] 264 - core 164 - H.264/MPEG-4 AVC codec - Copyleft 2003-2023 - http://www.videolan.org/x264.html - options: cabac=1 ref=2 deblock=1:-3:-3 analyse=0x3:0x113 me=hex subme=7 psy=1 psy_rd=2.00:0.70 mixed_ref=1 me_range=16 chroma_me=1 trellis=1 8x8dct=1 cqm=0 deadzone=21,11 fast_pskip=1 chroma_qp_offset=-4 threads=36 lookahead_threads=6 sliced_threads=0 nr=0 decimate=1 interlaced=0 bluray_compat=0 constrained_intra=0 bframes=3 b_pyramid=2 b_adapt=1 b_bias=0 direct=1 weightb=1 open_gop=0 weightp=2 keyint=250 keyint_min=25 scenecut=40 intra_refresh=0 rc_lookahead=40 rc=crf mbtree=1 crf=18.0 qcomp=0.60 qpmin=0 qpmax=69 qpstep=4 ip_ratio=1.40 aq=1:1.20
+FFmpeg output: Output #0, mp4, to 'E:\martinradio\upload\Fire and Ice\output-video.mp4':
+FFmpeg output:   Metadata:
+FFmpeg output:     DISCOGS_RELEASE_ID: 476609
+FFmpeg output:     CATALOGNUMBER   : CBSA 12.6827, A 12.6827, CBS A 12.6827
+FFmpeg output:     MEDIATYPE       : Vinyl (12", 45 RPM)
+FFmpeg output:     STYLE           : Synth-pop
+FFmpeg output:     COUNTRY         : Germany
+FFmpeg output:     WWW             : https://www.discogs.com/release/476609-Marietta-Fire-And-Ice-12-Special-Ski-Dance-Mix
+FFmpeg output:     ALBUMARTISTSORT : Marietta Waters
+FFmpeg output:     Title           : Ski Dance
+FFmpeg output:     ARTIST          : Marietta
+FFmpeg output:     ALBUM           : Fire And Ice (12" Special Ski Dance Mix)
+FFmpeg output:     GENRE           : Electronic
+FFmpeg output:     DATE            : 1986
+FFmpeg output:     ORGANIZATION    : CBS, CBS, CBS
+FFmpeg output:     track           : B1
+FFmpeg output:     encoder         : Lavf60.3.100
+FFmpeg output:   Stream #0:0: Video: h264 (avc1 / 0x31637661), yuv420p(tv, bt470bg/unknown/unknown, progressive), 1920x1920 [SAR 1:1 DAR 1:1], q=2-31, 25 fps, 12800 tbn
+FFmpeg output:     Metadata:
+FFmpeg output:       encoder         : Lavc60.3.100 libx264
+FFmpeg output:     Side data:
+FFmpeg output:       cpb: bitrate max/min/avg: 0/0/0 buffer size: 3000000 vbv_delay: N/A
+FFmpeg output:   Stream #0:1: Audio: aac (LC) (mp4a / 0x6134706D), 44100 Hz, stereo, fltp, 320 kb/s
+FFmpeg output:     Metadata:
+FFmpeg output:       encoder         : Lavc60.3.100 aac
+FFmpeg output: frame=    0 fps=0.0 q=0.0 size=       0kB time=00:00:00.02 bitrate=  16.5kbits/s speed=22.1x    
+FFmpeg output: frame=    0 fps=0.0 q=0.0 size=       0kB time=00:00:02.43 bitrate=   0.2kbits/s speed=4.82x    
+FFmpeg output: frame=    6 fps=5.8 q=23.0 size=     512kB time=00:00:03.36 bitrate=1245.9kbits/s speed=3.23x    
+FFmpeg output: frame=   72 fps= 47 q=23.0 size=    1024kB time=00:00:05.96 bitrate=1405.8kbits/s speed=3.87x    
+FFmpeg output: frame=  137 fps= 67 q=23.0 size=    1536kB time=00:00:08.66 bitrate=1452.9kbits/s speed=4.23x    
+FFmpeg output: frame=  202 fps= 79 q=23.0 size=    1792kB time=00:00:11.16 bitrate=1314.4kbits/s speed=4.39x    
+FFmpeg output: frame=  264 fps= 87 q=23.0 size=    3072kB time=00:00:13.67 bitrate=1840.1kbits/s speed=4.49x    
+FFmpeg output: frame=  318 fps= 90 q=23.0 size=    3328kB time=00:00:15.81 bitrate=1724.1kbits/s speed=4.46x    
+FFmpeg output: frame=  386 fps= 95 q=23.0 size=    3584kB time=00:00:18.59 bitrate=1578.6kbits/s speed=4.59x    
+FFmpeg output: frame=  438 fps= 96 q=23.0 size=    3840kB time=00:00:25.00 bitrate=1257.9kbits/s speed=5.49x    
+FFmpeg output: frame=  438 fps= 87 q=23.0 size=    4352kB time=00:00:38.93 bitrate= 915.6kbits/s speed= 7.7x    
+FFmpeg output: frame=  438 fps= 79 q=23.0 size=    4864kB time=00:00:52.03 bitrate= 765.7kbits/s speed=9.36x    
+FFmpeg output: frame=  438 fps= 72 q=23.0 size=    5376kB time=00:01:04.01 bitrate= 687.9kbits/s speed=10.6x    
+FFmpeg output: frame=  438 fps= 67 q=23.0 size=    5888kB time=00:01:17.67 bitrate= 621.0kbits/s speed=11.8x    
+FFmpeg output: frame=  438 fps= 62 q=23.0 size=    6656kB time=00:01:35.31 bitrate= 572.0kbits/s speed=13.5x    
+FFmpeg output: frame=  438 fps= 58 q=23.0 size=    7424kB time=00:01:57.05 bitrate= 519.6kbits/s speed=15.5x    
+FFmpeg output: frame=  438 fps= 54 q=23.0 size=    7936kB time=00:02:08.47 bitrate= 506.0kbits/s speed=15.9x    
+FFmpeg output: frame=  438 fps= 51 q=23.0 size=    8448kB time=00:02:20.73 bitrate= 491.7kbits/s speed=16.4x    
+FFmpeg output: frame=  438 fps= 48 q=23.0 size=    8960kB time=00:02:34.57 bitrate= 474.9kbits/s speed=  17x    
+FFmpeg output: frame=  438 fps= 46 q=23.0 size=    9472kB time=00:02:46.92 bitrate= 464.8kbits/s speed=17.4x    
+FFmpeg output: frame=  438 fps= 44 q=23.0 size=    9728kB time=00:02:54.73 bitrate= 456.1kbits/s speed=17.4x    
+FFmpeg output: frame=  438 fps= 41 q=23.0 size=   10240kB time=00:03:03.36 bitrate= 457.5kbits/s speed=17.3x    
+FFmpeg output: frame=  438 fps= 40 q=23.0 size=   10752kB time=00:03:15.44 bitrate= 450.7kbits/s speed=17.6x    
+FFmpeg output: frame=  438 fps= 38 q=23.0 size=   11264kB time=00:03:32.71 bitrate= 433.8kbits/s speed=18.4x    
+FFmpeg output: frame=  438 fps= 36 q=23.0 size=   12288kB time=00:03:54.17 bitrate= 429.9kbits/s speed=19.4x    
+FFmpeg output: frame=  438 fps= 35 q=23.0 size=   13056kB time=00:04:14.88 bitrate= 419.6kbits/s speed=20.3x    
+FFmpeg output: [mp4 @ 00000238a30b2680] Starting second pass: moving the moov atom to the beginning of the file
+FFmpeg output: frame=  518 fps= 39 q=-1.0 Lsize=   14559kB time=00:04:18.27 bitrate= 461.8kbits/s speed=19.5x    
+FFmpeg output: video:4093kB audio:10408kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.396758%
+FFmpeg output: [libx264 @ 00000238a30b4c00] frame I:3     Avg QP: 7.97  size:544030
+FFmpeg output: [libx264 @ 00000238a30b4c00] frame P:131   Avg QP: 8.56  size: 16030
+FFmpeg output: [libx264 @ 00000238a30b4c00] frame B:384   Avg QP:16.26  size:  1195
+FFmpeg output: [libx264 @ 00000238a30b4c00] consecutive B-frames:  1.2%  0.0%  0.0% 98.8%
+FFmpeg output: [libx264 @ 00000238a30b4c00] mb I  I16..4:  5.7% 68.3% 26.0%
+FFmpeg output: [libx264 @ 00000238a30b4c00] mb P  I16..4:  0.0%  0.0%  0.0%  P16..4: 11.4%  0.5%  1.1%  0.0%  0.0%    skip:86.9%
+FFmpeg output: [libx264 @ 00000238a30b4c00] mb B  I16..4:  0.0%  0.0%  0.0%  B16..8: 12.8%  0.0%  0.0%  direct: 0.0%  skip:87.1%  L0:67.0% L1:32.9% BI: 0.1%
+FFmpeg output: [libx264 @ 00000238a30b4c00] 8x8 transform intra:67.7% inter:80.6%
+FFmpeg output: [libx264 @ 00000238a30b4c00] coded y,uvDC,uvAC intra: 93.7% 79.3% 79.1% inter: 2.2% 0.1% 0.0%
+FFmpeg output: [libx264 @ 00000238a30b4c00] i16 v,h,dc,p: 27% 30% 17% 27%
+FFmpeg output: [libx264 @ 00000238a30b4c00] i8 v,h,dc,ddl,ddr,vr,hd,vl,hu: 23% 21% 13%  6%  7%  7%  7%  8%  9%
+FFmpeg output: [libx264 @ 00000238a30b4c00] i4 v,h,dc,ddl,ddr,vr,hd,vl,hu: 24% 23%  9%  7% 10%  7%  7%  6%  6%
+FFmpeg output: [libx264 @ 00000238a30b4c00] i8c dc,h,v,p: 39% 30% 20% 10%
+FFmpeg output: [libx264 @ 00000238a30b4c00] Weighted P-Frames: Y:0.0% UV:0.0%
+FFmpeg output: [libx264 @ 00000238a30b4c00] ref P L0: 50.9%  0.0% 49.0%
+FFmpeg output: [libx264 @ 00000238a30b4c00] ref B L0: 51.6% 48.4%
+FFmpeg output: [libx264 @ 00000238a30b4c00] ref B L1: 99.3%  0.7%
+FFmpeg output: [libx264 @ 00000238a30b4c00] kb/s:1618.12
+FFmpeg output: [aac @ 00000238a30ced40] Qavg: 2285.645
+FFmpeg command: C:\Users\marti\Documents\projects\electron-ghactions\ffmpeg\win32-x64\lib\ffmpeg.exe -y -i E:/martinradio/upload/Fire and Ice/B1 - Ski Dance.flac -i E:/martinradio/upload/2 Sporty Shorty - Chunky But Funky/2 Sporty Shorty - Chunky But Funky2.jpg -filter_complex [0:a]concat=n=1:v=0:a=1[a];[1:v]scale=w=1920:h=1920,setsar=1,loop=516.57:516.57[v1];[v1]concat=n=1:v=1:a=0,pad=ceil(iw/2)*2:ceil(ih/2)*2[v] -map [v] -map [a] -c:a aac -b:a 320k -c:v h264 -movflags +faststart -profile:v high -level:v 4.2 -bufsize 3M -crf 18 -pix_fmt yuv420p -tune stillimage -t 258.28709750566895 E:\martinradio\upload\Fire and Ice\output-video.mp4
+FFmpeg output: ffmpeg version n6.0-12-ga6dc92968a-20230404 Copyright (c) 2000-2023 the FFmpeg developers
+FFmpeg output:   built with gcc 12.2.0 (crosstool-NG 1.25.0.152_89671bf)
+FFmpeg output:   configuration: --prefix=/ffbuild/prefix --pkg-config-flags=--static --pkg-config=pkg-config --cross-prefix=x86_64-w64-mingw32- --arch=x86_64 --target-os=mingw32 --enable-gpl --enable-version3 --disable-debug --enable-shared --disable-static --disable-w32threads --enable-pthreads --enable-iconv --enable-libxml2 --enable-zlib --enable-libfreetype --enable-libfribidi --enable-gmp --enable-lzma --enable-fontconfig --enable-libvorbis --enable-opencl --disable-libpulse --enable-libvmaf --disable-libxcb --disable-xlib --enable-amf --enable-libaom --enable-libaribb24 --enable-avisynth --enable-chromaprint --enable-libdav1d --enable-libdavs2 --disable-libfdk-aac --enable-ffnvcodec --enable-cuda-llvm --enable-frei0r --enable-libgme --enable-libkvazaar --enable-libass --enable-libbluray --enable-libjxl --enable-libmp3lame --enable-libopus --enable-librist --enable-libssh --enable-libtheora --enable-libvpx --enable-libwebp --enable-lv2 --disable-libmfx --enable-libvpl --enable-openal --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenh264 --enable-libopenjpeg --enable-libopenmpt --enable-librav1e --enable-librubberband --enable-schannel --enable-sdl2 --enable-libsoxr --enable-libsrt --enable-libsvtav1 --enable-libtwolame --enable-libuavs3d --disable-libdrm --disable-vaapi --enable-libvidstab --enable-vulkan --enable-libshaderc --enable-libplacebo --enable-libx264 --enable-libx265 --enable-libxavs2 --enable-libxvid --enable-libzimg --enable-libzvbi --extra-cflags=-DLIBTWOLAME_STATIC --extra-cxxflags= --extra-ldflags=-pthread --extra-ldexeflags= --extra-libs=-lgomp --extra-version=20230404
+FFmpeg output:   libavutil      58.  2.100 / 58.  2.100
+FFmpeg output:   libavcodec     60.  3.100 / 60.  3.100
+FFmpeg output:   libavformat    60.  3.100 / 60.  3.100
+FFmpeg output:   libavdevice    60.  1.100 / 60.  1.100
+FFmpeg output:   libavfilter     9.  3.100 /  9.  3.100
+FFmpeg output:   libswscale      7.  1.100 /  7.  1.100
+FFmpeg output:   libswresample   4. 10.100 /  4. 10.100
+FFmpeg output:   libpostproc    57.  1.100 / 57.  1.100
+FFmpeg output: Input #0, flac, from 'E:/martinradio/upload/Fire and Ice/B1 - Ski Dance.flac':
+FFmpeg output:   Metadata:
+FFmpeg output:     DISCOGS_RELEASE_ID: 476609
+FFmpeg output:     CATALOGNUMBER   : CBSA 12.6827, A 12.6827, CBS A 12.6827
+FFmpeg output:     MEDIATYPE       : Vinyl (12", 45 RPM)
+FFmpeg output:     STYLE           : Synth-pop
+FFmpeg output:     COUNTRY         : Germany
+FFmpeg output:     WWW             : https://www.discogs.com/release/476609-Marietta-Fire-And-Ice-12-Special-Ski-Dance-Mix
+FFmpeg output:     ALBUMARTISTSORT : Marietta Waters
+FFmpeg output:     Title           : Ski Dance
+FFmpeg output:     ARTIST          : Marietta
+FFmpeg output:     ALBUM           : Fire And Ice (12" Special Ski Dance Mix)
+FFmpeg output:     GENRE           : Electronic
+FFmpeg output:     DATE            : 1986
+FFmpeg output:     ORGANIZATION    : CBS, CBS, CBS
+FFmpeg output:     track           : B1
+FFmpeg output:   Duration: 00:04:18.29, start: 0.000000, bitrate: 1560 kb/s
+FFmpeg output:   Stream #0:0: Audio: flac, 44100 Hz, stereo, s32 (24 bit)
+FFmpeg output:   Stream #0:1: Video: mjpeg (Progressive), yuvj444p(pc, bt470bg/unknown/unknown), 600x600, 90k tbr, 90k tbn (attached pic)
+FFmpeg output:     Metadata:
+FFmpeg output:       comment         : Cover (front)
+FFmpeg output: Input #1, image2, from 'E:/martinradio/upload/2 Sporty Shorty - Chunky But Funky/2 Sporty Shorty - Chunky But Funky2.jpg':
+FFmpeg output:   Duration: 00:00:00.04, start: 0.000000, bitrate: 19213 kb/s
+FFmpeg output:   Stream #1:0: Video: mjpeg (Baseline), yuvj444p(pc, bt470bg/unknown/unknown), 600x600, 25 fps, 25 tbr, 25 tbn
+FFmpeg output: Stream mapping:
+FFmpeg output:   Stream #0:0 (flac) -> concat:in0:a0
+FFmpeg output:   Stream #1:0 (mjpeg) -> scale:default
+FFmpeg output:   pad:default -> Stream #0:0 (libx264)
+FFmpeg output:   concat:out:a0 -> Stream #0:1 (aac)
+FFmpeg output: Press [q] to stop, [?] for help
+FFmpeg output: [swscaler @ 0000021526d30ec0] deprecated pixel format used, make sure you did set range correctly
+FFmpeg output: [swscaler @ 00000215272f7040] deprecated pixel format used, make sure you did set range correctly
+FFmpeg output: [swscaler @ 0000021526d30ec0] deprecated pixel format used, make sure you did set range correctly
+FFmpeg output:     Last message repeated 1 times
+FFmpeg output: [libx264 @ 0000021526834c00] VBV bufsize set but maxrate unspecified, ignored
+FFmpeg output: [libx264 @ 0000021526834c00] using SAR=1/1
+FFmpeg output: [libx264 @ 0000021526834c00] frame MB size (120x120) > level limit (8704)
+FFmpeg output: [libx264 @ 0000021526834c00] DPB size (4 frames, 57600 mbs) > level limit (2 frames, 34816 mbs)
+FFmpeg output: [libx264 @ 0000021526834c00] using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX FMA3 BMI2 AVX2
+FFmpeg output: [libx264 @ 0000021526834c00] profile High, level 4.2, 4:2:0, 8-bit
+FFmpeg output: [libx264 @ 0000021526834c00] 264 - core 164 - H.264/MPEG-4 AVC codec - Copyleft 2003-2023 - http://www.videolan.org/x264.html - options: cabac=1 ref=2 deblock=1:-3:-3 analyse=0x3:0x113 me=hex subme=7 psy=1 psy_rd=2.00:0.70 mixed_ref=1 me_range=16 chroma_me=1 trellis=1 8x8dct=1 cqm=0 deadzone=21,11 fast_pskip=1 chroma_qp_offset=-4 threads=36 lookahead_threads=6 sliced_threads=0 nr=0 decimate=1 interlaced=0 bluray_compat=0 constrained_intra=0 bframes=3 b_pyramid=2 b_adapt=1 b_bias=0 direct=1 weightb=1 open_gop=0 weightp=2 keyint=250 keyint_min=25 scenecut=40 intra_refresh=0 rc_lookahead=40 rc=crf mbtree=1 crf=18.0 qcomp=0.60 qpmin=0 qpmax=69 qpstep=4 ip_ratio=1.40 aq=1:1.20
+FFmpeg output: Output #0, mp4, to 'E:\martinradio\upload\Fire and Ice\output-video.mp4':
+FFmpeg output:   Metadata:
+FFmpeg output:     DISCOGS_RELEASE_ID: 476609
+FFmpeg output:     CATALOGNUMBER   : CBSA 12.6827, A 12.6827, CBS A 12.6827
+FFmpeg output:     MEDIATYPE       : Vinyl (12", 45 RPM)
+FFmpeg output:     STYLE           : Synth-pop
+FFmpeg output:     COUNTRY         : Germany
+FFmpeg output:     WWW             : https://www.discogs.com/release/476609-Marietta-Fire-And-Ice-12-Special-Ski-Dance-Mix
+FFmpeg output:     ALBUMARTISTSORT : Marietta Waters
+FFmpeg output:     Title           : Ski Dance
+FFmpeg output:     ARTIST          : Marietta
+FFmpeg output:     ALBUM           : Fire And Ice (12" Special Ski Dance Mix)
+FFmpeg output:     GENRE           : Electronic
+FFmpeg output:     DATE            : 1986
+FFmpeg output:     ORGANIZATION    : CBS, CBS, CBS
+FFmpeg output:     track           : B1
+FFmpeg output:     encoder         : Lavf60.3.100
+FFmpeg output:   Stream #0:0: Video: h264 (avc1 / 0x31637661), yuv420p(tv, bt470bg/unknown/unknown, progressive), 1920x1920 [SAR 1:1 DAR 1:1], q=2-31, 25 fps, 12800 tbn
+FFmpeg output:     Metadata:
+FFmpeg output:       encoder         : Lavc60.3.100 libx264
+FFmpeg output:     Side data:
+FFmpeg output:       cpb: bitrate max/min/avg: 0/0/0 buffer size: 3000000 vbv_delay: N/A
+FFmpeg output:   Stream #0:1: Audio: aac (LC) (mp4a / 0x6134706D), 44100 Hz, stereo, fltp, 320 kb/s
+FFmpeg output:     Metadata:
+FFmpeg output:       encoder         : Lavc60.3.100 aac
+FFmpeg output: frame=    0 fps=0.0 q=0.0 size=       0kB time=00:00:00.02 bitrate=  16.5kbits/s speed=20.5x    
+FFmpeg output: frame=    0 fps=0.0 q=0.0 size=       0kB time=00:00:02.43 bitrate=   0.2kbits/s speed=4.83x    
+FFmpeg output: frame=    5 fps=4.7 q=23.0 size=     512kB time=00:00:03.36 bitrate=1245.9kbits/s speed= 3.2x    
+FFmpeg output: frame=   69 fps= 44 q=23.0 size=    1024kB time=00:00:05.87 bitrate=1428.0kbits/s speed=3.78x    
+FFmpeg output: frame=  128 fps= 62 q=23.0 size=    1280kB time=00:00:08.19 bitrate=1279.3kbits/s speed=3.99x    
+FFmpeg output: frame=  195 fps= 76 q=23.0 size=    1792kB time=00:00:10.98 bitrate=1336.6kbits/s speed= 4.3x    
+FFmpeg output: frame=  257 fps= 84 q=23.0 size=    2816kB time=00:00:13.39 bitrate=1721.8kbits/s speed=4.38x    
+FFmpeg output: frame=  323 fps= 91 q=23.0 size=    3328kB time=00:00:16.09 bitrate=1694.3kbits/s speed=4.52x    
+FFmpeg output: frame=  388 fps= 96 q=23.0 size=    3584kB time=00:00:18.69 bitrate=1570.7kbits/s speed= 4.6x    
+FFmpeg output: frame=  438 fps= 96 q=23.0 size=    3840kB time=00:00:25.47 bitrate=1235.0kbits/s speed=5.59x    
+FFmpeg output: frame=  438 fps= 86 q=23.0 size=    4352kB time=00:00:38.56 bitrate= 924.4kbits/s speed=7.62x    
+FFmpeg output: frame=  438 fps= 79 q=23.0 size=    4864kB time=00:00:51.75 bitrate= 769.9kbits/s speed= 9.3x    
+FFmpeg output: frame=  438 fps= 72 q=23.0 size=    5376kB time=00:01:02.80 bitrate= 701.2kbits/s speed=10.3x    
+FFmpeg output: frame=  438 fps= 67 q=23.0 size=    5888kB time=00:01:17.11 bitrate= 625.5kbits/s speed=11.7x    
+FFmpeg output: frame=  438 fps= 62 q=23.0 size=    6656kB time=00:01:33.73 bitrate= 581.7kbits/s speed=13.2x    
+FFmpeg output: frame=  438 fps= 58 q=23.0 size=    7424kB time=00:01:55.19 bitrate= 528.0kbits/s speed=15.2x    
+FFmpeg output: frame=  438 fps= 54 q=23.0 size=    7936kB time=00:02:08.01 bitrate= 507.9kbits/s speed=15.8x    
+FFmpeg output: frame=  438 fps= 51 q=23.0 size=    8448kB time=00:02:19.15 bitrate= 497.3kbits/s speed=16.2x    
+FFmpeg output: frame=  438 fps= 48 q=23.0 size=    8960kB time=00:02:31.78 bitrate= 483.6kbits/s speed=16.7x    
+FFmpeg output: frame=  438 fps= 46 q=23.0 size=    9472kB time=00:02:44.79 bitrate= 470.9kbits/s speed=17.2x    
+FFmpeg output: frame=  438 fps= 43 q=23.0 size=    9728kB time=00:02:52.40 bitrate= 462.2kbits/s speed=17.1x    
+FFmpeg output: frame=  438 fps= 41 q=23.0 size=   10240kB time=00:03:01.78 bitrate= 461.4kbits/s speed=17.1x    
+FFmpeg output: frame=  438 fps= 39 q=23.0 size=   10496kB time=00:03:13.12 bitrate= 445.2kbits/s speed=17.4x    
+FFmpeg output: frame=  438 fps= 38 q=23.0 size=   11264kB time=00:03:27.51 bitrate= 444.7kbits/s speed=17.9x    
+FFmpeg output: frame=  438 fps= 36 q=23.0 size=   12032kB time=00:03:48.41 bitrate= 431.5kbits/s speed=18.9x    
+FFmpeg output: frame=  438 fps= 35 q=23.0 size=   12800kB time=00:04:09.96 bitrate= 419.5kbits/s speed=19.8x    
+FFmpeg output: [mp4 @ 0000021526832680] Starting second pass: moving the moov atom to the beginning of the file
+FFmpeg output: frame=  518 fps= 38 q=-1.0 Lsize=   14559kB time=00:04:18.27 bitrate= 461.8kbits/s speed=19.2x    
+FFmpeg output: video:4093kB audio:10408kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.396758%
+FFmpeg output: [libx264 @ 0000021526834c00] frame I:3     Avg QP: 7.97  size:544030
+FFmpeg output: [libx264 @ 0000021526834c00] frame P:131   Avg QP: 8.56  size: 16030
+FFmpeg output: [libx264 @ 0000021526834c00] frame B:384   Avg QP:16.26  size:  1195
+FFmpeg output: [libx264 @ 0000021526834c00] consecutive B-frames:  1.2%  0.0%  0.0% 98.8%
+FFmpeg output: [libx264 @ 0000021526834c00] mb I  I16..4:  5.7% 68.3% 26.0%
+FFmpeg output: [libx264 @ 0000021526834c00] mb P  I16..4:  0.0%  0.0%  0.0%  P16..4: 11.4%  0.5%  1.1%  0.0%  0.0%    skip:86.9%
+FFmpeg output: [libx264 @ 0000021526834c00] mb B  I16..4:  0.0%  0.0%  0.0%  B16..8: 12.8%  0.0%  0.0%  direct: 0.0%  skip:87.1%  L0:67.0% L1:32.9% BI: 0.1%
+FFmpeg output: [libx264 @ 0000021526834c00] 8x8 transform intra:67.7% inter:80.6%
+FFmpeg output: [libx264 @ 0000021526834c00] coded y,uvDC,uvAC intra: 93.7% 79.3% 79.1% inter: 2.2% 0.1% 0.0%
+FFmpeg output: [libx264 @ 0000021526834c00] i16 v,h,dc,p: 27% 30% 17% 27%
+FFmpeg output: [libx264 @ 0000021526834c00] i8 v,h,dc,ddl,ddr,vr,hd,vl,hu: 23% 21% 13%  6%  7%  7%  7%  8%  9%
+FFmpeg output: [libx264 @ 0000021526834c00] i4 v,h,dc,ddl,ddr,vr,hd,vl,hu: 24% 23%  9%  7% 10%  7%  7%  6%  6%
+FFmpeg output: [libx264 @ 0000021526834c00] i8c dc,h,v,p: 39% 30% 20% 10%
+FFmpeg output: [libx264 @ 0000021526834c00] Weighted P-Frames: Y:0.0% UV:0.0%
+FFmpeg output: [libx264 @ 0000021526834c00] ref P L0: 50.9%  0.0% 49.0%
+FFmpeg output: [libx264 @ 0000021526834c00] ref B L0: 51.6% 48.4%
+FFmpeg output: [libx264 @ 0000021526834c00] ref B L1: 99.3%  0.7%
+FFmpeg output: [libx264 @ 0000021526834c00] kb/s:1618.12
+FFmpeg output: [aac @ 000002152684ed40] Qavg: 2285.645
+FFmpeg command: C:\Users\marti\Documents\projects\electron-ghactions\ffmpeg\win32-x64\lib\ffmpeg.exe -y -i E:/martinradio/upload/Fire and Ice/B1 - Ski Dance.flac -i E:/martinradio/upload/2 Sporty Shorty - Chunky But Funky/2 Sporty Shorty - Chunky But Funky2.jpg -filter_complex [0:a]concat=n=1:v=0:a=1[a];[1:v]scale=w=1920:h=1920,setsar=1,loop=516.57:516.57[v1];[v1]concat=n=1:v=1:a=0,pad=ceil(iw/2)*2:ceil(ih/2)*2[v] -map [v] -map [a] -c:a aac -b:a 320k -c:v h264 -movflags +faststart -profile:v high -level:v 4.2 -bufsize 3M -crf 18 -pix_fmt yuv420p -tune stillimage -t 258.28709750566895 E:\martinradio\upload\Fire and Ice\output-video.mp4
+FFmpeg output: ffmpeg version n6.0-12-ga6dc92968a-20230404 Copyright (c) 2000-2023 the FFmpeg developers
+FFmpeg output:   built with gcc 12.2.0 (crosstool-NG 1.25.0.152_89671bf)
+FFmpeg output:   configuration: --prefix=/ffbuild/prefix --pkg-config-flags=--static --pkg-config=pkg-config --cross-prefix=x86_64-w64-mingw32- --arch=x86_64 --target-os=mingw32 --enable-gpl --enable-version3 --disable-debug --enable-shared --disable-static --disable-w32threads --enable-pthreads --enable-iconv --enable-libxml2 --enable-zlib --enable-libfreetype --enable-libfribidi --enable-gmp --enable-lzma --enable-fontconfig --enable-libvorbis --enable-opencl --disable-libpulse --enable-libvmaf --disable-libxcb --disable-xlib --enable-amf --enable-libaom --enable-libaribb24 --enable-avisynth --enable-chromaprint --enable-libdav1d --enable-libdavs2 --disable-libfdk-aac --enable-ffnvcodec --enable-cuda-llvm --enable-frei0r --enable-libgme --enable-libkvazaar --enable-libass --enable-libbluray --enable-libjxl --enable-libmp3lame --enable-libopus --enable-librist --enable-libssh --enable-libtheora --enable-libvpx --enable-libwebp --enable-lv2 --disable-libmfx --enable-libvpl --enable-openal --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenh264 --enable-libopenjpeg --enable-libopenmpt --enable-librav1e --enable-librubberband --enable-schannel --enable-sdl2 --enable-libsoxr --enable-libsrt --enable-libsvtav1 --enable-libtwolame --enable-libuavs3d --disable-libdrm --disable-vaapi --enable-libvidstab --enable-vulkan --enable-libshaderc --enable-libplacebo --enable-libx264 --enable-libx265 --enable-libxavs2 --enable-libxvid --enable-libzimg --enable-libzvbi --extra-cflags=-DLIBTWOLAME_STATIC --extra-cxxflags= --extra-ldflags=-pthread --extra-ldexeflags= --extra-libs=-lgomp --extra-version=20230404
+FFmpeg output:   libavutil      58.  2.100 / 58.  2.100
+FFmpeg output:   libavcodec     60.  3.100 / 60.  3.100
+FFmpeg output:   libavformat    60.  3.100 / 60.  3.100
+FFmpeg output:   libavdevice    60.  1.100 / 60.  1.100
+FFmpeg output:   libavfilter     9.  3.100 /  9.  3.100
+FFmpeg output:   libswscale      7.  1.100 /  7.  1.100
+FFmpeg output:   libswresample   4. 10.100 /  4. 10.100
+FFmpeg output:   libpostproc    57.  1.100 / 57.  1.100
+FFmpeg output: Input #0, flac, from 'E:/martinradio/upload/Fire and Ice/B1 - Ski Dance.flac':
+FFmpeg output:   Metadata:
+FFmpeg output:     DISCOGS_RELEASE_ID: 476609
+FFmpeg output:     CATALOGNUMBER   : CBSA 12.6827, A 12.6827, CBS A 12.6827
+FFmpeg output:     MEDIATYPE       : Vinyl (12", 45 RPM)
+FFmpeg output:     STYLE           : Synth-pop
+FFmpeg output:     COUNTRY         : Germany
+FFmpeg output:     WWW             : https://www.discogs.com/release/476609-Marietta-Fire-And-Ice-12-Special-Ski-Dance-Mix
+FFmpeg output:     ALBUMARTISTSORT : Marietta Waters
+FFmpeg output:     Title           : Ski Dance
+FFmpeg output:     ARTIST          : Marietta
+FFmpeg output:     ALBUM           : Fire And Ice (12" Special Ski Dance Mix)
+FFmpeg output:     GENRE           : Electronic
+FFmpeg output:     DATE            : 1986
+FFmpeg output:     ORGANIZATION    : CBS, CBS, CBS
+FFmpeg output:     track           : B1
+FFmpeg output:   Duration: 00:04:18.29, start: 0.000000, bitrate: 1560 kb/s
+FFmpeg output:   Stream #0:0: Audio: flac, 44100 Hz, stereo, s32 (24 bit)
+FFmpeg output:   Stream #0:1: Video: mjpeg (Progressive), yuvj444p(pc, bt470bg/unknown/unknown), 600x600, 90k tbr, 90k tbn (attached pic)
+FFmpeg output:     Metadata:
+FFmpeg output:       comment         : Cover (front)
+FFmpeg output: Input #1, image2, from 'E:/martinradio/upload/2 Sporty Shorty - Chunky But Funky/2 Sporty Shorty - Chunky But Funky2.jpg':
+FFmpeg output:   Duration: 00:00:00.04, start: 0.000000, bitrate: 19213 kb/s
+FFmpeg output:   Stream #1:0: Video: mjpeg (Baseline), yuvj444p(pc, bt470bg/unknown/unknown), 600x600, 25 fps, 25 tbr, 25 tbn
+FFmpeg output: Stream mapping:
+FFmpeg output:   Stream #0:0 (flac) -> concat:in0:a0
+FFmpeg output:   Stream #1:0 (mjpeg) -> scale:default
+FFmpeg output:   pad:default -> Stream #0:0 (libx264)
+FFmpeg output:   concat:out:a0 -> Stream #0:1 (aac)
+FFmpeg output: Press [q] to stop, [?] for help
+FFmpeg output: [swscaler @ 0000020ae84cad40] deprecated pixel format used, make sure you did set range correctly
+FFmpeg output:     Last message repeated 3 times
+FFmpeg output: [libx264 @ 0000020ae7f04c00] VBV bufsize set but maxrate unspecified, ignored
+FFmpeg output: [libx264 @ 0000020ae7f04c00] using SAR=1/1
+FFmpeg output: [libx264 @ 0000020ae7f04c00] frame MB size (120x120) > level limit (8704)
+FFmpeg output: [libx264 @ 0000020ae7f04c00] DPB size (4 frames, 57600 mbs) > level limit (2 frames, 34816 mbs)
+FFmpeg output: [libx264 @ 0000020ae7f04c00] using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX FMA3 BMI2 AVX2
+FFmpeg output: [libx264 @ 0000020ae7f04c00] profile High, level 4.2, 4:2:0, 8-bit
+FFmpeg output: [libx264 @ 0000020ae7f04c00] 264 - core 164 - H.264/MPEG-4 AVC codec - Copyleft 2003-2023 - http://www.videolan.org/x264.html - options: cabac=1 ref=2 deblock=1:-3:-3 analyse=0x3:0x113 me=hex subme=7 psy=1 psy_rd=2.00:0.70 mixed_ref=1 me_range=16 chroma_me=1 trellis=1 8x8dct=1 cqm=0 deadzone=21,11 fast_pskip=1 chroma_qp_offset=-4 threads=36 lookahead_threads=6 sliced_threads=0 nr=0 decimate=1 interlaced=0 bluray_compat=0 constrained_intra=0 bframes=3 b_pyramid=2 b_adapt=1 b_bias=0 direct=1 weightb=1 open_gop=0 weightp=2 keyint=250 keyint_min=25 scenecut=40 intra_refresh=0 rc_lookahead=40 rc=crf mbtree=1 crf=18.0 qcomp=0.60 qpmin=0 qpmax=69 qpstep=4 ip_ratio=1.40 aq=1:1.20
+FFmpeg output: Output #0, mp4, to 'E:\martinradio\upload\Fire and Ice\output-video.mp4':
+FFmpeg output:   Metadata:
+FFmpeg output:     DISCOGS_RELEASE_ID: 476609
+FFmpeg output:     CATALOGNUMBER   : CBSA 12.6827, A 12.6827, CBS A 12.6827
+FFmpeg output:     MEDIATYPE       : Vinyl (12", 45 RPM)
+FFmpeg output:     STYLE           : Synth-pop
+FFmpeg output:     COUNTRY         : Germany
+FFmpeg output:     WWW             : https://www.discogs.com/release/476609-Marietta-Fire-And-Ice-12-Special-Ski-Dance-Mix
+FFmpeg output:     ALBUMARTISTSORT : Marietta Waters
+FFmpeg output:     Title           : Ski Dance
+FFmpeg output:     ARTIST          : Marietta
+FFmpeg output:     ALBUM           : Fire And Ice (12" Special Ski Dance Mix)
+FFmpeg output:     GENRE           : Electronic
+FFmpeg output:     DATE            : 1986
+FFmpeg output:     ORGANIZATION    : CBS, CBS, CBS
+FFmpeg output:     track           : B1
+FFmpeg output:     encoder         : Lavf60.3.100
+FFmpeg output:   Stream #0:0: Video: h264 (avc1 / 0x31637661), yuv420p(tv, bt470bg/unknown/unknown, progressive), 1920x1920 [SAR 1:1 DAR 1:1], q=2-31, 25 fps, 12800 tbn
+FFmpeg output:     Metadata:
+FFmpeg output:       encoder         : Lavc60.3.100 libx264
+FFmpeg output:     Side data:
+FFmpeg output:       cpb: bitrate max/min/avg: 0/0/0 buffer size: 3000000 vbv_delay: N/A
+FFmpeg output:   Stream #0:1: Audio: aac (LC) (mp4a / 0x6134706D), 44100 Hz, stereo, fltp, 320 kb/s
+FFmpeg output:     Metadata:
+FFmpeg output:       encoder         : Lavc60.3.100 aac
+FFmpeg output: frame=    0 fps=0.0 q=0.0 size=       0kB time=00:00:00.02 bitrate=  16.5kbits/s speed=  19x    
+FFmpeg output: frame=    0 fps=0.0 q=0.0 size=       0kB time=00:00:02.53 bitrate=   0.2kbits/s speed=5.03x    
+FFmpeg output: frame=   41 fps= 41 q=23.0 size=     768kB time=00:00:04.76 bitrate=1321.8kbits/s speed=4.74x    
+FFmpeg output: frame=   94 fps= 62 q=23.0 size=    1280kB time=00:00:06.89 bitrate=1520.5kbits/s speed=4.58x    
+FFmpeg output: frame=  157 fps= 78 q=23.0 size=    1536kB time=00:00:09.40 bitrate=1338.1kbits/s speed=4.69x    
+FFmpeg output: frame=  223 fps= 89 q=23.0 size=    2048kB time=00:00:12.09 bitrate=1386.9kbits/s speed=4.82x    
+FFmpeg output: frame=  294 fps= 98 q=23.0 size=    3072kB time=00:00:14.88 bitrate=1690.8kbits/s speed=4.94x    
+FFmpeg output: frame=  367 fps=104 q=23.0 size=    3584kB time=00:00:17.76 bitrate=1652.9kbits/s speed=5.06x    
+FFmpeg output: frame=  436 fps=109 q=23.0 size=    3840kB time=00:00:20.64 bitrate=1523.9kbits/s speed=5.14x    
+FFmpeg output: frame=  438 fps= 97 q=23.0 size=    4096kB time=00:00:35.41 bitrate= 947.6kbits/s speed=7.84x    
+FFmpeg output: frame=  438 fps= 87 q=23.0 size=    4608kB time=00:00:46.74 bitrate= 807.6kbits/s speed=9.31x    
+FFmpeg output: frame=  438 fps= 79 q=23.0 size=    5120kB time=00:01:00.39 bitrate= 694.5kbits/s speed=10.9x    
+FFmpeg output: frame=  438 fps= 73 q=23.0 size=    5888kB time=00:01:14.79 bitrate= 644.9kbits/s speed=12.4x    
+FFmpeg output: frame=  438 fps= 67 q=23.0 size=    6400kB time=00:01:29.28 bitrate= 587.2kbits/s speed=13.6x    
+FFmpeg output: frame=  438 fps= 62 q=23.0 size=    7168kB time=00:01:50.73 bitrate= 530.3kbits/s speed=15.7x    
+FFmpeg output: frame=  438 fps= 58 q=23.0 size=    7936kB time=00:02:06.43 bitrate= 514.2kbits/s speed=16.7x    
+FFmpeg output: frame=  438 fps= 54 q=23.0 size=    8192kB time=00:02:16.64 bitrate= 491.1kbits/s speed=  17x    
+FFmpeg output: frame=  438 fps= 51 q=23.0 size=    8704kB time=00:02:29.55 bitrate= 476.8kbits/s speed=17.5x    
+FFmpeg output: frame=  438 fps= 48 q=23.0 size=    9472kB time=00:02:43.21 bitrate= 475.4kbits/s speed=  18x    
+FFmpeg output: frame=  438 fps= 46 q=23.0 size=    9728kB time=00:02:54.54 bitrate= 456.6kbits/s speed=18.3x    
+FFmpeg output: frame=  438 fps= 44 q=23.0 size=   10240kB time=00:03:02.99 bitrate= 458.4kbits/s speed=18.2x    
+FFmpeg output: frame=  438 fps= 41 q=23.0 size=   10752kB time=00:03:14.51 bitrate= 452.8kbits/s speed=18.4x    
+FFmpeg output: frame=  438 fps= 40 q=23.0 size=   11264kB time=00:03:29.09 bitrate= 441.3kbits/s speed=18.9x    
+FFmpeg output: frame=  438 fps= 38 q=23.0 size=   12032kB time=00:03:49.52 bitrate= 429.4kbits/s speed=19.8x    
+FFmpeg output: frame=  438 fps= 36 q=23.0 size=   12800kB time=00:04:11.35 bitrate= 417.2kbits/s speed=20.8x    
+FFmpeg output: [mp4 @ 0000020ae7f02680] Starting second pass: moving the moov atom to the beginning of the file
+FFmpeg output: frame=  518 fps= 40 q=-1.0 Lsize=   14559kB time=00:04:18.27 bitrate= 461.8kbits/s speed=20.1x    
+FFmpeg output: video:4093kB audio:10408kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.396758%
+FFmpeg output: [libx264 @ 0000020ae7f04c00] frame I:3     Avg QP: 7.97  size:544030
+FFmpeg output: [libx264 @ 0000020ae7f04c00] frame P:131   Avg QP: 8.56  size: 16030
+FFmpeg output: [libx264 @ 0000020ae7f04c00] frame B:384   Avg QP:16.26  size:  1195
+FFmpeg output: [libx264 @ 0000020ae7f04c00] consecutive B-frames:  1.2%  0.0%  0.0% 98.8%
+FFmpeg output: [libx264 @ 0000020ae7f04c00] mb I  I16..4:  5.7% 68.3% 26.0%
+FFmpeg output: [libx264 @ 0000020ae7f04c00] mb P  I16..4:  0.0%  0.0%  0.0%  P16..4: 11.4%  0.5%  1.1%  0.0%  0.0%    skip:86.9%
+FFmpeg output: [libx264 @ 0000020ae7f04c00] mb B  I16..4:  0.0%  0.0%  0.0%  B16..8: 12.8%  0.0%  0.0%  direct: 0.0%  skip:87.1%  L0:67.0% L1:32.9% BI: 0.1%
+FFmpeg output: [libx264 @ 0000020ae7f04c00] 8x8 transform intra:67.7% inter:80.6%
+FFmpeg output: [libx264 @ 0000020ae7f04c00] coded y,uvDC,uvAC intra: 93.7% 79.3% 79.1% inter: 2.2% 0.1% 0.0%
+FFmpeg output: [libx264 @ 0000020ae7f04c00] i16 v,h,dc,p: 27% 30% 17% 27%
+FFmpeg output: [libx264 @ 0000020ae7f04c00] i8 v,h,dc,ddl,ddr,vr,hd,vl,hu: 23% 21% 13%  6%  7%  7%  7%  8%  9%
+FFmpeg output: [libx264 @ 0000020ae7f04c00] i4 v,h,dc,ddl,ddr,vr,hd,vl,hu: 24% 23%  9%  7% 10%  7%  7%  6%  6%
+FFmpeg output: [libx264 @ 0000020ae7f04c00] i8c dc,h,v,p: 39% 30% 20% 10%
+FFmpeg output: [libx264 @ 0000020ae7f04c00] Weighted P-Frames: Y:0.0% UV:0.0%
+FFmpeg output: [libx264 @ 0000020ae7f04c00] ref P L0: 50.9%  0.0% 49.0%
+FFmpeg output: [libx264 @ 0000020ae7f04c00] ref B L0: 51.6% 48.4%
+FFmpeg output: [libx264 @ 0000020ae7f04c00] ref B L1: 99.3%  0.7%
+FFmpeg output: [libx264 @ 0000020ae7f04c00] kb/s:1618.12
+FFmpeg output: [aac @ 0000020ae7f1ed40] Qavg: 2285.645
+Application started on 2024-12-29T21:31:42.707Z
+Application started on 2024-12-29T22:34:48.097Z

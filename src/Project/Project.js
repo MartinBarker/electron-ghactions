@@ -69,6 +69,8 @@ function Project() {
   };
 
   const updateRender = (id, update) => {
+    console.log('updateRender() :', id, update);
+    //BUG when this runs, all the image thumbnails in my component are re-rendered, fix?
     setRenders(renders => renders.map(render => render.id === id ? { ...render, ...update } : render));
   };
 
@@ -161,7 +163,6 @@ function Project() {
   };
 
   const handleFilesSelect = (audioData, imageData) => {
-
     if (audioData.length) {
       setAudioFiles(prev => {
         const updatedFiles = prev.map(file => ({ ...file }));
@@ -415,6 +416,7 @@ function Project() {
     });
 
     window.api.receive('ffmpeg-progress', ({ renderId, pid, progress }) => {
+      console.log('FFmpeg Progress received:', renderId, pid, progress);
       updateRender(renderId, { pid, progress });
     });
 
@@ -466,6 +468,7 @@ function Project() {
   };
 
   const updateAudioFiles = (newFile) => {
+    console.log('updateAudioFiles()')
     setAudioFiles(prev => {
       const index = prev.findIndex(f => f.filepath === newFile.filepath);
       if (index >= 0) {
