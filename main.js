@@ -7,7 +7,6 @@ import pkg from 'electron-updater';
 import path from 'path';
 import fs from 'fs';
 import readline from 'readline';
-import sharp from 'sharp';
 import musicMetadata from 'music-metadata';
 
 const { autoUpdater } = pkg;
@@ -322,8 +321,11 @@ ipcMain.on('open-file-dialog', async (event) => {
           } else if (imageExtensions.includes(ext)) {
             fileType = 'image';
             try {
-              const metadata = await sharp(utf8Path).metadata();
-              dimensions = `${metadata.width}x${metadata.height}`;
+              const img = nativeImage.createFromPath(normalizedPath);
+              if (!img.isEmpty()) {
+                const { width, height } = img.getSize();
+                dimensions = `${width}x${height}`;
+              }
             } catch (error) {
               console.error('Error reading image dimensions:', error);
             }
