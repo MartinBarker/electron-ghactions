@@ -8,6 +8,7 @@ import path from 'path';
 import fs from 'fs';
 import readline from 'readline';
 import musicMetadata from 'music-metadata';
+//import sharp from 'sharp';
 
 const { autoUpdater } = pkg;
 const __filename = fileURLToPath(import.meta.url);
@@ -120,6 +121,7 @@ function createWindow() {
 
   // window item -------
   // Create a menu template
+  /*
   const template = [
     {
       label: '!!!!!File',
@@ -162,7 +164,7 @@ function createWindow() {
   // Build and set the menu
   const menu = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menu); // Sets the application-wide menu
-
+*/
 
   // window item -------
 
@@ -321,11 +323,19 @@ ipcMain.on('open-file-dialog', async (event) => {
           } else if (imageExtensions.includes(ext)) {
             fileType = 'image';
             try {
+              /*
+              //method 1
+              const metadata = await sharp(utf8Path).metadata();
+              dimensions = `${metadata.width}x${metadata.height}`;
+              */
+              
+              // method 2
               const img = nativeImage.createFromPath(normalizedPath);
               if (!img.isEmpty()) {
                 const { width, height } = img.getSize();
                 dimensions = `${width}x${height}`;
               }
+              
             } catch (error) {
               console.error('Error reading image dimensions:', error);
             }
