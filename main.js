@@ -47,23 +47,9 @@ function createWindow() {
 
   console.log('filepath = ', path.join(__dirname, './build/index.html'))
 
-  // Path to the index.html file
-  if (!app.isPackaged) {
-    // Load localhost if in development mode
-    mainWindow.loadURL('http://localhost:3000');
-  } else {
-    // Load the index.html from the build folder in production mode
-    
-    //color
-    //mainWindow.loadFile(path.join(__dirname, './build/index.html'))
-    mainWindow.loadFile('./build/index.html')
-    
-    //mainWindow.loadURL('app://./index.html');
+  //mainWindow.loadURL(`file://${path.join(__dirname, "../build/index.html")}`);
 
-    //mainWindow.loadFile('./build/index.html');
-
-  }
-
+  mainWindow.loadURL(app.isPackaged ? `file://${path.join(__dirname, "../build/index.html")}` : 'http://localhost:3000');
 
 
 
