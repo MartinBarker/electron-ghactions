@@ -8,7 +8,6 @@ import path from 'path';
 import fs from 'fs';
 import readline from 'readline';
 import musicMetadata from 'music-metadata';
-//import sharp from 'sharp';
 
 const { autoUpdater } = pkg;
 const __filename = fileURLToPath(import.meta.url);

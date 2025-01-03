@@ -247,8 +247,7 @@
     "music-metadata-browser": "^2.5.11",
     "nth-check": "^2.0.1",
     "postcss": "^8.4.49",
-    "react-router-dom": "^7.0.2",
-    "sharp": "^0.32.6"
+    "react-router-dom": "^7.0.2"
   },
   "devDependencies": {
     "concurrently": "^9.1.0",
