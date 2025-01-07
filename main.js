@@ -153,7 +153,7 @@ ipcMain.on('run-ffmpeg-command', async (event, ffmpegArgs) => {
     const ffmpegPath = getFfmpegPath();
     console.log('Using FFmpeg path:', ffmpegPath);
     if (!app.isPackaged) {
-      logStream.write(`FFmpeg command: ${ffmpegPath} ${cmdArgsList.join(' ')}\n`);
+      //logStream.write(`FFmpeg command: ${ffmpegPath} ${cmdArgsList.join(' ')}\n`);
     }
 
     const process = execa(ffmpegPath, cmdArgsList);
@@ -163,15 +163,15 @@ ipcMain.on('run-ffmpeg-command', async (event, ffmpegArgs) => {
     const outputBuffer = [];
 
     rl.on('line', (line) => {
+      console.log('start line = ', line)
       if (!app.isPackaged) {
-        logStream.write('FFmpeg output: ' + line + '\n');
+        //logStream.write('FFmpeg output: ' + line + '\n');
       }
 
       outputBuffer.push(line);
       if (outputBuffer.length > 10) {
         outputBuffer.shift(); // Keep only the last 10 lines
       }
-
       const match = line.match(/time=([\d:.]+)/);
       if (match) {
         const elapsed = match[1].split(':').reduce((acc, time) => (60 * acc) + +time, 0);
@@ -192,7 +192,7 @@ ipcMain.on('run-ffmpeg-command', async (event, ffmpegArgs) => {
   } catch (error) {
     console.error('FFmpeg command failed:', error.message);
     if (!app.isPackaged) {
-      logStream.write('error.message: ' + error.message + '\n');
+      //logStream.write('error.message: ' + error.message + '\n');
     }
     const errorOutput = error.stderr ? error.stderr.split('\n').slice(-10).join('\n') : 'No error details';
     event.reply('ffmpeg-error', { message: error.message, lastOutput: errorOutput });
@@ -289,6 +289,7 @@ ipcMain.on('open-file-dialog', async (event) => {
     console.error('Error opening file dialog:', error);
   }
 });
+
 
 ipcMain.on('get-path-separator', (event) => {
   const separator = path.sep; // Get OS-specific path separator
