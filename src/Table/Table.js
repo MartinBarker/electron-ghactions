@@ -39,24 +39,32 @@ function IndeterminateCheckbox({ indeterminate, className = "", ...rest }) {
   );
 }
 
-// Drag handle for rows
-function DragHandle({ row }) {
+function DragHandle({ row, rowIndex }) {
   const { attributes, listeners } = useSortable({ id: row.original.id });
 
   return (
-    <button
-      {...attributes}
-      {...listeners}
-      className={styles.dragHandle}
-      title="Drag to reorder"
-    >
-      ☰
-    </button>
+    <div className={styles.dragHandleWrapper}>
+      <button
+        {...attributes}
+        {...listeners}
+        className={styles.dragHandle}
+        title="Drag to reorder"
+      >
+        ☰
+      </button>
+      <span className={styles.rowNumber}>{rowIndex + 1}</span>
+    </div>
   );
 }
 
-// Row Component
-function Row({ row, toggleRowSelected }) {
+function Row({
+  row,
+  rowIndex,
+  toggleRowExpanded,
+  isExpanded,
+  toggleRowSelected,
+  removeRow,
+}) {
   const { setNodeRef, transform, transition } = useSortable({
     id: row.original.id,
   });
@@ -67,33 +75,112 @@ function Row({ row, toggleRowSelected }) {
   };
 
   return (
-    <tr
-      ref={setNodeRef}
-      style={style}
-      className={styles.row}
-      onClick={() => toggleRowSelected(row.id)} // Add click handler for row selection
-    >
-      {row.getVisibleCells().map((cell, index) => {
-        const columnHeader = cell.column.columnDef.header;
-        return (
-          <td
-            key={cell.id}
-            className={styles.cell}
-            data-tooltip={cell.getValue()} // Add data attribute for tooltip content
-          >
-            {columnHeader === 'Drag' ? <DragHandle row={row} /> : null}
-            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+    <>
+      <tr
+        ref={setNodeRef}
+        style={style}
+        className={styles.row}
+        onClick={() => toggleRowSelected(row.id)}
+      >
+        {row.getVisibleCells().map((cell) => {
+          const columnHeader = cell.column.columnDef.header;
+
+          return (
+            <td
+              key={cell.id}
+              className={styles.cell}
+              data-tooltip={cell.getValue()}
+            >
+              {/* Render Drag handle */}
+              {columnHeader === "Drag" && (
+                <DragHandle row={row} rowIndex={rowIndex} />
+              )}
+
+              {/* Render Expand Icon */}
+              {columnHeader === "Expand" && (
+                <span
+                  className={`${styles.expandIcon} ${
+                    isExpanded ? styles.expanded : ""
+                  }`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleRowExpanded(row.id);
+                  }}
+                  title="Expand/Collapse Row"
+                >
+                  {isExpanded ? "▽" : "▷"}
+                </span>
+              )}
+
+              {/* Render Remove Button */}
+              {columnHeader === "Remove" && (
+                <button
+                  className={styles.removeButton}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    removeRow(row.id);
+                  }}
+                  title="Remove this file"
+                >
+                  ❌
+                </button>
+              )}
+
+              {/* Render other cells */}
+              {columnHeader !== "Expand" &&
+                columnHeader !== "Drag" &&
+                columnHeader !== "Remove" &&
+                flexRender(cell.column.columnDef.cell, cell.getContext())}
+            </td>
+          );
+        })}
+      </tr>
+      {isExpanded && (
+        <tr className={styles.expandedRow}>
+          <td colSpan={row.getVisibleCells().length}>
+            <div className={styles.expandedContent}>
+              <label>
+                Start Time:
+                <input type="text" placeholder="00:00" />
+              </label>
+              <label>
+                End Time:
+                <input type="text" placeholder="00:00" />
+              </label>
+            </div>
           </td>
-        );
-      })}
-    </tr>
+        </tr>
+      )}
+    </>
   );
 }
 
-// Table Component
 function Table({ data, setData, columns, rowSelection, setRowSelection }) {
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState([]);
+  const [expandedRows, setExpandedRows] = useState({});
+
+  const toggleRowSelected = (rowId) => {
+    setRowSelection((prev) => ({
+      ...prev,
+      [rowId]: !prev[rowId],
+    }));
+  };
+
+  const toggleRowExpanded = (rowId) => {
+    setExpandedRows((prev) => ({
+      ...prev,
+      [rowId]: !prev[rowId],
+    }));
+  };
+
+  const removeRow = (rowId) => {
+    setData((prev) => {
+      const updated = prev.filter((row) => row.id !== rowId);
+      localStorage.setItem("audioFiles", JSON.stringify(updated));
+      return updated;
+    });
+  };
 
   const tableColumns = React.useMemo(() => [
     {
@@ -120,12 +207,45 @@ function Table({ data, setData, columns, rowSelection, setRowSelection }) {
         </div>
       ),
     },
-    ...columns,
+    {
+      id: "expand",
+      header: "Expand",
+      cell: () => null,
+    },
+    {
+      id: "drag",
+      header: "Drag",
+      cell: () => null,
+    },
+    ...columns.map((column) => ({
+      ...column,
+      header: () => (
+        <div
+          className={styles.sortableHeader}
+          onClick={() => {
+            const isSorted = sorting.find((sort) => sort.id === column.accessorKey);
+            const direction = isSorted ? (isSorted.desc ? 'asc' : 'desc') : 'asc';
+            setSorting([{ id: column.accessorKey, desc: direction === 'desc' }]);
+          }}
+        >
+          {column.header || ""}
+          <span className={styles.sortIcon}>
+            {sorting.find((sort) => sort.id === column.accessorKey)?.desc ? "🔽" : "🔼"}
+          </span>
+        </div>
+      ),
+    })),
+    {
+      id: "remove",
+      header: "Remove",
+      cell: () => null,
+    },
   ]);
 
   const table = useReactTable({
     data,
     columns: tableColumns,
+    state: { sorting },
     getRowId: (row) => row.id,
     state: { rowSelection, globalFilter, sorting },
     onRowSelectionChange: setRowSelection,
@@ -135,13 +255,6 @@ function Table({ data, setData, columns, rowSelection, setRowSelection }) {
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
-
-  const toggleRowSelected = (rowId) => {
-    setRowSelection((prev) => ({
-      ...prev,
-      [rowId]: !prev[rowId], // Toggle the selection state of the row
-    }));
-  };
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
@@ -153,6 +266,7 @@ function Table({ data, setData, columns, rowSelection, setRowSelection }) {
       if (oldIndex !== -1 && newIndex !== -1) {
         const newData = arrayMove([...data], oldIndex, newIndex);
         setData(newData);
+        localStorage.setItem("audioFiles", JSON.stringify(newData));
       }
     }
   };
@@ -172,51 +286,31 @@ function Table({ data, setData, columns, rowSelection, setRowSelection }) {
           strategy={verticalListSortingStrategy}
         >
           <table className={styles.table}>
-
             <thead>
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id} className={styles.headerRow}>
-                  {headerGroup.headers.map((header) => {
-                    const columnHeader = header.column.columnDef.header;
-                    // Exclude 'Drag', checkbox column (with id 'select'), or any undefined/empty header
-                    const isSortable = columnHeader !== 'Drag' && header.id !== 'select' && columnHeader !== undefined && columnHeader !== '';
-                    const isSorted = header.column.getIsSorted();
-
-                    return (
-                      <th
-                        key={header.id}
-                        className={styles.headerCell}
-                        onClick={
-                          isSortable && header.column.getCanSort()
-                            ? () => header.column.toggleSorting()
-                            : undefined
-                        }
-                      >
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                        {isSortable && (
-                          <span
-                            className={`${styles.sortIcon} ${isSorted ? styles.active : ''
-                              }`}
-                          >
-                            {isSorted === 'asc'
-                              ? '🔼'
-                              : isSorted === 'desc'
-                                ? '🔽'
-                                : '↕️'} {/* Neutral icon */}
-                          </span>
-                        )}
-                      </th>
-                    );
-                  })}
+                  {headerGroup.headers.map((header) => (
+                    <th key={header.id} className={styles.headerCell}>
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                    </th>
+                  ))}
                 </tr>
               ))}
             </thead>
             <tbody>
-              {table.getRowModel().rows.map((row) => (
-                <Row key={row.original.id} row={row} toggleRowSelected={toggleRowSelected} />
+              {table.getRowModel().rows.map((row, rowIndex) => (
+                <Row
+                  key={row.original.id}
+                  row={row}
+                  rowIndex={rowIndex}
+                  toggleRowSelected={toggleRowSelected}
+                  toggleRowExpanded={toggleRowExpanded}
+                  isExpanded={!!expandedRows[row.id]}
+                  removeRow={removeRow}
+                />
               ))}
             </tbody>
           </table>

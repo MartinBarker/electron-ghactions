@@ -23,7 +23,13 @@ function formatDuration(duration) {
 function Project() {
   const [renders, setRenders] = useState(() => JSON.parse(localStorage.getItem('renders') || '[]'));
 
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);  // New state for tracking selected image index
+  const [resolutionOptions, setResolutionOptions] = useState([]);
+  const [selectedResolution, setSelectedResolution] = useState('');
 
+  const generateUniqueId = () => {
+    return `id-${Date.now()}-${Math.floor(Math.random() * 1000000)}`;
+  };
 
   const renderColumns = [
     { accessorKey: 'progress', header: 'Progress', cell: ({ row }) => `${row.original.progress}%` },
@@ -153,9 +159,52 @@ function Project() {
     localStorage.setItem('usePadding', usePadding);
   }, [outputFolder, outputFilename, outputFormat, videoWidth, videoHeight, backgroundColor, usePadding]);
 
+  const calculateResolution = (width, height, targetWidth) => {
+    const aspectRatio = width / height;
+    const targetHeight = Math.round(targetWidth / aspectRatio);
+    return [targetWidth, targetHeight];
+  };
 
-  const generateUniqueId = () => {
-    return `id-${Date.now()}-${Math.floor(Math.random() * 1000000)}`;
+  const getResolutionOptions = async (images) => {
+    const options = [];
+    for (const image of images) {
+      const [width, height] = image.dimensions.split('x').map(Number);
+      const resolutions = [
+        ...[640, 1280].map(targetWidth => {
+          const [resWidth, resHeight] = calculateResolution(width, height, targetWidth);
+          return `${resWidth}x${resHeight}`;
+        }),
+        `${width}x${height}`,
+        ...[1920, 2560].map(targetWidth => {
+          const [resWidth, resHeight] = calculateResolution(width, height, targetWidth);
+          return `${resWidth}x${resHeight}`;
+        })
+      ];
+      options.push(resolutions);
+    }
+    return options;
+  };
+
+  useEffect(() => {
+    if (imageFiles.length > 0) {
+      getResolutionOptions(imageFiles).then(options => {
+        setResolutionOptions(options);
+        setSelectedResolution(options[selectedImageIndex][2]); // Set default to original resolution
+      });
+    }
+  }, [imageFiles]);
+
+  const handleImageSelectionChange = (e) => {
+    const index = Number(e.target.value);
+    setSelectedImageIndex(index);
+    setSelectedResolution(resolutionOptions[index][2]); // Set default to original resolution
+  };
+
+  const handleResolutionChange = (e) => {
+    const [width, height] = e.target.value.split('x');
+    setVideoWidth(width);
+    setVideoHeight(height);
+    setSelectedResolution(e.target.value);
   };
 
   const handleOutputFolderChange = (event) => {
@@ -236,19 +285,11 @@ function Project() {
 
 
   const audioColumns = [
-    { accessorKey: 'draggable', header: 'Drag' },
     { accessorKey: 'filename', header: 'File Name' }, // Use `filename`
     { accessorKey: 'duration', header: 'Duration' },
   ];
 
   const imageColumns = [
-    {
-      accessorKey: 'draggable',
-      header: 'Drag',
-      cell: ({ row }) => (
-        <div className={styles.dragHandle}></div>
-      ),
-    },
     {
       accessorKey: 'thumbnail',
       header: 'Thumbnail',
@@ -629,6 +670,38 @@ function Project() {
               <option value="mp4">MP4</option>
               <option value="mkv">MKV</option>
             </select>
+          </div>
+
+          <div className={styles.renderOptionGroup}>
+            <label htmlFor="resolution" className={styles.renderOptionLabel}>
+              Resolution
+            </label>
+            <div className={styles.resolutionBox}>
+              <select
+                id="imageSelection"
+                value={selectedImageIndex}
+                onChange={handleImageSelectionChange}
+                className={styles.renderOptionSelect}
+              >
+                {imageFiles.map((_, index) => (
+                  <option key={index} value={index}>
+                    Image {index + 1}
+                  </option>
+                ))}
+              </select>
+              <select
+                id="resolutionSelection"
+                value={selectedResolution}
+                onChange={handleResolutionChange}
+                className={styles.renderOptionSelect}
+              >
+                {resolutionOptions[selectedImageIndex]?.map((resolution, index) => (
+                  <option key={index} value={resolution}>
+                    {resolution}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           <div className={styles.renderOptionGroup}>
