@@ -212,7 +212,6 @@ function getFfmpegPath() {
   }
 }
 
-
 ipcMain.on('get-audio-metadata', async (event, filePath) => {
   try {
     console.log('Getting metadata for file:', filePath);
