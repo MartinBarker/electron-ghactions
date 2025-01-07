@@ -40,7 +40,6 @@
     "extraMetadata": {
       "main": "main.js"
     },
-    "asar": false,
     "asar": {
       "smartUnpack": false
     },
@@ -239,10 +238,12 @@
     "express": "^4.21.2",
     "fs-extra": "^11.2.0",
     "i18next-fs-backend": "^2.6.0",
+    "image-size": "^1.2.0",
     "music-metadata-browser": "^2.5.11",
     "nth-check": "^2.0.1",
     "postcss": "^8.4.49",
-    "react-router-dom": "^7.0.2"
+    "react-router-dom": "^7.0.2",
+    "readline": "^1.3.0"
   },
   "devDependencies": {
     "concurrently": "^9.1.0",
