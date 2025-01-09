@@ -102,13 +102,19 @@ const Sidebar = ({ children }) => {
             <path d="M4 6h18V4H4c-1.1 0-2 .9-2 2v11H0v3h14v-3H4V6zm19 2h-8c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h8c.55 0 1-.45 1-1V9c0-.55-.45-1-1-1zm-1 9h-6v-7h6v7z" />
           </svg>
 
-          {/* Cloud Icon */}
+          {/* Projects List */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            className={`${styles.icon} ${styles.sidebarIcon}`}
+            viewBox="0 0 168.000000 149.000000"
+            className={`${styles.icon} ${styles.sidebarIcon} ${
+              location.pathname === '/settings' ? styles.active : ''
+            }`}
+            onClick={() => navigate('/settings')}
           >
-            <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z" />
+            <g className="custom-svg" transform="translate(0.000000,149.000000) scale(0.100000,-0.100000)" fill="#818181" stroke="none">
+              <path d="M1045 1433 c-88 -29 -168 -56 -177 -59 -16 -5 -18 2 -18 45 l0 51 -190 0 -190 0 0 -730 0 -730 190 0 190 0 0 677 c0 373 4 673 9 668 4 -6 42 -111 84 -235 91 -273 379 -1114 381 -1117 1 -1 81 23 178 54 l176 56 -135 396 c-74 218 -177 522 -230 676 -52 154 -98 285 -102 291 -4 8 -58 -6 -166 -43z"></path>
+              <path d="M0 740 l0 -730 190 0 190 0 0 730 0 730 -190 0 -190 0 0 -730z"></path>
+            </g>
           </svg>
         </div>
       </div>

@@ -3,10 +3,15 @@ body{
   background-color: #1A2933; /* Optional: matches overall app background */
 }
 
+.sidebarIcon {
+  height: 40px;
+  fill: #818181;
+  cursor: pointer;
+}
+
 .sidebarIcon:hover, .sidebarIcon.active {
   fill: #ffffff; /* White on hover and when active */
 }
-
 
 .container {
   margin: 0;

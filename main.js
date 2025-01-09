@@ -163,7 +163,6 @@ ipcMain.on('run-ffmpeg-command', async (event, ffmpegArgs) => {
     const outputBuffer = [];
 
     rl.on('line', (line) => {
-      console.log('start line = ', line)
       if (!app.isPackaged) {
         //logStream.write('FFmpeg output: ' + line + '\n');
       }
@@ -177,7 +176,6 @@ ipcMain.on('run-ffmpeg-command', async (event, ffmpegArgs) => {
         const elapsed = match[1].split(':').reduce((acc, time) => (60 * acc) + +time, 0);
         progress = duration ? Math.min((elapsed / duration) * 100, 100) : 0;
         progress = Math.round(progress);
-        console.log('progress=', progress)
         event.reply('ffmpeg-progress', {
           renderId: renderId,
           pid: process.pid,
@@ -187,7 +185,6 @@ ipcMain.on('run-ffmpeg-command', async (event, ffmpegArgs) => {
     });
 
     const result = await process;
-    console.log('FFmpeg command completed successfully');
     event.reply('ffmpeg-output', { stdout: result.stdout, progress: 100 });
   } catch (error) {
     console.error('FFmpeg command failed:', error.message);

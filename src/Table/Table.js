@@ -64,6 +64,12 @@ function Row({
   isExpanded,
   toggleRowSelected,
   removeRow,
+  copyRow,
+  isImageTable,
+  isRenderTable,
+  setImageFiles,
+  setAudioFiles,
+  ffmpegCommand
 }) {
   const { setNodeRef, transform, transition } = useSortable({
     id: row.original.id,
@@ -73,6 +79,47 @@ function Row({
     transform: CSS.Transform.toString(transform),
     transition,
   };
+
+  const formatTimeInput = (value, isOverAnHour) => {
+    const cleanValue = value.replace(/[^0-9:]/g, '');
+    if (isOverAnHour) {
+      if (cleanValue.length > 4 && !cleanValue.includes(':')) {
+        return `${cleanValue.slice(0, 2)}:${cleanValue.slice(2, 4)}:${cleanValue.slice(4, 6)}`;
+      }
+    } else {
+      if (cleanValue.length > 2 && !cleanValue.includes(':')) {
+        return `${cleanValue.slice(0, 2)}:${cleanValue.slice(2, 4)}`;
+      }
+    }
+    return cleanValue;
+  };
+
+  const handleTimeInputChange = (e, field, rowId, isOverAnHour) => {
+    const formattedValue = formatTimeInput(e.target.value, isOverAnHour);
+    setAudioFiles((prev) =>
+      prev.map((audio) =>
+        audio.id === rowId
+          ? { ...audio, [field]: formattedValue }
+          : audio
+      )
+    );
+  };
+
+  const calculateEndTime = (startTime, length, isOverAnHour) => {
+    const [startHours, startMinutes, startSeconds] = isOverAnHour ? startTime.split(':').map(Number) : [0, ...startTime.split(':').map(Number)];
+    const [lengthHours, lengthMinutes, lengthSeconds] = isOverAnHour ? length.split(':').map(Number) : [0, ...length.split(':').map(Number)];
+    const totalStartSeconds = startHours * 3600 + startMinutes * 60 + startSeconds;
+    const totalLengthSeconds = lengthHours * 3600 + lengthMinutes * 60 + lengthSeconds;
+    const totalEndSeconds = totalStartSeconds + totalLengthSeconds;
+    const endHours = Math.floor(totalEndSeconds / 3600);
+    const endMinutes = Math.floor((totalEndSeconds % 3600) / 60);
+    const endSeconds = totalEndSeconds % 60;
+    return isOverAnHour
+      ? `${endHours.toString().padStart(2, '0')}:${endMinutes.toString().padStart(2, '0')}:${endSeconds.toString().padStart(2, '0')}`
+      : `${endMinutes.toString().padStart(2, '0')}:${endSeconds.toString().padStart(2, '0')}`;
+  };
+
+  const isOverAnHour = row.original.duration && row.original.duration >= 3600;
 
   return (
     <>
@@ -87,7 +134,7 @@ function Row({
 
           return (
             <td
-              key={cell.id}
+              key={`${cell.id}_${columnHeader}`}
               className={styles.cell}
               data-tooltip={cell.getValue()}
             >
@@ -126,27 +173,121 @@ function Row({
                 </button>
               )}
 
+              {/* Render Copy Button */}
+              {columnHeader === "Copy" && (
+                <button
+                  className={styles.copyButton}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    copyRow(row.original.id);
+                  }}
+                  title="Copy this file"
+                >
+                  📄
+                </button>
+              )}
+
               {/* Render other cells */}
               {columnHeader !== "Expand" &&
                 columnHeader !== "Drag" &&
                 columnHeader !== "Remove" &&
+                columnHeader !== "Copy" &&
                 flexRender(cell.column.columnDef.cell, cell.getContext())}
             </td>
           );
         })}
       </tr>
-      {isExpanded && (
+      {isExpanded && !isImageTable && !isRenderTable && (
         <tr className={styles.expandedRow}>
           <td colSpan={row.getVisibleCells().length}>
             <div className={styles.expandedContent}>
               <label>
                 Start Time:
-                <input type="text" placeholder="00:00" />
+                <input
+                  type="text"
+                  placeholder={isOverAnHour ? "00:00:00" : "00:00"}
+                  value={row.original.startTime || ''}
+                  onChange={(e) => handleTimeInputChange(e, 'startTime', row.original.id, isOverAnHour)}
+                />
+              </label>
+              <label>
+                Length:
+                <input
+                  type="text"
+                  placeholder={isOverAnHour ? "00:00:00" : "00:00"}
+                  value={row.original.length || ''}
+                  onChange={(e) => {
+                    const newLength = formatTimeInput(e.target.value, isOverAnHour);
+                    const newEndTime = calculateEndTime(row.original.startTime || (isOverAnHour ? '00:00:00' : '00:00'), newLength, isOverAnHour);
+                    setAudioFiles((prev) =>
+                      prev.map((audio) =>
+                        audio.id === row.original.id
+                          ? { ...audio, length: newLength, endTime: newEndTime }
+                          : audio
+                      )
+                    );
+                  }}
+                />
               </label>
               <label>
                 End Time:
-                <input type="text" placeholder="00:00" />
+                <input
+                  type="text"
+                  placeholder={isOverAnHour ? "00:00:00" : "00:00"}
+                  value={row.original.endTime || ''}
+                  onChange={(e) => handleTimeInputChange(e, 'endTime', row.original.id, isOverAnHour)}
+                />
               </label>
+            </div>
+          </td>
+        </tr>
+      )}
+      {isExpanded && isImageTable && (
+        <tr className={styles.expandedRow}>
+          <td colSpan={row.getVisibleCells().length}>
+            <div className={styles.expandedContent}>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={row.original.stretchImageToFit || false}
+                  onChange={(e) =>
+                    setImageFiles((prev) =>
+                      prev.map((img) =>
+                        img.id === row.original.id
+                          ? { ...img, stretchImageToFit: e.target.checked }
+                          : img
+                      )
+                    )
+                  }
+                />
+                Stretch Image to Fit
+              </label>
+              <label>
+                Padding Color:
+                <input
+                  type="text"
+                  value={row.original.paddingColor || "#FFFFFF"}
+                  onChange={(e) =>
+                    setImageFiles((prev) =>
+                      prev.map((img) =>
+                        img.id === row.original.id
+                          ? { ...img, paddingColor: e.target.value }
+                          : img
+                      )
+                    )
+                  }
+                  disabled={row.original.stretchImageToFit} // Disable when stretchImageToFit is checked
+                />
+              </label>
+            </div>
+          </td>
+        </tr>
+      )}
+      {isExpanded && isRenderTable && (
+        <tr className={styles.expandedRow}>
+          <td colSpan={row.getVisibleCells().length}>
+            <div className={styles.expandedContent}>
+              <pre>{ffmpegCommand}</pre>
             </div>
           </td>
         </tr>
@@ -155,7 +296,7 @@ function Row({
   );
 }
 
-function Table({ data, setData, columns, rowSelection, setRowSelection }) {
+function Table({ data, setData, columns, rowSelection, setRowSelection, isImageTable, isRenderTable, setImageFiles, setAudioFiles, ffmpegCommand, removeRender }) {
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState([]);
   const [expandedRows, setExpandedRows] = useState({});
@@ -175,11 +316,41 @@ function Table({ data, setData, columns, rowSelection, setRowSelection }) {
   };
 
   const removeRow = (rowId) => {
-    setData((prev) => {
-      const updated = prev.filter((row) => row.id !== rowId);
-      localStorage.setItem("audioFiles", JSON.stringify(updated));
-      return updated;
-    });
+    if (isRenderTable) {
+      removeRender(rowId);
+    } else {
+      setData((prev) => {
+        const updated = prev.filter((row) => row.id !== rowId);
+        localStorage.setItem("audioFiles", JSON.stringify(updated));
+        return updated;
+      });
+    }
+  };
+
+  const copyRow = (rowId) => {
+    const rowToCopy = data.find((row) => row.id === rowId);
+    if (rowToCopy) {
+      const newRow = { ...rowToCopy, id: generateUniqueId() };
+      setData((prev) => {
+        const index = prev.findIndex((row) => row.id === rowId);
+        const updated = [...prev];
+        updated.splice(index + 1, 0, newRow);
+        return updated;
+      });
+    }
+  };
+
+  const clearTable = () => {
+    if (isRenderTable) {
+      setData([]);
+    } else {
+      setData([]);
+      if (isImageTable) {
+        setImageFiles([]);
+      } else {
+        setAudioFiles([]);
+      }
+    }
   };
 
   const tableColumns = React.useMemo(() => [
@@ -230,15 +401,43 @@ function Table({ data, setData, columns, rowSelection, setRowSelection }) {
         >
           {column.header || ""}
           <span className={styles.sortIcon}>
-            {sorting.find((sort) => sort.id === column.accessorKey)?.desc ? "🔽" : "🔼"}
+            {sorting.find((sort) => sort.id === column.accessorKey)?.desc ? "🔽" : "🔼"
+            }
           </span>
         </div>
       ),
     })),
     {
+      id: "copy",
+      header: "Copy",
+      cell: ({ row }) => (
+        <button
+          className={styles.copyButton}
+          onClick={(e) => {
+            e.stopPropagation();
+            copyRow(row.original.id);
+          }}
+          title="Copy this file"
+        >
+          📄
+        </button>
+      ),
+    },
+    {
       id: "remove",
       header: "Remove",
-      cell: () => null,
+      cell: ({ row }) => (
+        <button
+          className={styles.removeButton}
+          onClick={(e) => {
+            e.stopPropagation();
+            removeRow(row.original.id);
+          }}
+          title="Remove this file"
+        >
+          ❌
+        </button>
+      ),
     },
   ]);
 
@@ -280,6 +479,9 @@ function Table({ data, setData, columns, rowSelection, setRowSelection }) {
         placeholder="Search..."
         className={styles.search}
       />
+      <button onClick={clearTable} className={styles.clearButton}>
+        Clear Table
+      </button>
       <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext
           items={data.map((row) => row.id)}
@@ -310,6 +512,12 @@ function Table({ data, setData, columns, rowSelection, setRowSelection }) {
                   toggleRowExpanded={toggleRowExpanded}
                   isExpanded={!!expandedRows[row.id]}
                   removeRow={removeRow}
+                  copyRow={copyRow}
+                  isImageTable={isImageTable}
+                  isRenderTable={isRenderTable}
+                  setImageFiles={setImageFiles}
+                  setAudioFiles={setAudioFiles}
+                  ffmpegCommand={ffmpegCommand}
                 />
               ))}
             </tbody>

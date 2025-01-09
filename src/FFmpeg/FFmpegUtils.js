@@ -20,10 +20,16 @@ export function createFFmpegCommand(configs) {
         let outputDuration = 0;
         audioInputs.forEach(audio => {
             outputDuration += audio.duration;
+            if (audio.startTime) {
+                console.log(`Start Time for ${audio.filename}: ${audio.startTime}`);
+            }
+            if (audio.endTime) {
+                console.log(`End Time for ${audio.filename}: ${audio.endTime}`);
+            }
         });
 
         // determine duration for each image, split evenly across the output duration
-        var imgDuration = Math.round(((outputDuration / imageInputs.length) * 2) * 100) / 100;
+        const imgDuration = outputDuration / imageInputs.length;
         console.log('there are ' + imageInputs.length + ' images, each will be displayed for ' + imgDuration + ' seconds');
 
         // add audio inputs
@@ -37,7 +43,7 @@ export function createFFmpegCommand(configs) {
         });
 
         // generate filter complex
-        var filterComplexStr = '';
+        let filterComplexStr = '';
 
         // 1. Add boxes for each audio input
         filterComplexStr += audioInputs.map((_, index) => `[${index}:a]`).join('');
@@ -48,7 +54,7 @@ export function createFFmpegCommand(configs) {
         // 3/4. Process each image input
         imageInputs.forEach((image, index) => {
             const imgIndex = audioInputs.length + index;
-            filterComplexStr += `[${imgIndex}:v]scale=w=${width}:h=${height},setsar=1,loop=${imgDuration}:${imgDuration}[v${imgIndex}];`;
+            filterComplexStr += `[${imgIndex}:v]scale=w=${width}:h=${height},setsar=1,loop=${Math.round(imgDuration * 25)}:1[v${imgIndex}];`;
         });
 
         // 5. Concat all scaled images and pad them
