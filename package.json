@@ -1,6 +1,6 @@
 {
   "name": "RenderTune",
-  "version": "1.1.46",
+  "version": "1.1.47",
   "description": "My Electron app",
   "type": "module",
   "main": "main.js",
@@ -16,10 +16,11 @@
     "start-electron": "wait-on tcp:127.0.0.1:3000 && electron .",
     "pack": "electron-builder --dir",
     "dist": "npm run build-electron",
-    "download-ffmpeg-darwin-x64": "mkdirp ffmpeg/darwin-x64 && cd ffmpeg/darwin-x64 && wget https://github.com/mifi/ffmpeg-build-script/releases/download/6.0-1/ffmpeg-macos-X64 -O ffmpeg && wget https://github.com/mifi/ffmpeg-build-script/releases/download/6.0-1/ffprobe-macos-X64 -O ffprobe && chmod +x ffmpeg && chmod +x ffprobe",
-    "download-ffmpeg-darwin-arm64": "mkdirp ffmpeg/darwin-arm64 && cd ffmpeg/darwin-arm64 && wget https://github.com/mifi/ffmpeg-build-script/releases/download/6.0-1/ffmpeg-macos-ARM64 -O ffmpeg && wget https://github.com/mifi/ffmpeg-build-script/releases/download/6.0-1/ffprobe-macos-ARM64 -O ffprobe && chmod +x ffmpeg && chmod +x ffprobe",
-    "download-ffmpeg-linux-x64": "mkdirp ffmpeg/linux-x64 && cd ffmpeg/linux-x64 && wget https://github.com/mifi/ffmpeg-builds/releases/download/6.0/ffmpeg-n6.0-12-ga6dc92968a-linux64-gpl-shared-6.0.tar.xz -O ffmpeg-ffprobe.xz && tar -xv -f ffmpeg-ffprobe.xz && mv ffmpeg-n6.0-12-ga6dc92968a-linux64-gpl-shared-6.0 extracted && mkdirp lib && mv extracted/bin/ffmpeg extracted/bin/ffprobe extracted/lib/lib*.so* lib",
-    "download-ffmpeg-win32-x64": "mkdirp ffmpeg/win32-x64 && cd ffmpeg/win32-x64 && npx download-cli https://github.com/mifi/ffmpeg-builds/releases/download/6.0/ffmpeg-n6.0-12-ga6dc92968a-win64-gpl-shared-6.0.zip --out . --filename ffmpeg-ffprobe.zip && 7z x ffmpeg-ffprobe.zip && mkdirp lib && cd ffmpeg-n6.0-12-ga6dc92968a-win64-gpl-shared-6.0/bin && npx shx mv ffmpeg.exe ffprobe.exe *.dll ../../lib"
+    "install-7zip-win": "powershell -Command \"Write-Output 'Run this in admin PowerShell to install 7zip'; Invoke-WebRequest -Uri 'https://www.7-zip.org/a/7z2301-x64.exe' -OutFile '$env:TEMP\\7z.exe'; Start-Process -FilePath '$env:TEMP\\7z.exe' -ArgumentList '/S' -NoNewWindow -Wait; [Environment]::SetEnvironmentVariable('PATH', '$($env:PATH);C:\\Program Files\\7-Zip', [EnvironmentVariableTarget]::Machine)\"",
+    "download-ffmpeg-darwin-x64": "cross-env echo 'Run this command on macOS (Intel x64)' && mkdirp ffmpeg/darwin-x64 && cd ffmpeg/darwin-x64 && wget https://github.com/mifi/ffmpeg-build-script/releases/download/6.0-1/ffmpeg-macos-X64 -O ffmpeg && wget https://github.com/mifi/ffmpeg-build-script/releases/download/6.0-1/ffprobe-macos-X64 -O ffprobe && chmod +x ffmpeg && chmod +x ffprobe",
+    "download-ffmpeg-darwin-arm64": "cross-env echo 'Run this command on macOS (Apple Silicon ARM64)' && mkdirp ffmpeg/darwin-arm64 && cd ffmpeg/darwin-arm64 && wget https://github.com/mifi/ffmpeg-build-script/releases/download/6.0-1/ffmpeg-macos-ARM64 -O ffmpeg && wget https://github.com/mifi/ffmpeg-build-script/releases/download/6.0-1/ffprobe-macos-ARM64 -O ffprobe && chmod +x ffmpeg && chmod +x ffprobe",
+    "download-ffmpeg-linux-x64": "cross-env echo 'Run this command on Linux (x64 Intel/AMD)' && mkdirp ffmpeg/linux-x64 && cd ffmpeg/linux-x64 && wget https://github.com/mifi/ffmpeg-builds/releases/download/6.0/ffmpeg-n6.0-12-ga6dc92968a-linux64-gpl-shared-6.0.tar.xz -O ffmpeg-ffprobe.xz && tar -xv -f ffmpeg-ffprobe.xz && mv ffmpeg-n6.0-12-ga6dc92968a-linux64-gpl-shared-6.0 extracted && mkdirp lib && mv extracted/bin/ffmpeg extracted/bin/ffprobe extracted/lib/lib*.so* lib",
+    "download-ffmpeg-win32-x64": "cross-env echo \"Run this command on Windows (x64 Intel/AMD)\" && mkdirp ffmpeg/win32-x64 && cd ffmpeg/win32-x64 && npx download-cli https://github.com/mifi/ffmpeg-builds/releases/download/6.0/ffmpeg-n6.0-12-ga6dc92968a-win64-gpl-shared-6.0.zip --out . --filename ffmpeg-ffprobe.zip && 7z x ffmpeg-ffprobe.zip && mkdirp lib && cd ffmpeg-n6.0-12-ga6dc92968a-win64-gpl-shared-6.0/bin && npx shx mv ffmpeg.exe ffprobe.exe *.dll ../../lib"
   },
   "build": {
     "appId": "com.martinbarker.digifyunique",
@@ -229,7 +230,11 @@
     }
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@emotion/react": "^11.14.0",
+    "@tanstack/react-table": "^8.20.6",
     "axios": "^1.7.9",
     "cross-env": "^7.0.3",
     "electron-serve": "^2.1.1",
@@ -238,6 +243,8 @@
     "express": "^4.21.2",
     "fs-extra": "^11.2.0",
     "i18next-fs-backend": "^2.6.0",
+    "iconv-lite": "^0.6.3",
+    "image-size": "^1.2.0",
     "music-metadata-browser": "^2.5.11",
     "nth-check": "^2.0.1",
     "postcss": "^8.4.49",
