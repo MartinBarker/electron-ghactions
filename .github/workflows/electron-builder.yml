@@ -106,7 +106,7 @@ jobs:
           npx tsx script/xcrun-wrapper.mts $PKG_FILE ${{ secrets.APPLE_API_KEY_ID }} ${{ secrets.APPLE_API_ISSUER }} 1552674375 com.martinbarker.digifyunique
 
       - name: (MacOS) Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: startsWith(matrix.os, 'macos') && env.is_tag == 'false'
         with:
           name: MacOS
@@ -116,7 +116,7 @@ jobs:
             screenshot.jpeg
 
       - name: (Windows) Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: startsWith(matrix.os, 'windows') && env.is_tag == 'false'
         with:
           name: Windows
